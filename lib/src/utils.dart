@@ -22,7 +22,8 @@ double dmFromMeters(double distanceMETERS) {
 Polygon calcBuffer(double distanceDMS, List<List<double>> ring) {
   var precesion = dart_jts.PrecisionModel.fixedPrecision(0);
   final geometryFactory = dart_jts.GeometryFactory.defaultPrecision();
-  var listCoordinate = ring.map((e) => dart_jts.Coordinate(e[0], e[1])).toList();
+  var listCoordinate =
+      ring.map((e) => dart_jts.Coordinate(e[0], e[1])).toList();
   var listLinearRing = dart_jts.LinearRing(listCoordinate, precesion, 10);
   final polygons = geometryFactory.createPolygon(listLinearRing, null);
   final buffer = dart_jts.BufferOp.bufferOp3(polygons, distanceDMS, 10);
@@ -39,9 +40,11 @@ Polygon calcBuffer(double distanceDMS, List<List<double>> ring) {
   return polygon;
 }
 
-Future<Directory> getDocumentsDir() async => await path_provider.getApplicationDocumentsDirectory();
+Future<Directory> getDocumentsDir() async =>
+    await path_provider.getApplicationDocumentsDirectory();
 
 Future<List<Directory>?> getExternalDir() async {
-  var externalStorageDirectories = await path_provider.getExternalStorageDirectories();
+  var externalStorageDirectories =
+      await path_provider.getExternalStorageDirectories();
   return externalStorageDirectories;
 }

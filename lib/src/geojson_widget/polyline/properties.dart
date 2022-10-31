@@ -36,16 +36,20 @@ class PolylineProperties {
   }) {
     if (properties != null && layerProperties != null) {
       // fill
-      final String? layerPropertieFillColor = layerProperties[LayerPolylineIndexes.fillColor];
+      final String? layerPropertieFillColor =
+          layerProperties[LayerPolylineIndexes.fillColor];
       String hexString = '${properties[layerPropertieFillColor]}';
-      final Color fillColor = HexColor.fromHex(hexString, polylineLayerProperties.color);
+      final Color fillColor =
+          HexColor.fromHex(hexString, polylineLayerProperties.color);
       // border color
-      final String? layerPropertieBorderColor = layerProperties[LayerPolylineIndexes.borderColor];
+      final String? layerPropertieBorderColor =
+          layerProperties[LayerPolylineIndexes.borderColor];
       String hexString2 = '${properties[layerPropertieBorderColor]}';
       var fall = polylineLayerProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      var layerPropertieBWidth = layerProperties[LayerPolylineIndexes.borderStokeWidth];
+      var layerPropertieBWidth =
+          layerProperties[LayerPolylineIndexes.borderStokeWidth];
       var defBorderStokeWidth = polylineLayerProperties.borderStrokeWidth;
       var source = '$layerPropertieBWidth';
       final double borderWidth = double.tryParse(source) ?? defBorderStokeWidth;

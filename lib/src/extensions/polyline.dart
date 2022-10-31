@@ -20,7 +20,8 @@ extension PolylineX on Polyline {
     var distanceDMS = dmFromMeters(radius);
     final buffer = dart_jts.BufferOp.bufferOp3(polylines, distanceDMS, 10);
     var bufferBolygon = buffer as dart_jts.Polygon;
-    var listPointsPolyline = bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
+    var listPointsPolyline =
+        bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
     var polygon = Polygon(
       points: listPointsPolyline,
       isFilled: true,
@@ -41,7 +42,8 @@ extension PolylineX on Polyline {
 }
 
 extension PolylineXX on List<List<double>> {
-  Polyline toPolyline({PolylineProperties polylineProperties = const PolylineProperties()}) {
+  Polyline toPolyline(
+      {PolylineProperties polylineProperties = const PolylineProperties()}) {
     var polyline = Polyline(
       colorsStop: polylineProperties.colorsStop,
       gradientColors: polylineProperties.gradientColors,

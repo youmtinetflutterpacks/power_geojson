@@ -93,7 +93,10 @@ decodePolygon(a) {
   } else {
     type = "MultiPolygon";
   }
-  return {"type": type, "coordinates": (coords.length == 1) ? coords[0] : coords};
+  return {
+    "type": type,
+    "coordinates": (coords.length == 1) ? coords[0] : coords
+  };
 }
 
 ringIsClockwise(ringToTest) {

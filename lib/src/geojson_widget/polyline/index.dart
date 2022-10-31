@@ -20,7 +20,8 @@ Future<File> _createFile() async {
   var instance = await SharedPreferences.getInstance();
   /* var pathShared = instance.getString('geojson'); */
   var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
+  var directory =
+      ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
   final path = "$directory/geojson.json";
   final File file = File(path);
   var exists = await file.exists();
@@ -122,7 +123,10 @@ List<Polyline> _string(
         polylineLayerProperties: polylinePropertie,
       );
       if (geometry is GeoJSONLineString) {
-        return [geometry.coordinates.toPolyline(polylineProperties: polylineProperties)];
+        return [
+          geometry.coordinates
+              .toPolyline(polylineProperties: polylineProperties)
+        ];
       } else if (geometry is GeoJSONMultiLineString) {
         var coordinates = geometry.coordinates;
         return coordinates.map((e) {
@@ -182,7 +186,8 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ??
+                          const PolygonProperties(),
                     ),
                   ),
               ],
@@ -229,7 +234,8 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ??
+                          const PolygonProperties(),
                     ),
                   ),
               ],
@@ -276,7 +282,8 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ??
+                          const PolygonProperties(),
                     ),
                   ),
               ],
@@ -323,7 +330,8 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ??
+                          const PolygonProperties(),
                     ),
                   ),
               ],
@@ -363,7 +371,8 @@ class PowerGeoJSONPolylines {
           PolygonLayer(
             polygons: string.toBuffers(
               bufferOptions.buffer,
-              bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
+              bufferOptions.polygonBufferProperties ??
+                  const PolygonProperties(),
             ),
           ),
       ],

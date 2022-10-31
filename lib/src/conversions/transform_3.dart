@@ -82,7 +82,8 @@ deserialize(js) {
 
   var features = [];
   var o2 = o['features'] as List<dynamic>;
-  for (var i = 0, feature = {'string': '', 'int': 0, 'object': {}, 'null': null};
+  for (var i = 0,
+          feature = {'string': '', 'int': 0, 'object': {}, 'null': null};
       i < o2.length;
       i++) {
     // Console.log(o['features']);

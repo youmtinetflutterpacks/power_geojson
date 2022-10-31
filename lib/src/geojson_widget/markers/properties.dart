@@ -47,8 +47,10 @@ class MarkerProperties {
     this.rotateOrigin = MarkerProperties.defStrokeCap,
     //
   });
-  static MarkerProperties fromMap(Map<String, dynamic>? properties,
-      Map<LayerPolygonIndexes, String>? layerProperties, MarkerProperties markerLayerProperties) {
+  static MarkerProperties fromMap(
+      Map<String, dynamic>? properties,
+      Map<LayerPolygonIndexes, String>? layerProperties,
+      MarkerProperties markerLayerProperties) {
     if (properties != null && layerProperties != null) {
       return MarkerProperties(
         key: markerLayerProperties.key,

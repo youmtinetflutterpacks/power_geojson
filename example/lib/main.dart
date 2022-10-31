@@ -6,6 +6,7 @@ import 'package:power_geojson/power_geojson.dart';
 import 'package:console_tools/console_tools.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
+import 'package:power_geojson_example/custom/random_user_api/random_user_api.dart';
 import 'package:power_geojson_example/markers/asset.dart';
 import 'package:power_geojson_example/markers/index.dart';
 import 'package:power_geojson_example/polygons/asset.dart';
@@ -18,6 +19,29 @@ void main() {
   runApp(const GetMaterialApp(
     home: PowerGeojsonSampleApp(),
   ));
+}
+
+class UserProvider extends GetConnect {
+  // Get request
+  Future<String?> getRandomUsers() async {
+    var future = await get('https://randomuser.me/api?results=50');
+    return future.bodyString;
+  }
+
+  // Post request
+  Future<Response> postUser(Map data) => post('http://youapi/users', data);
+  // Post request with File
+  Future<Response<RandomUserApi>> postCases(List<int> image) {
+    final form = FormData({
+      'file': MultipartFile(image, filename: 'avatar.png'),
+      'otherFile': MultipartFile(image, filename: 'cover.png'),
+    });
+    return post('http://youapi/users/upload', form);
+  }
+
+  GetSocket userMessages() {
+    return socket('https://yourapi/users/socket');
+  }
 }
 
 class PowerGeojsonSampleApp extends StatefulWidget {
@@ -44,10 +68,7 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
       );
   @override
   Widget build(BuildContext context) {
-    var interactiveFlags2 = InteractiveFlag.doubleTapZoom |
-        InteractiveFlag.drag |
-        InteractiveFlag.pinchZoom |
-        InteractiveFlag.pinchMove;
+    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
     var center = latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     // double distanceMETERS = 10;
     // var distanceDMS = dmFromMeters(distanceMETERS);
@@ -68,6 +89,7 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
           onMapEvent: (p0) {},
           onMapReady: () async {
             await Future.delayed(const Duration(seconds: 1));
+            var users = await UserProvider().getRandomUsers();
             _mapController.state = mapState;
             start = true;
           },

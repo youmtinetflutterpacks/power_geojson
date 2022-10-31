@@ -183,8 +183,8 @@ Widget _string(
       var geometry = elm.geometry;
       var props = elm.properties;
       var layerBuffer = layerBufferProperties;
-      var markerPropsFromMap = MarkerProperties.fromMap(props, layerBuffer, markerPropertie);
       var layerPropsFromMap = PolygonProperties.fromMap(props, layerBuffer);
+      var markerPropsFromMap = MarkerProperties.fromMap(props, layerBuffer, markerPropertie);
       polygonProperties = layerPropsFromMap;
 
       zoomTo(elm, mapController);

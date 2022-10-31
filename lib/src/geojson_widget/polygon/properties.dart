@@ -25,7 +25,8 @@ class PolygonProperties {
   final bool disableHolesBorder;
   static const bool defLabeled = false;
   static const bool defIsDotted = false;
-  static const PolygonLabelPlacement defLabelPlacement = PolygonLabelPlacement.polylabel;
+  static const PolygonLabelPlacement defLabelPlacement =
+      PolygonLabelPlacement.polylabel;
   static const TextStyle defLabelStyle = TextStyle();
   static const bool defRotateLabel = false;
   static const StrokeCap defStrokeCap = StrokeCap.round;
@@ -60,17 +61,21 @@ class PolygonProperties {
   }) {
     if (properties != null && layerProperties != null) {
       // fill
-      final String? layerPropertieFillColor = layerProperties[LayerPolygonIndexes.fillColor];
+      final String? layerPropertieFillColor =
+          layerProperties[LayerPolygonIndexes.fillColor];
       var isFilledMap = layerPropertieFillColor != null;
       String hexString = '${properties[layerPropertieFillColor]}';
-      final Color fillColor = HexColor.fromHex(hexString, polygonLayerProperties.fillColor);
+      final Color fillColor =
+          HexColor.fromHex(hexString, polygonLayerProperties.fillColor);
       // border color
-      final String? layerPropertieBorderColor = layerProperties[LayerPolygonIndexes.borderColor];
+      final String? layerPropertieBorderColor =
+          layerProperties[LayerPolygonIndexes.borderColor];
       String hexString2 = '${properties[layerPropertieBorderColor]}';
       var fall = polygonLayerProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      var layerPropertieBWidth = layerProperties[LayerPolygonIndexes.borderStokeWidth];
+      var layerPropertieBWidth =
+          layerProperties[LayerPolygonIndexes.borderStokeWidth];
       var defBorderStokeWidth = polygonLayerProperties.borderStokeWidth;
       var source = '$layerPropertieBWidth';
       final double borderWidth = double.tryParse(source) ?? defBorderStokeWidth;
@@ -78,9 +83,11 @@ class PolygonProperties {
       final String? label = layerProperties[LayerPolygonIndexes.label];
       final bool labeled = properties[label] != null;
       var isLabelled = labeled && polygonLayerProperties.labeled;
-      String label2 = labeled ? '${properties[label]}' : polygonLayerProperties.label;
+      String label2 =
+          labeled ? '${properties[label]}' : polygonLayerProperties.label;
       if (fillColor != PolygonProperties.defFillColor) {
-        Console.log('inside fromMap fillcolor = $fillColor', color: ConsoleColors.citron);
+        Console.log('inside fromMap fillcolor = $fillColor',
+            color: ConsoleColors.citron);
       }
       return PolygonProperties(
         isFilled: isFilledMap && polygonLayerProperties.isFilled,
@@ -119,10 +126,10 @@ class PolygonProperties {
 //   final bool rotateLabel;
 //   final StrokeCap strokeCap;
 //   final StrokeJoin strokeJoin;
-    // this.labeled = PolygonProperties.defLabeled,
-    // this.isDotted = PolygonProperties.defIsDotted,
-    // this.labelPlacement = PolygonProperties.defLabelPlacement,
-    // this.labelStyle = PolygonProperties.defLabelStyle,
-    // this.rotateLabel = PolygonProperties.defRotateLabel,
-    // this.strokeCap = PolygonProperties.defStrokeCap,
-    // this.strokeJoin = PolygonProperties.defStrokeJoin,
+// this.labeled = PolygonProperties.defLabeled,
+// this.isDotted = PolygonProperties.defIsDotted,
+// this.labelPlacement = PolygonProperties.defLabelPlacement,
+// this.labelStyle = PolygonProperties.defLabelStyle,
+// this.rotateLabel = PolygonProperties.defRotateLabel,
+// this.strokeCap = PolygonProperties.defStrokeCap,
+// this.strokeJoin = PolygonProperties.defStrokeJoin,
