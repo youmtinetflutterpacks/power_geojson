@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart' as cluster;
-import 'package:latlong2/latlong.dart' as latlong2;
-import 'package:power_geojson/power_geojson.dart';
+// import 'package:flutter_map/plugin_api.dart';
+// import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart' as cluster;
+// import 'package:latlong2/latlong.dart' as latlong2;
+// import 'package:power_geojson/power_geojson.dart';
 
 class ClustersMarkers extends StatelessWidget {
   const ClustersMarkers({
@@ -12,7 +12,7 @@ class ClustersMarkers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // CupertinoLocalizationAr();
-    var markerClusterLayerWidget = cluster.MarkerClusterLayerWidget(
+    /* var markerClusterLayerWidget = cluster.MarkerClusterLayerWidget(
         options: cluster.MarkerClusterLayerOptions(
       maxClusterRadius: 45,
       polygonOptions: const cluster.PolygonOptions(),
@@ -52,7 +52,7 @@ class ClustersMarkers extends StatelessWidget {
           ),
         );
       },
-    ));
+    )); */
     /* var popupMarkerLayerWidget = PopupMarkerLayerWidget(
       options: PopupMarkerLayerOptions(
         popupSnap: PopupSnap.markerBottom,
@@ -79,6 +79,6 @@ class ClustersMarkers extends StatelessWidget {
         },
       ),
     ); */
-    return markerClusterLayerWidget;
+    return const SizedBox();
   }
 }

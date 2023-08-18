@@ -1,7 +1,6 @@
-import 'package:console_tools/console_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
+import 'package:power_geojson/power_geojson.dart';
 
 enum LayerPolygonIndexes {
   fillColor,
@@ -25,8 +24,7 @@ class PolygonProperties {
   final bool disableHolesBorder;
   static const bool defLabeled = false;
   static const bool defIsDotted = false;
-  static const PolygonLabelPlacement defLabelPlacement =
-      PolygonLabelPlacement.polylabel;
+  static const PolygonLabelPlacement defLabelPlacement = PolygonLabelPlacement.polylabel;
   static const TextStyle defLabelStyle = TextStyle();
   static const bool defRotateLabel = false;
   static const StrokeCap defStrokeCap = StrokeCap.round;
@@ -61,39 +59,27 @@ class PolygonProperties {
   }) {
     if (properties != null && layerProperties != null) {
       // fill
-      final String? layerPropertieFillColor =
-          layerProperties[LayerPolygonIndexes.fillColor];
-      var isFilledMap = layerPropertieFillColor != null;
-      String hexString = '${properties[layerPropertieFillColor]}';
-      final Color fillColor =
-          HexColor.fromHex(hexString, polygonLayerProperties.fillColor);
+      final String? keyPropertieFillColor = layerProperties[LayerPolygonIndexes.fillColor];
+      var isFilledMap = keyPropertieFillColor != null;
+      String hexString = '${properties[keyPropertieFillColor]}';
+      final Color fillColor = HexColor.fromHex(hexString, polygonLayerProperties.fillColor);
       // border color
-      final String? layerPropertieBorderColor =
-          layerProperties[LayerPolygonIndexes.borderColor];
+      final String? layerPropertieBorderColor = layerProperties[LayerPolygonIndexes.borderColor];
       String hexString2 = '${properties[layerPropertieBorderColor]}';
       var fall = polygonLayerProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      var layerPropertieBWidth =
-          layerProperties[LayerPolygonIndexes.borderStokeWidth];
-      var defBorderStokeWidth = polygonLayerProperties.borderStokeWidth;
-      var source = '$layerPropertieBWidth';
-      final double borderWidth = double.tryParse(source) ?? defBorderStokeWidth;
+      var layerPropertieBWidth = layerProperties[LayerPolygonIndexes.borderStokeWidth];
       // label
       final String? label = layerProperties[LayerPolygonIndexes.label];
       final bool labeled = properties[label] != null;
       var isLabelled = labeled && polygonLayerProperties.labeled;
-      String label2 =
-          labeled ? '${properties[label]}' : polygonLayerProperties.label;
-      if (fillColor != PolygonProperties.defFillColor) {
-        Console.log('inside fromMap fillcolor = $fillColor',
-            color: ConsoleColors.citron);
-      }
+      String label2 = labeled ? '${properties[label]}' : polygonLayerProperties.label;
       return PolygonProperties(
         isFilled: isFilledMap && polygonLayerProperties.isFilled,
         fillColor: fillColor,
         borderColor: borderColor,
-        borderStokeWidth: borderWidth,
+        borderStokeWidth: properties[layerPropertieBWidth] ?? polygonLayerProperties.borderStokeWidth,
         label: label2,
         labeled: isLabelled,
         disableHolesBorder: polygonLayerProperties.disableHolesBorder,

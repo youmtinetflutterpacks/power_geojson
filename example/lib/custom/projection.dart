@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as flutter_map;
-import 'package:tuple/tuple.dart';
 
 class PerojectionFlutterMap extends StatefulWidget {
   const PerojectionFlutterMap({Key? key}) : super(key: key);
@@ -35,9 +34,9 @@ class CrsCustom extends flutter_map.Crs {
 
   @override
   // TODO: implement wrapLat
-  Tuple2<double, double>? get wrapLat => throw UnimplementedError();
+  (double, double)? get wrapLat => throw UnimplementedError();
 
   @override
   // TODO: implement wrapLng
-  Tuple2<double, double>? get wrapLng => throw UnimplementedError();
+  (double, double)? get wrapLng => throw UnimplementedError();
 }

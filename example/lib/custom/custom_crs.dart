@@ -118,14 +118,13 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
       children: [
         WMSTileLayer(epsg26191CRS: epsg26191CRS),
         TileLayer(
-          opacity: 1,
+          tileDisplay: const TileDisplay.fadeIn(),
           errorImage: const AssetImage('assets/images/flutter_logo.png'),
           backgroundColor: Colors.green,
-          errorTileCallback: (tile, error) {
-            Console.log(tile.tilePos);
+          errorTileCallback: (tile, error, trace) {
+            Console.log(tile.imageInfo);
           },
-          urlTemplate:
-              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
           userAgentPackageName: 'dev.fleaflet.flutter_map.example',
         ),
         MarkerLayer(
@@ -166,14 +165,12 @@ class WMSTileLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TileLayer(
-      opacity: 1,
       backgroundColor: Colors.transparent,
       wmsOptions: WMSTileLayerOptions(
         crs: epsg26191CRS,
         transparent: true,
         format: 'image/jpeg',
-        baseUrl:
-            'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
+        baseUrl: 'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
         layers: ['gebco_north_polar_view'],
       ),
     );

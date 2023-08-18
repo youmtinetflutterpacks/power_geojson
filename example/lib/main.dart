@@ -8,12 +8,12 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
 import 'package:power_geojson_example/custom/random_user_api/random_user_api.dart';
 import 'package:power_geojson_example/markers/asset.dart';
-import 'package:power_geojson_example/markers/index.dart';
+/* import 'package:power_geojson_example/markers/index.dart';
 import 'package:power_geojson_example/polygons/asset.dart';
 import 'package:power_geojson_example/polygons/file.dart';
 import 'package:power_geojson_example/polygons/network.dart';
 import 'package:power_geojson_example/polygons/string.dart';
-import 'package:power_geojson_example/polylines/asset.dart';
+import 'package:power_geojson_example/polylines/asset.dart'; */
 
 void main() {
   runApp(const GetMaterialApp(
@@ -54,7 +54,8 @@ class PowerGeojsonSampleApp extends StatefulWidget {
 }
 
 class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
-  var latLng = latlong2.LatLng(34.92849168609999, -2.3225879568537056);
+  var latLng = const latlong2.LatLng(34.92849168609999, -2.3225879568537056);
+
   final MapController _mapController = MapController();
   final FlutterMapState mapState = FlutterMapState();
   bool start = false;
@@ -69,10 +70,10 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
   @override
   Widget build(BuildContext context) {
     var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
-    var center = latlong2.LatLng(34.926447747065936, -2.3228343908943998);
+    var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     // double distanceMETERS = 10;
     // var distanceDMS = dmFromMeters(distanceMETERS);
-    var baseUrl = "https://server.arcgisonline.com/ArcGIS/rest/services";
+    // var baseUrl = "https://server.arcgisonline.com/ArcGIS/rest/services";
     return Scaffold(
       appBar: AppBar(
         title: const Text("Power GeoJSON Examples"),
@@ -89,14 +90,19 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
           onMapEvent: (p0) {},
           onMapReady: () async {
             await Future.delayed(const Duration(seconds: 1));
-            var users = await UserProvider().getRandomUsers();
+            // var users = await UserProvider().getRandomUsers();
             _mapController.state = mapState;
             start = true;
           },
         ),
         children: [
-          TileLayer(
+          /* TileLayer(
             urlTemplate: '$baseUrl/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            backgroundColor: const Color(0xFF202020),
+            maxZoom: 19,
+          ), */
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             backgroundColor: const Color(0xFF202020),
             maxZoom: 19,
           ),
@@ -110,19 +116,18 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
             stream: esri(),
           ), */
 
-          NetworkGeoJSONPolygon(mapController: _mapController),
+          /* NetworkGeoJSONPolygon(mapController: _mapController),
           AssetGeoJSONPolygon(mapController: _mapController),
           StringGeoJSONPolygon(mapController: _mapController),
-          FileGeoJSONPolygon(mapController: _mapController),
+          FileGeoJSONPolygon(mapController: _mapController), */
 
-          const AssetGeoJSONPolyline(),
-          //
+          /* const AssetGeoJSONPolyline(), */
 
+          const AssetGeoJSONMarkerExample1(),
           const AssetGeoJSONMarkerExample2(),
-          const AssetGeoJSONMarker(),
           //   MarkerLayer(markers: getMarkers()),
-          CircleOfMap(latLng: latLng),
-          const ClustersMarkers(),
+          /* CircleOfMap(latLng: latLng),
+          const ClustersMarkers(), */
         ],
       ),
     );
@@ -132,7 +137,7 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
     const latlong2.Distance distanc = latlong2.Distance();
     final double m = distanc.as(
       latlong2.LengthUnit.Meter,
-      latlong2.LatLng(0, 0),
+      const latlong2.LatLng(0, 0),
       latlong2.LatLng(0, distanceDMS.dm),
     );
     return m;

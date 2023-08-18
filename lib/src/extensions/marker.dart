@@ -4,9 +4,8 @@ import 'package:power_geojson/src/geojson_widget/markers/properties.dart';
 import 'package:power_geojson/src/geojson_widget/polygon/properties.dart';
 
 extension MarkersX on List<Marker> {
-  List<CircleMarker> toBuffers(
-      double radius, PolygonProperties polygonProperties) {
-    return [...map((e) => e.buffer(radius, polygonProperties))];
+  List<CircleMarker> toBuffers(double radius, PolygonProperties polygonProperties) {
+    return map((e) => e.buffer(radius, polygonProperties)).toList();
   }
 }
 

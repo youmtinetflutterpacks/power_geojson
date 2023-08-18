@@ -15,15 +15,15 @@ toGeoJSON(Map<String, dynamic> data) {
     var geometry = ft['geometry'];
     if (geometry['x'] != null) {
       //check if it's a point
-      outFT['geometry'] = point(geometry);
+      outFT['geometry'] = point2D(geometry);
     } else if (geometry['points'] != null) {
       //check if it is a multipoint
-      outFT['geometry'] = points(geometry);
+      outFT['geometry'] = points2D(geometry);
     } else if (geometry['paths'] != null) {
       //check if a line (or "ARC" in ESRI terms)
-      outFT['geometry'] = line(geometry);
+      outFT['geometry'] = line2D(geometry);
     } else if (geometry['rings'] != null) {
-      outFT['geometry'] = poly(geometry);
+      outFT['geometry'] = polygon(geometry);
     }
     var outPut2 = outPut['features'] as List;
     outPut2.add(outFT);
@@ -33,7 +33,7 @@ toGeoJSON(Map<String, dynamic> data) {
 }
 
 // \.(points|x|y|paths|rings)
-point(geometry) {
+point2D(geometry) {
   //this one is easy
   return {
     "type": "Point",
@@ -41,7 +41,7 @@ point(geometry) {
   };
 }
 
-points(geometry) {
+points2D(geometry) {
   //checks if the multipoint only has one point, if so exports as point instead
   if (geometry['points'].length == 1) {
     return {"type": "Point", "coordinates": geometry['points'][0]};
@@ -50,7 +50,7 @@ points(geometry) {
   }
 }
 
-line(geometry) {
+line2D(geometry) {
   //checks if their are multiple paths or just one
   if (geometry['paths'].length == 1) {
     return {"type": "LineString", "coordinates": geometry['paths'][0]};
@@ -59,7 +59,7 @@ line(geometry) {
   }
 }
 
-poly(geometry) {
+polygon(geometry) {
   //first we check for some easy cases, like if their is only one ring
   if (geometry['rings'].length == 1) {
     return {"type": "Polygon", "coordinates": geometry['rings']};
@@ -93,10 +93,7 @@ decodePolygon(a) {
   } else {
     type = "MultiPolygon";
   }
-  return {
-    "type": type,
-    "coordinates": (coords.length == 1) ? coords[0] : coords
-  };
+  return {"type": type, "coordinates": (coords.length == 1) ? coords[0] : coords};
 }
 
 ringIsClockwise(ringToTest) {

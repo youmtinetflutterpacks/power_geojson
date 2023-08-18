@@ -4,23 +4,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:dart_jts/dart_jts.dart' as dart_jts;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:point_in_polygon/point_in_polygon.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
-import 'package:power_geojson/src/geojson_widget/polygon/properties.dart';
-import 'package:power_geojson/src/utils.dart';
+import 'package:power_geojson/power_geojson.dart';
 
 extension PolygonsX on List<Polygon> {
-  List<Polygon> toBuffers(
-      double radius, PolygonProperties polygonBufferProperties) {
-    return map(
-            (e) => e.buffer(radius, polygonProperties: polygonBufferProperties))
-        .toList();
+  List<Polygon> toBuffers(double radius, PolygonProperties polygonBufferProperties) {
+    return map((e) => e.buffer(radius, polygonProperties: polygonBufferProperties)).toList();
   }
 
-  List<Polygon> toBuffersWithOriginals(
-      double radius, PolygonProperties polygonBufferProperties) {
-    return map((e) => e.toBuffer(radius, polygonBufferProperties))
-        .expand((e) => e)
-        .toList();
+  List<Polygon> toBuffersWithOriginals(double radius, PolygonProperties polygonBufferProperties) {
+    return map((e) => e.toBuffer(radius, polygonBufferProperties)).expand((e) => e).toList();
   }
 }
 
@@ -48,43 +40,26 @@ extension PolygonX on Polygon {
     // consoleLog(holesLineString.length);
     //
     final geometryFactory = dart_jts.GeometryFactory.defaultPrecision();
-    final polygons =
-        geometryFactory.createPolygon(listLinearRing, holesLineString);
+    final polygons = geometryFactory.createPolygon(listLinearRing, holesLineString);
     var distanceDMS = dmFromMeters(radius);
     final buffer = dart_jts.BufferOp.bufferOp3(polygons, distanceDMS, 10);
     var bufferBolygon = buffer as dart_jts.Polygon;
-    var listPointsPolygon =
-        bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
+    var listPointsPolygon = bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
     var polygon = Polygon(
       points: listPointsPolygon,
       holePointsList: holePointsList,
-      isFilled:
-          polygonProperties != null ? polygonProperties.isFilled : isFilled,
+      isFilled: polygonProperties != null ? polygonProperties.isFilled : isFilled,
       color: polygonProperties != null ? polygonProperties.fillColor : color,
-      borderColor: polygonProperties != null
-          ? polygonProperties.borderColor
-          : borderColor,
-      borderStrokeWidth: polygonProperties != null
-          ? polygonProperties.borderStokeWidth
-          : borderStrokeWidth,
-      disableHolesBorder: polygonProperties != null
-          ? polygonProperties.disableHolesBorder
-          : disableHolesBorder,
-      isDotted:
-          polygonProperties != null ? polygonProperties.isDotted : isDotted,
+      borderColor: polygonProperties != null ? polygonProperties.borderColor : borderColor,
+      borderStrokeWidth: polygonProperties != null ? polygonProperties.borderStokeWidth : borderStrokeWidth,
+      disableHolesBorder: polygonProperties != null ? polygonProperties.disableHolesBorder : disableHolesBorder,
+      isDotted: polygonProperties != null ? polygonProperties.isDotted : isDotted,
       label: polygonProperties != null ? polygonProperties.label : label,
-      labelPlacement: polygonProperties != null
-          ? polygonProperties.labelPlacement
-          : labelPlacement,
-      labelStyle:
-          polygonProperties != null ? polygonProperties.labelStyle : labelStyle,
-      rotateLabel: polygonProperties != null
-          ? polygonProperties.rotateLabel
-          : rotateLabel,
-      strokeCap:
-          polygonProperties != null ? polygonProperties.strokeCap : strokeCap,
-      strokeJoin:
-          polygonProperties != null ? polygonProperties.strokeJoin : strokeJoin,
+      labelPlacement: polygonProperties != null ? polygonProperties.labelPlacement : labelPlacement,
+      labelStyle: polygonProperties != null ? polygonProperties.labelStyle : labelStyle,
+      rotateLabel: polygonProperties != null ? polygonProperties.rotateLabel : rotateLabel,
+      strokeCap: polygonProperties != null ? polygonProperties.strokeCap : strokeCap,
+      strokeJoin: polygonProperties != null ? polygonProperties.strokeJoin : strokeJoin,
     );
     return polygon;
   }
@@ -92,15 +67,7 @@ extension PolygonX on Polygon {
   bool isGeoPointInPolygon(LatLng latlng) {
     var isInPolygon = false;
     for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
-      if ((((points[i].latitude <= latlng.latitude) &&
-                  (latlng.latitude < points[j].latitude)) ||
-              ((points[j].latitude <= latlng.latitude) &&
-                  (latlng.latitude < points[i].latitude))) &&
-          (latlng.longitude <
-              (points[j].longitude - points[i].longitude) *
-                      (latlng.latitude - points[i].latitude) /
-                      (points[j].latitude - points[i].latitude) +
-                  points[i].longitude)) isInPolygon = !isInPolygon;
+      if ((((points[i].latitude <= latlng.latitude) && (latlng.latitude < points[j].latitude)) || ((points[j].latitude <= latlng.latitude) && (latlng.latitude < points[i].latitude))) && (latlng.longitude < (points[j].longitude - points[i].longitude) * (latlng.latitude - points[i].latitude) / (points[j].latitude - points[i].latitude) + points[i].longitude)) isInPolygon = !isInPolygon;
     }
     return isInPolygon;
   }
@@ -125,8 +92,7 @@ extension PolygonX on Polygon {
   bool isGeoPointInsidePolygon(LatLng position) {
     // Check if the point sits exactly on a vertex
     // var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
-    LatLng? vertexPosition =
-        points.firstWhereOrNull((point) => point == position);
+    LatLng? vertexPosition = points.firstWhereOrNull((point) => point == position);
     if (vertexPosition != null) {
       return true;
     }
@@ -139,26 +105,16 @@ extension PolygonX on Polygon {
       LatLng vertex1 = points[i - 1];
       LatLng vertex2 = points[i];
 
-      if (vertex1.latitude == vertex2.latitude &&
-          vertex1.latitude == position.latitude &&
-          position.longitude > min(vertex1.longitude, vertex2.longitude) &&
-          position.longitude < max(vertex1.longitude, vertex2.longitude)) {
+      if (vertex1.latitude == vertex2.latitude && vertex1.latitude == position.latitude && position.longitude > min(vertex1.longitude, vertex2.longitude) && position.longitude < max(vertex1.longitude, vertex2.longitude)) {
         return true;
       }
 
-      if (position.latitude > min(vertex1.latitude, vertex2.latitude) &&
-          position.latitude <= max(vertex1.latitude, vertex2.latitude) &&
-          position.longitude <= max(vertex1.longitude, vertex2.longitude) &&
-          vertex1.latitude != vertex2.latitude) {
-        var xinters = (position.latitude - vertex1.latitude) *
-                (vertex2.longitude - vertex1.longitude) /
-                (vertex2.latitude - vertex1.latitude) +
-            vertex1.longitude;
+      if (position.latitude > min(vertex1.latitude, vertex2.latitude) && position.latitude <= max(vertex1.latitude, vertex2.latitude) && position.longitude <= max(vertex1.longitude, vertex2.longitude) && vertex1.latitude != vertex2.latitude) {
+        var xinters = (position.latitude - vertex1.latitude) * (vertex2.longitude - vertex1.longitude) / (vertex2.latitude - vertex1.latitude) + vertex1.longitude;
         if (xinters == position.longitude) {
           return true;
         }
-        if (vertex1.longitude == vertex2.longitude ||
-            position.longitude <= xinters) {
+        if (vertex1.longitude == vertex2.longitude || position.longitude <= xinters) {
           intersections++;
         }
       }
@@ -168,8 +124,7 @@ extension PolygonX on Polygon {
 }
 
 extension PolygonsXX on List<List<List<double>>> {
-  Polygon toPolygon(
-      {PolygonProperties polygonProperties = const PolygonProperties()}) {
+  Polygon toPolygon({PolygonProperties polygonProperties = const PolygonProperties()}) {
     var holes = sublist(1).map((f) => f.toLatLng()).toList();
     var polygon = Polygon(
       points: first.toLatLng(),

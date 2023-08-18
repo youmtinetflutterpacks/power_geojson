@@ -1,3 +1,3 @@
 library power_geojson;
 
-export 'src/index.dart';
+export 'src/src.dart';

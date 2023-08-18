@@ -6,22 +6,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
-import 'package:power_geojson/src/data.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
-import 'package:power_geojson/src/extensions/polyline.dart';
-import 'package:power_geojson/src/geojson_widget/markers/properties.dart';
-import 'package:power_geojson/src/geojson_widget/polygon/properties.dart';
-import 'package:power_geojson/src/geojson_widget/polyline/properties.dart';
-import 'package:power_geojson/src/utils.dart';
+import 'package:power_geojson/power_geojson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-export 'properties.dart';
 
 Future<File> _createFile() async {
   var instance = await SharedPreferences.getInstance();
   /* var pathShared = instance.getString('geojson'); */
   var list = await getExternalDir();
-  var directory =
-      ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
+  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
   final path = "$directory/geojson.json";
   final File file = File(path);
   var exists = await file.exists();
@@ -123,10 +115,7 @@ List<Polyline> _string(
         polylineLayerProperties: polylinePropertie,
       );
       if (geometry is GeoJSONLineString) {
-        return [
-          geometry.coordinates
-              .toPolyline(polylineProperties: polylineProperties)
-        ];
+        return [geometry.coordinates.toPolyline(polylineProperties: polylineProperties)];
       } else if (geometry is GeoJSONMultiLineString) {
         var coordinates = geometry.coordinates;
         return coordinates.map((e) {
@@ -157,7 +146,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    bool saveLayers = false,
     BufferOptions? bufferOptions,
   }) {
     var uriString = url.toUri();
@@ -177,7 +165,6 @@ class PowerGeoJSONPolylines {
             return Stack(
               children: [
                 PolylineLayer(
-                  saveLayers: saveLayers,
                   polylines: polylines2,
                   key: key,
                   polylineCulling: polylineCulling,
@@ -186,8 +173,7 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ??
-                          const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
                     ),
                   ),
               ],
@@ -209,7 +195,6 @@ class PowerGeoJSONPolylines {
     Key? key,
     BufferOptions? bufferOptions,
     bool polylineCulling = false,
-    bool saveLayers = false,
   }) {
     return FutureBuilder(
       future: _assetPolylines(
@@ -225,7 +210,6 @@ class PowerGeoJSONPolylines {
             return Stack(
               children: [
                 PolylineLayer(
-                  saveLayers: saveLayers,
                   polylines: polylines2,
                   key: key,
                   polylineCulling: polylineCulling,
@@ -234,8 +218,7 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ??
-                          const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
                     ),
                   ),
               ],
@@ -256,7 +239,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    bool saveLayers = false,
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
@@ -273,7 +255,6 @@ class PowerGeoJSONPolylines {
             return Stack(
               children: [
                 PolylineLayer(
-                  saveLayers: saveLayers,
                   polylines: polylines2,
                   key: key,
                   polylineCulling: polylineCulling,
@@ -282,8 +263,7 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ??
-                          const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
                     ),
                   ),
               ],
@@ -304,7 +284,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    bool saveLayers = false,
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
@@ -321,7 +300,6 @@ class PowerGeoJSONPolylines {
             return Stack(
               children: [
                 PolylineLayer(
-                  saveLayers: saveLayers,
                   polylines: polylines2,
                   key: key,
                   polylineCulling: polylineCulling,
@@ -330,8 +308,7 @@ class PowerGeoJSONPolylines {
                   PolygonLayer(
                     polygons: polylines2.toBuffers(
                       bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ??
-                          const PolygonProperties(),
+                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
                     ),
                   ),
               ],
@@ -352,7 +329,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    bool saveLayers = false,
     BufferOptions? bufferOptions,
   }) {
     var string = _string(
@@ -362,7 +338,6 @@ class PowerGeoJSONPolylines {
     return Stack(
       children: [
         PolylineLayer(
-          saveLayers: saveLayers,
           polylines: string,
           key: key,
           polylineCulling: polylineCulling,
@@ -371,8 +346,7 @@ class PowerGeoJSONPolylines {
           PolygonLayer(
             polygons: string.toBuffers(
               bufferOptions.buffer,
-              bufferOptions.polygonBufferProperties ??
-                  const PolygonProperties(),
+              bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
             ),
           ),
       ],

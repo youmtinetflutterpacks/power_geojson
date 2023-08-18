@@ -1,18 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:console_tools/console_tools.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
-import 'package:power_geojson/src/data.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
-import 'package:power_geojson/src/extensions/marker.dart';
-import 'package:power_geojson/src/geojson_widget/markers/properties.dart';
-import 'package:power_geojson/src/geojson_widget/polygon/properties.dart';
-import 'package:power_geojson/src/utils.dart';
+import 'package:power_geojson/power_geojson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 export 'properties.dart';
 export 'create_circle.dart';
@@ -22,7 +16,7 @@ Future<File> _createFile() async {
   /* var pathShared = instance.getString('geojson'); */
   var list = await getExternalDir();
   var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
-  final path = "$directory/geojson.json";
+  final path = "$directory/asset-markers.json";
   final File file = File(path);
   var exists = await file.exists();
   if (!exists) {
@@ -35,13 +29,11 @@ Future<File> _createFile() async {
 
 Future<Widget> _fileMarkers(
   String path, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required MarkerProperties markerLayerProperties,
-  MapController? mapController,
+  Map<LayerPolygonIndexes, String>? layerBufferProperties,
   BufferOptions? bufferOptions,
-  Offset? rotateOrigin,
-  AlignmentGeometry? rotateAlignment = Alignment.center,
-  bool rotate = false,
+  MapController? mapController,
+  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   Key? key,
 }) async {
   final file = File(path);
@@ -54,10 +46,8 @@ Future<Widget> _fileMarkers(
       mapController: mapController,
       key: key,
       bufferOptions: bufferOptions,
-      layerBufferProperties: layerProperties,
-      rotateAlignment: rotateAlignment,
-      rotateOrigin: rotateOrigin,
-      rotate: rotate,
+      layerBufferProperties: layerBufferProperties,
+      layerMarkerProperties: layerMarkerProperties,
     );
   } else {
     return const SizedBox();
@@ -70,9 +60,7 @@ Future<Widget> _memoryMarkers(
   required MarkerProperties markerLayerProperties,
   MapController? mapController,
   BufferOptions? bufferOptions,
-  Offset? rotateOrigin,
-  AlignmentGeometry? rotateAlignment = Alignment.center,
-  bool rotate = false,
+  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   Key? key,
 }) async {
   File file = File.fromRawPath(list);
@@ -84,9 +72,7 @@ Future<Widget> _memoryMarkers(
     key: key,
     bufferOptions: bufferOptions,
     layerBufferProperties: layerProperties,
-    rotateAlignment: rotateAlignment,
-    rotateOrigin: rotateOrigin,
-    rotate: rotate,
+    layerMarkerProperties: layerMarkerProperties,
   );
 }
 
@@ -95,11 +81,8 @@ Future<Widget> _assetMarkers(
   Map<LayerPolygonIndexes, String>? layerProperties,
   required MarkerProperties markerProperties,
   MapController? mapController,
-  //
+  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   BufferOptions? bufferOptions,
-  Offset? rotateOrigin,
-  AlignmentGeometry? rotateAlignment = Alignment.center,
-  bool rotate = false,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
@@ -108,28 +91,23 @@ Future<Widget> _assetMarkers(
     string,
     markerPropertie: markerProperties,
     mapController: mapController,
-    //
     key: key,
     bufferOptions: bufferOptions,
+    layerMarkerProperties: layerMarkerProperties,
     layerBufferProperties: layerProperties,
-    rotateAlignment: rotateAlignment,
-    rotateOrigin: rotateOrigin,
-    rotate: rotate,
   );
 }
 
 Future<Widget> _networkMarkers(
   Uri urlString, {
+  required MarkerProperties markerLayerProperties,
+  Key? key,
   Client? client,
   Map<String, String>? headers,
   Map<LayerPolygonIndexes, String>? layerProperties,
-  required MarkerProperties markerLayerProperties,
+  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   MapController? mapController,
   BufferOptions? bufferOptions,
-  Offset? rotateOrigin,
-  AlignmentGeometry? rotateAlignment = Alignment.center,
-  bool rotate = false,
-  Key? key,
 }) async {
   var method = client == null ? get : client.get;
   var response = await method(urlString, headers: headers);
@@ -137,13 +115,11 @@ Future<Widget> _networkMarkers(
   return _string(
     string,
     markerPropertie: markerLayerProperties,
+    layerMarkerProperties: layerMarkerProperties,
     mapController: mapController,
     key: key,
     bufferOptions: bufferOptions,
     layerBufferProperties: layerProperties,
-    rotateAlignment: rotateAlignment,
-    rotateOrigin: rotateOrigin,
-    rotate: rotate,
   );
 }
 
@@ -155,44 +131,42 @@ class CercleMarker {
 
 Widget _string(
   String string, {
-  required MarkerProperties markerPropertie,
-  MapController? mapController,
-  BufferOptions? bufferOptions,
   Key? key,
-  AlignmentGeometry? rotateAlignment = Alignment.center,
-  Offset? rotateOrigin,
-  bool rotate = false,
+  //marker props
+  required MarkerProperties markerPropertie,
+  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+  // buffer props
   Map<LayerPolygonIndexes, String>? layerBufferProperties,
+  BufferOptions? bufferOptions,
+  // others
+  MapController? mapController,
 }) {
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
 
   var features = geojson.features;
-  List<CercleMarker> markers = List.generate(features.length, (int index) {
-    GeoJSONFeature? elm = features[index];
+//   List<CercleMarker> markers = List.generate(features.length, (int index) );
+  Iterable<CercleMarker> markers = features.map((GeoJSONFeature? feature) {
     List<Marker> listMarkers = [];
     const PolygonProperties polygonDefault = PolygonProperties();
     PolygonProperties polygonProperties = polygonDefault;
-    if (bufferOptions != null) {
-      var polygonBufferProperties = bufferOptions.polygonBufferProperties;
-      if (polygonBufferProperties != null) {
-        Console.log(polygonBufferProperties.fillColor);
-        polygonProperties = polygonBufferProperties;
+    if (feature != null) {
+      var geometry = feature.geometry;
+      var props = feature.properties;
+      var markerPropsFromMap = MarkerProperties.fromMap(props, layerMarkerProperties, markerPropertie);
+      if (bufferOptions != null && bufferOptions.polygonBufferProperties != null) {
+        var polygonBufferProperties = bufferOptions.polygonBufferProperties;
+        if (polygonBufferProperties != null) {
+          polygonProperties = polygonBufferProperties;
+        }
       }
-    }
-    if (elm != null) {
-      var geometry = elm.geometry;
-      var props = elm.properties;
-      var layerBuffer = layerBufferProperties;
-      var layerPropsFromMap = PolygonProperties.fromMap(props, layerBuffer);
-      var markerPropsFromMap = MarkerProperties.fromMap(props, layerBuffer, markerPropertie);
-      polygonProperties = layerPropsFromMap;
+      polygonProperties = PolygonProperties.fromMap(props, layerBufferProperties, polygonLayerProperties: polygonProperties);
 
-      zoomTo(elm, mapController);
+      zoomTo(feature, mapController);
       if (geometry is GeoJSONPoint) {
         listMarkers = [geometry.coordinates.toMarker(markerProperties: markerPropsFromMap)];
       } else if (geometry is GeoJSONMultiPoint) {
         var coordinates = geometry.coordinates;
-        listMarkers = [...coordinates.map((e) => e.toMarker(markerProperties: markerPropsFromMap))];
+        listMarkers = coordinates.map((e) => e.toMarker(markerProperties: markerPropsFromMap)).toList();
       }
     } else {
       listMarkers = ifElmNull;
@@ -209,17 +183,20 @@ Widget _string(
       markers: listMarkers,
     );
   });
+
   return Stack(
     children: [
       if (bufferOptions != null) ...markers.map((e) => e.circleLayer),
       if ((bufferOptions != null && !bufferOptions.buffersOnly) || bufferOptions == null)
         ...markers.map(
           (e) {
+            Marker firstMarker = e.markers.first;
             return MarkerLayer(
-              rotate: rotate,
-              rotateAlignment: rotateAlignment,
-              rotateOrigin: rotateOrigin,
+              rotate: firstMarker.rotate ?? false,
+              rotateAlignment: firstMarker.rotateAlignment,
+              rotateOrigin: firstMarker.rotateOrigin,
               markers: e.markers,
+              anchorPos: firstMarker.anchorPos,
               key: key,
             );
           },
@@ -231,7 +208,7 @@ Widget _string(
 List<Marker> get ifElmNull {
   return [
     Marker(
-      point: latlong2.LatLng(0, 0),
+      point: const latlong2.LatLng(0, 0),
       builder: (BuildContext context) {
         return const SizedBox();
       },
@@ -257,13 +234,11 @@ class PowerGeoJSONMarkers {
     Client? client,
     Map<String, String>? headers,
     Map<LayerPolygonIndexes, String>? layerBufferProperties,
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    bool rotate = false,
     BufferOptions? bufferOptions,
-    AlignmentGeometry? rotateAlignment = Alignment.center,
-    Offset? rotateOrigin,
   }) {
     var uriString = url.toUri();
     return FutureBuilder(
@@ -273,12 +248,10 @@ class PowerGeoJSONMarkers {
         client: client,
         layerProperties: layerBufferProperties,
         markerLayerProperties: markerLayerProperties,
+        layerMarkerProperties: layerMarkerProperties,
         mapController: mapController,
         bufferOptions: bufferOptions,
         key: key,
-        rotate: rotate,
-        rotateAlignment: rotateAlignment,
-        rotateOrigin: rotateOrigin,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -300,9 +273,7 @@ class PowerGeoJSONMarkers {
     MapController? mapController,
     BufferOptions? bufferOptions,
     Key? key,
-    bool rotate = false,
-    AlignmentGeometry? rotateAlignment = Alignment.center,
-    Offset? rotateOrigin,
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   }) {
     return FutureBuilder(
       future: _assetMarkers(
@@ -312,9 +283,7 @@ class PowerGeoJSONMarkers {
         mapController: mapController,
         bufferOptions: bufferOptions,
         key: key,
-        rotate: rotate,
-        rotateAlignment: rotateAlignment,
-        rotateOrigin: rotateOrigin,
+        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -338,22 +307,18 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    bool rotate = false,
     BufferOptions? bufferOptions,
-    AlignmentGeometry? rotateAlignment = Alignment.center,
-    Offset? rotateOrigin,
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   }) {
     return FutureBuilder(
       future: _fileMarkers(
         path,
-        layerProperties: layerBufferProperties,
+        layerBufferProperties: layerBufferProperties,
         markerLayerProperties: markerLayerProperties,
         mapController: mapController,
         bufferOptions: bufferOptions,
         key: key,
-        rotate: rotate,
-        rotateAlignment: rotateAlignment,
-        rotateOrigin: rotateOrigin,
+        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -374,10 +339,8 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    bool rotate = false,
     BufferOptions? bufferOptions,
-    AlignmentGeometry? rotateAlignment = Alignment.center,
-    Offset? rotateOrigin,
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   }) {
     return FutureBuilder(
       future: _memoryMarkers(
@@ -387,9 +350,7 @@ class PowerGeoJSONMarkers {
         mapController: mapController,
         bufferOptions: bufferOptions,
         key: key,
-        rotate: rotate,
-        rotateAlignment: rotateAlignment,
-        rotateOrigin: rotateOrigin,
+        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -410,9 +371,7 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    bool rotate = false,
-    AlignmentGeometry? rotateAlignment = Alignment.center,
-    Offset? rotateOrigin,
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
     BufferOptions? bufferOptions,
   }) {
     return _string(
@@ -421,9 +380,7 @@ class PowerGeoJSONMarkers {
       key: key,
       bufferOptions: bufferOptions,
       layerBufferProperties: layerBufferProperties,
-      rotateAlignment: rotateAlignment,
-      rotateOrigin: rotateOrigin,
-      rotate: rotate,
+      layerMarkerProperties: layerMarkerProperties,
     );
   }
 }

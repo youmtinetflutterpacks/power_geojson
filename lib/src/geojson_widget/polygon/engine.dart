@@ -6,12 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
-import 'package:power_geojson/src/data.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
-import 'package:power_geojson/src/extensions/polygon.dart';
-import 'package:power_geojson/src/geojson_widget/markers/properties.dart';
-import 'package:power_geojson/src/geojson_widget/polygon/properties.dart';
-import 'package:power_geojson/src/utils.dart';
+import 'package:power_geojson/power_geojson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 export 'properties.dart';
 
@@ -19,8 +14,7 @@ Future<File> _createFile() async {
   var instance = await SharedPreferences.getInstance();
   /* var pathShared = instance.getString('geojson'); */
   var list = await getExternalDir();
-  var directory =
-      ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
+  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
   final path = "$directory/geojson.json";
   final File file = File(path);
   var exists = await file.exists();
@@ -121,9 +115,7 @@ List<Polygon> _string(
         polygonLayerProperties: polygonPropertie,
       );
       if (geometry is GeoJSONPolygon) {
-        return [
-          geometry.coordinates.toPolygon(polygonProperties: polygonProperties)
-        ];
+        return [geometry.coordinates.toPolygon(polygonProperties: polygonProperties)];
       } else if (geometry is GeoJSONMultiPolygon) {
         var coordinates = geometry.coordinates;
         return coordinates.map((e) {
@@ -175,13 +167,11 @@ class PowerGeoJSONPolygons {
                   ? bufferOptions.buffersOnly
                       ? polygons2.toBuffers(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                       : polygons2.toBuffersWithOriginals(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                   : polygons2,
               key: key,
@@ -221,13 +211,11 @@ class PowerGeoJSONPolygons {
                   ? bufferOptions.buffersOnly
                       ? polygons2.toBuffers(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                       : polygons2.toBuffersWithOriginals(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                   : polygons2,
               key: key,
@@ -267,13 +255,11 @@ class PowerGeoJSONPolygons {
                   ? bufferOptions.buffersOnly
                       ? polygons2.toBuffers(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                       : polygons2.toBuffersWithOriginals(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                   : polygons2,
               key: key,
@@ -313,13 +299,11 @@ class PowerGeoJSONPolygons {
                   ? bufferOptions.buffersOnly
                       ? polygons2.toBuffers(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                       : polygons2.toBuffersWithOriginals(
                           bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ??
-                              polygonProperties,
+                          bufferOptions.polygonBufferProperties ?? polygonProperties,
                         )
                   : polygons2,
               key: key,
