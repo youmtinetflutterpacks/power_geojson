@@ -5,32 +5,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
-import 'package:latlong2/latlong.dart' as latlong2;
 import 'package:power_geojson/power_geojson.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 export 'properties.dart';
 
-Future<File> _createFile() async {
-  var instance = await SharedPreferences.getInstance();
-  /* var pathShared = instance.getString('geojson'); */
-  var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
-  final path = "$directory/geojson.json";
-  final File file = File(path);
-  var exists = await file.exists();
-  if (!exists) {
-    var savedFile = await file.writeAsString(geojsonfile);
-    await instance.setString('geojson', savedFile.path);
-    return savedFile;
-  }
-  return file;
+class BufferPolygon {
+  PolygonLayer bufferLayer;
+  List<Polygon> polygons;
+  BufferPolygon({required this.bufferLayer, required this.polygons});
 }
 
-Future<List<Polygon>> _filePolygons(
+Future<Widget> _filePolygons(
   String path, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required PolygonProperties polygonLayerProperties,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  Key? key,
+  bool polygonCulling = false,
 }) async {
   final file = File(path);
   var exists = await file.exists();
@@ -38,53 +28,64 @@ Future<List<Polygon>> _filePolygons(
     var readasstring = await file.readAsString();
     return _string(
       readasstring,
-      layerMap: layerProperties,
-      polygonPropertie: polygonLayerProperties,
+      polygonProperties: polygonLayerProperties,
+      bufferOptions: bufferOptions,
+      polygonCulling: polygonCulling,
       mapController: mapController,
+      key: key,
     );
   } else {
-    return [];
+    return const Text('Not Found');
   }
 }
 
-Future<List<Polygon>> _memoryPolygons(
+Future<Widget> _memoryPolygons(
   Uint8List list, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required PolygonProperties polygonLayerProperties,
+  bool polygonCulling = false,
+  BufferOptions? bufferOptions,
+  Key? key,
   MapController? mapController,
 }) async {
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
     string,
-    layerMap: layerProperties,
-    polygonPropertie: polygonLayerProperties,
+    polygonProperties: polygonLayerProperties,
+    key: key,
+    bufferOptions: bufferOptions,
+    polygonCulling: polygonCulling,
     mapController: mapController,
   );
 }
 
-Future<List<Polygon>> _assetPolygons(
+Future<Widget> _assetPolygons(
   String path, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
-  required PolygonProperties polygonProperties,
+  required PolygonProperties polygonLayerProperties,
+  bool polygonCulling = false,
+  Key? key,
+  BufferOptions? bufferOptions,
   MapController? mapController,
 }) async {
   final string = await rootBundle.loadString(path);
-  await _createFile();
   return _string(
     string,
-    layerMap: layerProperties,
-    polygonPropertie: polygonProperties,
+    polygonProperties: polygonLayerProperties,
+    key: key,
+    bufferOptions: bufferOptions,
+    polygonCulling: polygonCulling,
     mapController: mapController,
   );
 }
 
-Future<List<Polygon>> _networkPolygons(
+Future<Widget> _networkPolygons(
   Uri urlString, {
   Client? client,
   Map<String, String>? headers,
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required PolygonProperties polygonLayerProperties,
+  bool polygonCulling = false,
+  Key? key,
+  BufferOptions? bufferOptions,
   MapController? mapController,
 }) async {
   var method = client == null ? get : client.get;
@@ -92,48 +93,63 @@ Future<List<Polygon>> _networkPolygons(
   var string = response.body;
   return _string(
     string,
-    layerMap: layerProperties,
-    polygonPropertie: polygonLayerProperties,
+    polygonProperties: polygonLayerProperties,
+    key: key,
+    bufferOptions: bufferOptions,
+    polygonCulling: polygonCulling,
     mapController: mapController,
   );
 }
 
-List<Polygon> _string(
+Widget _string(
   String string, {
-  Map<LayerPolygonIndexes, String>? layerMap,
-  required PolygonProperties polygonPropertie,
+  // layer
+  Key? key,
+  bool polygonCulling = false,
+  PolygonProperties polygonProperties = const PolygonProperties(),
   MapController? mapController,
+  // buffer
+  BufferOptions? bufferOptions,
 }) {
+  Console.log(string.length);
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
-  List<List<Polygon>> polygons = geojson.features.map((elm) {
-    if (elm != null) {
-      var geometry = elm.geometry;
-      var properties = elm.properties;
-      var polygonProperties = PolygonProperties.fromMap(
-        properties,
-        layerMap,
-        polygonLayerProperties: polygonPropertie,
-      );
+  var features = geojson.features;
+  var polygons = features.map((feature) {
+    PolygonProperties polygonBufferProperties = const PolygonProperties();
+    List<Polygon> listPolygons = [];
+    if (feature != null) {
+      var geometry = feature.geometry;
+      var properties = feature.properties;
+      var polygonnProperties = PolygonProperties.fromMap(properties, polygonProperties);
+
+      polygonBufferProperties = PolygonProperties.fromMap(properties, getBufferProperties(bufferOptions));
       if (geometry is GeoJSONPolygon) {
-        return [geometry.coordinates.toPolygon(polygonProperties: polygonProperties)];
+        listPolygons = [geometry.coordinates.toPolygon(polygonProperties: polygonnProperties)];
       } else if (geometry is GeoJSONMultiPolygon) {
         var coordinates = geometry.coordinates;
-        return coordinates.map((e) {
-          return e.toPolygon(polygonProperties: polygonProperties);
+        listPolygons = coordinates.map((e) {
+          return e.toPolygon(polygonProperties: polygonnProperties);
         }).toList();
       }
-      var bbox = elm.bbox;
-      if (bbox != null && mapController != null) {
-        var latLngBounds = LatLngBounds(
-          latlong2.LatLng(bbox[1], bbox[0]),
-          latlong2.LatLng(bbox[3], bbox[2]),
-        );
-        mapController.fitBounds(latLngBounds);
-      }
     }
-    return [Polygon(points: [])];
+    zoomTo(features, mapController);
+    return PolygonLayer(
+      polygons: bufferOptions != null
+          ? bufferOptions.buffersOnly
+              ? listPolygons.toBuffers(
+                  bufferOptions.buffer,
+                  polygonBufferProperties,
+                )
+              : listPolygons.toBuffersWithOriginals(
+                  bufferOptions.buffer,
+                  polygonBufferProperties: polygonBufferProperties,
+                )
+          : listPolygons,
+      key: key,
+      polygonCulling: polygonCulling,
+    );
   }).toList();
-  return polygons.expand((element) => element).toList();
+  return Stack(children: polygons);
 }
 
 class PowerGeoJSONPolygons {
@@ -141,11 +157,12 @@ class PowerGeoJSONPolygons {
     String url, {
     Client? client,
     Map<String, String>? headers,
-    Map<LayerPolygonIndexes, String>? layerProperties,
-    PolygonProperties polygonProperties = const PolygonProperties(),
-    MapController? mapController,
+    // layer
     Key? key,
     bool polygonCulling = false,
+    PolygonProperties polygonProperties = const PolygonProperties(),
+    MapController? mapController,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     var uriString = url.toUri();
@@ -154,29 +171,16 @@ class PowerGeoJSONPolygons {
         uriString,
         headers: headers,
         client: client,
-        layerProperties: layerProperties,
         polygonLayerProperties: polygonProperties,
+        key: key,
+        polygonCulling: polygonCulling,
         mapController: mapController,
+        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polygons2 = snap.data ?? [];
-            return PolygonLayer(
-              polygons: bufferOptions != null
-                  ? bufferOptions.buffersOnly
-                      ? polygons2.toBuffers(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                      : polygons2.toBuffersWithOriginals(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                  : polygons2,
-              key: key,
-              polygonCulling: polygonCulling,
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -188,39 +192,27 @@ class PowerGeoJSONPolygons {
 
   static Widget asset(
     String url, {
-    Map<LayerPolygonIndexes, String>? layerProperties,
-    PolygonProperties polygonProperties = const PolygonProperties(),
-    MapController? mapController,
+    // layer
     Key? key,
     bool polygonCulling = false,
+    PolygonProperties polygonProperties = const PolygonProperties(),
+    MapController? mapController,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _assetPolygons(
         url,
-        layerProperties: layerProperties,
-        polygonProperties: polygonProperties,
+        polygonLayerProperties: polygonProperties,
+        key: key,
+        polygonCulling: polygonCulling,
         mapController: mapController,
+        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polygons2 = snap.data ?? [];
-            return PolygonLayer(
-              polygons: bufferOptions != null
-                  ? bufferOptions.buffersOnly
-                      ? polygons2.toBuffers(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                      : polygons2.toBuffersWithOriginals(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                  : polygons2,
-              key: key,
-              polygonCulling: polygonCulling,
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -232,39 +224,27 @@ class PowerGeoJSONPolygons {
 
   static Widget file(
     String path, {
-    Map<LayerPolygonIndexes, String>? layerProperties,
-    PolygonProperties polygonProperties = const PolygonProperties(),
-    MapController? mapController,
+    // layer
     Key? key,
     bool polygonCulling = false,
+    PolygonProperties polygonProperties = const PolygonProperties(),
+    MapController? mapController,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _filePolygons(
         path,
-        layerProperties: layerProperties,
         polygonLayerProperties: polygonProperties,
+        key: key,
+        polygonCulling: polygonCulling,
         mapController: mapController,
+        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polygons2 = snap.data ?? [];
-            return PolygonLayer(
-              polygons: bufferOptions != null
-                  ? bufferOptions.buffersOnly
-                      ? polygons2.toBuffers(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                      : polygons2.toBuffersWithOriginals(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                  : polygons2,
-              key: key,
-              polygonCulling: polygonCulling,
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -276,39 +256,27 @@ class PowerGeoJSONPolygons {
 
   static Widget memory(
     Uint8List bytes, {
-    Map<LayerPolygonIndexes, String>? layerProperties,
+    // layer
+    Key? key,
+    bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    Key? key,
+    // buffer
     BufferOptions? bufferOptions,
-    bool polygonCulling = false,
   }) {
     return FutureBuilder(
       future: _memoryPolygons(
         bytes,
-        layerProperties: layerProperties,
         polygonLayerProperties: polygonProperties,
+        key: key,
+        polygonCulling: polygonCulling,
         mapController: mapController,
+        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polygons2 = snap.data ?? [];
-            return PolygonLayer(
-              polygons: bufferOptions != null
-                  ? bufferOptions.buffersOnly
-                      ? polygons2.toBuffers(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                      : polygons2.toBuffersWithOriginals(
-                          bufferOptions.buffer,
-                          bufferOptions.polygonBufferProperties ?? polygonProperties,
-                        )
-                  : polygons2,
-              key: key,
-              polygonCulling: polygonCulling,
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -320,31 +288,21 @@ class PowerGeoJSONPolygons {
 
   static Widget string(
     String data, {
-    Map<LayerPolygonIndexes, String>? layerProperties,
+    // layer
+    Key? key,
+    bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    Key? key,
+    // buffer
     BufferOptions? bufferOptions,
-    bool polygonCulling = false,
   }) {
-    var polygons2 = _string(
+    return _string(
       data,
-      polygonPropertie: polygonProperties,
-    );
-    return PolygonLayer(
-      polygons: bufferOptions != null
-          ? bufferOptions.buffersOnly
-              ? polygons2.toBuffers(
-                  bufferOptions.buffer,
-                  bufferOptions.polygonBufferProperties ?? polygonProperties,
-                )
-              : polygons2.toBuffersWithOriginals(
-                  bufferOptions.buffer,
-                  bufferOptions.polygonBufferProperties ?? polygonProperties,
-                )
-          : polygons2,
+      polygonProperties: polygonProperties,
       key: key,
       polygonCulling: polygonCulling,
+      mapController: mapController,
+      bufferOptions: bufferOptions,
     );
   }
 }

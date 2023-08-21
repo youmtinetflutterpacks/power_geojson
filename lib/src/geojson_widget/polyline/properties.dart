@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:power_geojson/src/extensions/extensions.dart';
+import 'package:power_geojson/power_geojson.dart';
 
 enum LayerPolylineIndexes {
-  fillColor,
-  label,
-  borderStokeWidth,
+  color,
+  strokeWidth,
   borderColor,
 }
 
@@ -13,70 +12,71 @@ class PolylineProperties {
   static const double defBorderStokeWidth = 2;
   static const Color defBorderColor = Color(0xFF1E00FD);
   static const bool defIsDotted = false;
+  static const bool defUseStrokeWidthInMeter = false;
   static const StrokeCap defStrokeCap = StrokeCap.round;
   static const StrokeJoin defStrokeJoin = StrokeJoin.round;
   static const List<double> defColorsStop = [];
   static const List<Color> defGradientColors = [];
   static const double defStrokeWidth = 1;
 
+  final double strokeWidth;
   final Color color;
   final double borderStrokeWidth;
-  final Color borderColor;
+  final Color? borderColor;
+  final List<Color>? gradientColors;
+  final List<double>? colorsStop;
   final bool isDotted;
   final StrokeCap strokeCap;
   final StrokeJoin strokeJoin;
-  final List<double> colorsStop;
-  final List<Color> gradientColors;
-  final double strokeWidth;
+  final bool useStrokeWidthInMeter;
+  final Map<LayerPolylineIndexes, String>? layerProperties;
 
   static PolylineProperties fromMap(
     Map<String, dynamic>? properties,
-    Map<LayerPolylineIndexes, String>? layerProperties, {
-    PolylineProperties polylineLayerProperties = const PolylineProperties(),
-  }) {
+    PolylineProperties polylineProperties,
+  ) {
+    Map<LayerPolylineIndexes, String>? layerProperties = polylineProperties.layerProperties;
     if (properties != null && layerProperties != null) {
       // fill
-      final String? layerPropertieFillColor =
-          layerProperties[LayerPolylineIndexes.fillColor];
-      String hexString = '${properties[layerPropertieFillColor]}';
-      final Color fillColor =
-          HexColor.fromHex(hexString, polylineLayerProperties.color);
+      final String? keyPropertieFillColor = layerProperties[LayerPolylineIndexes.color];
+      String hexString = '${properties[keyPropertieFillColor]}';
+      final Color color = HexColor.fromHex(hexString, polylineProperties.color);
       // border color
-      final String? layerPropertieBorderColor =
-          layerProperties[LayerPolylineIndexes.borderColor];
-      String hexString2 = '${properties[layerPropertieBorderColor]}';
-      var fall = polylineLayerProperties.borderColor;
-      final Color borderColor = HexColor.fromHex(hexString2, fall);
+      final String? keyPropertieBorderColor = layerProperties[LayerPolylineIndexes.borderColor];
+      String hexString2 = '${properties[keyPropertieBorderColor]}';
+      var fall = polylineProperties.borderColor;
+      final Color? borderColor = fall == null ? null : HexColor.fromHex(hexString2, fall);
       // border width
-      var layerPropertieBWidth =
-          layerProperties[LayerPolylineIndexes.borderStokeWidth];
-      var defBorderStokeWidth = polylineLayerProperties.borderStrokeWidth;
-      var source = '$layerPropertieBWidth';
-      final double borderWidth = double.tryParse(source) ?? defBorderStokeWidth;
+      var keyPropertieBWidth = layerProperties[LayerPolylineIndexes.strokeWidth];
+      var defBorderStokeWidth = polylineProperties.borderStrokeWidth;
+      final double borderWidth = properties[keyPropertieBWidth] ?? defBorderStokeWidth;
       return PolylineProperties(
-        colorsStop: polylineLayerProperties.colorsStop,
-        gradientColors: polylineLayerProperties.gradientColors,
+        colorsStop: polylineProperties.colorsStop,
+        gradientColors: polylineProperties.gradientColors,
         strokeWidth: borderWidth,
-        isDotted: polylineLayerProperties.isDotted,
-        strokeCap: polylineLayerProperties.strokeCap,
-        strokeJoin: polylineLayerProperties.strokeJoin,
-        borderStrokeWidth: polylineLayerProperties.borderStrokeWidth,
+        useStrokeWidthInMeter: polylineProperties.useStrokeWidthInMeter,
+        isDotted: polylineProperties.isDotted,
+        strokeCap: polylineProperties.strokeCap,
+        strokeJoin: polylineProperties.strokeJoin,
+        borderStrokeWidth: polylineProperties.borderStrokeWidth,
         borderColor: borderColor,
-        color: fillColor,
+        color: color,
         //
       );
     } else {
-      return polylineLayerProperties;
+      return polylineProperties;
     }
   }
 
   const PolylineProperties({
     this.colorsStop = PolylineProperties.defColorsStop,
+    this.useStrokeWidthInMeter = PolylineProperties.defUseStrokeWidthInMeter,
     this.gradientColors = PolylineProperties.defGradientColors,
     this.strokeWidth = PolylineProperties.defStrokeWidth,
     this.isDotted = PolylineProperties.defIsDotted,
     this.strokeCap = PolylineProperties.defStrokeCap,
     this.strokeJoin = PolylineProperties.defStrokeJoin,
+    this.layerProperties,
     this.borderStrokeWidth = PolylineProperties.defBorderStokeWidth,
     this.borderColor = PolylineProperties.defBorderColor,
     this.color = PolylineProperties.defFillColor,

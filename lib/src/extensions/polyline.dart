@@ -19,7 +19,7 @@ extension PolylineX on Polyline {
     var listPointsPolyline = bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
     var polygon = Polygon(
       points: listPointsPolyline,
-      isFilled: true,
+      isFilled: polygonProperties.isFilled,
       color: polygonProperties.fillColor,
       borderColor: polygonProperties.borderColor,
       borderStrokeWidth: polygonProperties.borderStokeWidth,
@@ -42,6 +42,7 @@ extension PolylineXX on List<List<double>> {
       colorsStop: polylineProperties.colorsStop,
       gradientColors: polylineProperties.gradientColors,
       strokeWidth: polylineProperties.strokeWidth,
+      useStrokeWidthInMeter: polylineProperties.useStrokeWidthInMeter,
       points: toLatLng(),
       color: polylineProperties.color,
       borderColor: polylineProperties.borderColor,

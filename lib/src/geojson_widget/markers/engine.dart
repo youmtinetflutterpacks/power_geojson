@@ -7,33 +7,15 @@ import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
 import 'package:power_geojson/power_geojson.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 export 'properties.dart';
 export 'create_circle.dart';
-
-Future<File> _createFile() async {
-  var instance = await SharedPreferences.getInstance();
-  /* var pathShared = instance.getString('geojson'); */
-  var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
-  final path = "$directory/asset-markers.json";
-  final File file = File(path);
-  var exists = await file.exists();
-  if (!exists) {
-    var savedFile = await file.writeAsString(geojsonfile);
-    await instance.setString('geojson', savedFile.path);
-    return savedFile;
-  }
-  return file;
-}
 
 Future<Widget> _fileMarkers(
   String path, {
   required MarkerProperties markerLayerProperties,
-  Map<LayerPolygonIndexes, String>? layerBufferProperties,
+  required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   BufferOptions? bufferOptions,
   MapController? mapController,
-  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   Key? key,
 }) async {
   final file = File(path);
@@ -45,9 +27,8 @@ Future<Widget> _fileMarkers(
       markerPropertie: markerLayerProperties,
       mapController: mapController,
       key: key,
+      builder: builder,
       bufferOptions: bufferOptions,
-      layerBufferProperties: layerBufferProperties,
-      layerMarkerProperties: layerMarkerProperties,
     );
   } else {
     return const SizedBox();
@@ -56,11 +37,10 @@ Future<Widget> _fileMarkers(
 
 Future<Widget> _memoryMarkers(
   Uint8List list, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required MarkerProperties markerLayerProperties,
+  required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   MapController? mapController,
   BufferOptions? bufferOptions,
-  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   Key? key,
 }) async {
   File file = File.fromRawPath(list);
@@ -70,31 +50,27 @@ Future<Widget> _memoryMarkers(
     markerPropertie: markerLayerProperties,
     mapController: mapController,
     key: key,
+    builder: builder,
     bufferOptions: bufferOptions,
-    layerBufferProperties: layerProperties,
-    layerMarkerProperties: layerMarkerProperties,
   );
 }
 
 Future<Widget> _assetMarkers(
   String path, {
-  Map<LayerPolygonIndexes, String>? layerProperties,
   required MarkerProperties markerProperties,
-  MapController? mapController,
-  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   BufferOptions? bufferOptions,
+  MapController? mapController,
+  required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
-  await _createFile();
   return _string(
     string,
     markerPropertie: markerProperties,
+    bufferOptions: bufferOptions,
     mapController: mapController,
     key: key,
-    bufferOptions: bufferOptions,
-    layerMarkerProperties: layerMarkerProperties,
-    layerBufferProperties: layerProperties,
+    builder: builder,
   );
 }
 
@@ -104,8 +80,7 @@ Future<Widget> _networkMarkers(
   Key? key,
   Client? client,
   Map<String, String>? headers,
-  Map<LayerPolygonIndexes, String>? layerProperties,
-  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+  required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   MapController? mapController,
   BufferOptions? bufferOptions,
 }) async {
@@ -115,16 +90,15 @@ Future<Widget> _networkMarkers(
   return _string(
     string,
     markerPropertie: markerLayerProperties,
-    layerMarkerProperties: layerMarkerProperties,
     mapController: mapController,
     key: key,
+    builder: builder,
     bufferOptions: bufferOptions,
-    layerBufferProperties: layerProperties,
   );
 }
 
 class CercleMarker {
-  CircleLayer circleLayer;
+  PolygonLayer circleLayer;
   List<Marker> markers;
   CercleMarker({required this.circleLayer, required this.markers});
 }
@@ -133,10 +107,8 @@ Widget _string(
   String string, {
   Key? key,
   //marker props
+  required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   required MarkerProperties markerPropertie,
-  Map<LayerMarkerIndexes, String>? layerMarkerProperties,
-  // buffer props
-  Map<LayerPolygonIndexes, String>? layerBufferProperties,
   BufferOptions? bufferOptions,
   // others
   MapController? mapController,
@@ -144,39 +116,42 @@ Widget _string(
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
 
   var features = geojson.features;
-//   List<CercleMarker> markers = List.generate(features.length, (int index) );
   Iterable<CercleMarker> markers = features.map((GeoJSONFeature? feature) {
     List<Marker> listMarkers = [];
-    const PolygonProperties polygonDefault = PolygonProperties();
-    PolygonProperties polygonProperties = polygonDefault;
+    PolygonProperties polygonBufferProperties = const PolygonProperties();
     if (feature != null) {
       var geometry = feature.geometry;
-      var props = feature.properties;
-      var markerPropsFromMap = MarkerProperties.fromMap(props, layerMarkerProperties, markerPropertie);
-      if (bufferOptions != null && bufferOptions.polygonBufferProperties != null) {
-        var polygonBufferProperties = bufferOptions.polygonBufferProperties;
-        if (polygonBufferProperties != null) {
-          polygonProperties = polygonBufferProperties;
-        }
-      }
-      polygonProperties = PolygonProperties.fromMap(props, layerBufferProperties, polygonLayerProperties: polygonProperties);
+      var properties = feature.properties;
 
-      zoomTo(feature, mapController);
+      MarkerProperties markerPropsFromMap = MarkerProperties.fromMap(properties, markerPropertie);
+      polygonBufferProperties = PolygonProperties.fromMap(properties, getBufferProperties(bufferOptions));
+
       if (geometry is GeoJSONPoint) {
-        listMarkers = [geometry.coordinates.toMarker(markerProperties: markerPropsFromMap)];
+        listMarkers = [
+          geometry.coordinates.toMarker(
+            markerProperties: markerPropsFromMap,
+            builder: (buildContext) => builder(markerPropertie, properties ?? {}),
+          )
+        ];
       } else if (geometry is GeoJSONMultiPoint) {
         var coordinates = geometry.coordinates;
-        listMarkers = coordinates.map((e) => e.toMarker(markerProperties: markerPropsFromMap)).toList();
+        listMarkers = coordinates
+            .map(
+              (e) => e.toMarker(
+                markerProperties: markerPropsFromMap,
+                builder: (buildContext) => builder(markerPropertie, properties ?? {}),
+              ),
+            )
+            .toList();
       }
-    } else {
-      listMarkers = ifElmNull;
     }
+    zoomTo(features, mapController);
 
     return CercleMarker(
-      circleLayer: CircleLayer(
-        circles: listMarkers.toBuffers(
+      circleLayer: PolygonLayer(
+        polygons: listMarkers.toBuffers(
           bufferOptions != null ? bufferOptions.buffer : 0,
-          polygonProperties,
+          polygonBufferProperties,
         ),
         key: key,
       ),
@@ -205,36 +180,50 @@ Widget _string(
   );
 }
 
-List<Marker> get ifElmNull {
-  return [
-    Marker(
-      point: const latlong2.LatLng(0, 0),
-      builder: (BuildContext context) {
-        return const SizedBox();
-      },
-    ),
-  ];
-}
-
-void zoomTo(GeoJSONFeature elm, MapController? mapController) {
-  var bbox = elm.bbox;
-  if (bbox != null && mapController != null) {
-    var latLngBounds = LatLngBounds(
-      latlong2.LatLng(bbox[1], bbox[0]),
-      latlong2.LatLng(bbox[3], bbox[2]),
-    );
-    mapController.fitBounds(latLngBounds);
+PolygonProperties getBufferProperties(BufferOptions? bufferOptions) {
+  PolygonProperties polygonProperties = const PolygonProperties();
+  if (bufferOptions != null && bufferOptions.polygonBufferProperties != null) {
+    var polygonBufferProperties = bufferOptions.polygonBufferProperties;
+    if (polygonBufferProperties != null) {
+      polygonProperties = polygonBufferProperties;
+    }
   }
+  return polygonProperties;
 }
 
-//format('#{:06%1%2%3}',rand(0,255),rand(0,255),rand(0,255))
+void zoomTo(List<GeoJSONFeature?> features, MapController? mapController) {
+  var atLeast = features.first;
+  if (atLeast == null) return;
+  if (mapController == null) return;
+  var bboxFirst = atLeast.bbox;
+  if (bboxFirst == null) return;
+  var firstBounds = LatLngBounds.fromPoints([
+    latlong2.LatLng(bboxFirst[1], bboxFirst[0]),
+    latlong2.LatLng(bboxFirst[3], bboxFirst[2]),
+  ]);
+  var latLngBounds = features.fold<LatLngBounds>(
+    firstBounds,
+    (previousValue, element) {
+      if (element == null) return previousValue;
+      var bbox = element.bbox;
+      if (bbox == null) return previousValue;
+      var elementBounds = LatLngBounds.fromPoints([
+        latlong2.LatLng(bbox[1], bbox[0]),
+        latlong2.LatLng(bbox[3], bbox[2]),
+      ]);
+      previousValue.extendBounds(elementBounds);
+      return previousValue;
+    },
+  );
+  mapController.fitBounds(latLngBounds, options: const FitBoundsOptions());
+}
+
 class PowerGeoJSONMarkers {
   static Widget network(
     String url, {
     Client? client,
     Map<String, String>? headers,
-    Map<LayerPolygonIndexes, String>? layerBufferProperties,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+    required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
@@ -246,11 +235,10 @@ class PowerGeoJSONMarkers {
         uriString,
         headers: headers,
         client: client,
-        layerProperties: layerBufferProperties,
         markerLayerProperties: markerLayerProperties,
-        layerMarkerProperties: layerMarkerProperties,
-        mapController: mapController,
         bufferOptions: bufferOptions,
+        builder: builder,
+        mapController: mapController,
         key: key,
       ),
       builder: (context, snap) {
@@ -268,27 +256,24 @@ class PowerGeoJSONMarkers {
 
   static Widget asset(
     String url, {
-    Map<LayerPolygonIndexes, String>? layerBufferProperties,
     required MarkerProperties markerProperties,
-    MapController? mapController,
     BufferOptions? bufferOptions,
+    MapController? mapController,
+    required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
     Key? key,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
   }) {
     return FutureBuilder(
       future: _assetMarkers(
         url,
-        layerProperties: layerBufferProperties,
         markerProperties: markerProperties,
-        mapController: mapController,
         bufferOptions: bufferOptions,
+        mapController: mapController,
+        builder: builder,
         key: key,
-        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            // Map<LayerPolygonIndexes, String> layerProps = layerBufferProperties ?? {LayerPolygonIndexes.fillColor:"color"};
             return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
@@ -299,26 +284,22 @@ class PowerGeoJSONMarkers {
     );
   }
 
-// The argument type 'Map<LayerPolygonIndexes, String>?' can't be assigned to
-//the parameter type 'Map<LayerPolygonIndexes, String>?'
   static Widget file(
     String path, {
-    Map<LayerPolygonIndexes, String>? layerBufferProperties,
-    required MarkerProperties markerLayerProperties,
+    required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
     BufferOptions? bufferOptions,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+    required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   }) {
     return FutureBuilder(
       future: _fileMarkers(
         path,
-        layerBufferProperties: layerBufferProperties,
-        markerLayerProperties: markerLayerProperties,
+        markerLayerProperties: markerProperties,
         mapController: mapController,
+        builder: builder,
         bufferOptions: bufferOptions,
         key: key,
-        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -335,22 +316,20 @@ class PowerGeoJSONMarkers {
 
   static Widget memory(
     Uint8List bytes, {
-    Map<LayerPolygonIndexes, String>? layerBufferProperties,
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
     BufferOptions? bufferOptions,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+    required Widget Function(MarkerProperties, Map<String, dynamic>) builder,
   }) {
     return FutureBuilder(
       future: _memoryMarkers(
         bytes,
-        layerProperties: layerBufferProperties,
         markerLayerProperties: markerLayerProperties,
         mapController: mapController,
+        builder: builder,
         bufferOptions: bufferOptions,
         key: key,
-        layerMarkerProperties: layerMarkerProperties,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -367,20 +346,19 @@ class PowerGeoJSONMarkers {
 
   static Widget string(
     String data, {
-    Map<LayerPolygonIndexes, String>? layerBufferProperties,
-    required MarkerProperties markerLayerProperties,
+    required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
+    required Widget Function(MarkerProperties markerProperties, Map<String, dynamic> properties) builder,
     BufferOptions? bufferOptions,
   }) {
     return _string(
       data,
-      markerPropertie: markerLayerProperties,
+      markerPropertie: markerProperties,
       key: key,
+      builder: builder,
+      mapController: mapController,
       bufferOptions: bufferOptions,
-      layerBufferProperties: layerBufferProperties,
-      layerMarkerProperties: layerMarkerProperties,
     );
   }
 }

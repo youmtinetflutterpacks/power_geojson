@@ -7,18 +7,29 @@ import 'package:point_in_polygon/point_in_polygon.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 extension PolygonsX on List<Polygon> {
-  List<Polygon> toBuffers(double radius, PolygonProperties polygonBufferProperties) {
+  List<Polygon> toBuffers(
+    double radius,
+    PolygonProperties polygonBufferProperties,
+  ) {
     return map((e) => e.buffer(radius, polygonProperties: polygonBufferProperties)).toList();
   }
 
-  List<Polygon> toBuffersWithOriginals(double radius, PolygonProperties polygonBufferProperties) {
-    return map((e) => e.toBuffer(radius, polygonBufferProperties)).expand((e) => e).toList();
+  List<Polygon> toBuffersWithOriginals(
+    double radius, {
+    PolygonProperties? polygonBufferProperties,
+  }) {
+    return map(
+      (e) => e.toBuffer(
+        radius,
+        polygonBufferProperties: polygonBufferProperties,
+      ),
+    ).expand((e) => e).toList();
   }
 }
 
 extension PolygonX on Polygon {
-  List<Polygon> toBuffer(double radius, PolygonProperties polygonProperties) {
-    return [buffer(radius, polygonProperties: polygonProperties), this];
+  List<Polygon> toBuffer(double radius, {PolygonProperties? polygonBufferProperties}) {
+    return [buffer(radius, polygonProperties: polygonBufferProperties), this];
   }
 
   double area() {

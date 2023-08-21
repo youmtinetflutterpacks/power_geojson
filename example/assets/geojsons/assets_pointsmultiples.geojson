@@ -119,7 +119,7 @@
             },
             "properties": {
                 "FID": 0,
-                "Id": 0,
+                "Id": 1.0,
                 "color": "#603F62"
             }
         },
@@ -161,7 +161,7 @@
             },
             "properties": {
                 "FID": 1,
-                "Id": 0,
+                "Id": 2.0,
                 "color": "#18CC16"
             }
         },
@@ -195,7 +195,7 @@
             },
             "properties": {
                 "FID": 2,
-                "Id": 0,
+                "Id": 3.0,
                 "color": "#6AF192"
             }
         }

@@ -5,31 +5,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
-import 'package:latlong2/latlong.dart' as latlong2;
 import 'package:power_geojson/power_geojson.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-Future<File> _createFile() async {
-  var instance = await SharedPreferences.getInstance();
-  /* var pathShared = instance.getString('geojson'); */
-  var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('path') : list[0]).path;
-  final path = "$directory/geojson.json";
-  final File file = File(path);
-  var exists = await file.exists();
-  if (!exists) {
-    var savedFile = await file.writeAsString(geojsonfile);
-    await instance.setString('geojson', savedFile.path);
-    return savedFile;
-  }
-  return file;
+class BufferPolyline {
+  PolygonLayer bufferLayer;
+  PolylineLayer polylines;
+  BufferPolyline({required this.bufferLayer, required this.polylines});
 }
 
-Future<List<Polyline>> _filePolylines(
+Future<Widget> _filePolylines(
   String path, {
-  Map<LayerPolylineIndexes, String>? layerProperties,
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  Key? key,
+  bool polylineCulling = false,
 }) async {
   final file = File(path);
   var exists = await file.exists();
@@ -37,103 +27,130 @@ Future<List<Polyline>> _filePolylines(
     var readasstring = await file.readAsString();
     return _string(
       readasstring,
-      layerMap: layerProperties,
       polylinePropertie: polylineLayerProperties,
       mapController: mapController,
+      key: key,
+      bufferOptions: bufferOptions,
+      polylineCulling: polylineCulling,
     );
   } else {
-    return [];
+    return const Text('Not Found');
   }
 }
 
-Future<List<Polyline>> _memoryPolylines(
+Future<Widget> _memoryPolylines(
   Uint8List list, {
-  Map<LayerPolylineIndexes, String>? layerProperties,
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  Key? key,
+  bool polylineCulling = false,
 }) async {
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
     string,
-    layerMap: layerProperties,
     polylinePropertie: polylineLayerProperties,
     mapController: mapController,
+    bufferOptions: bufferOptions,
+    key: key,
+    polylineCulling: polylineCulling,
   );
 }
 
-Future<List<Polyline>> _assetPolylines(
+Future<Widget> _assetPolylines(
   String path, {
-  Map<LayerPolylineIndexes, String>? layerProperties,
   required PolylineProperties polylineProperties,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  Key? key,
+  bool polylineCulling = false,
 }) async {
   final string = await rootBundle.loadString(path);
-  await _createFile();
   return _string(
     string,
-    layerMap: layerProperties,
     polylinePropertie: polylineProperties,
     mapController: mapController,
+    bufferOptions: bufferOptions,
+    key: key,
+    polylineCulling: polylineCulling,
   );
 }
 
-Future<List<Polyline>> _networkPolylines(
+Future<Widget> _networkPolylines(
   Uri urlString, {
   Client? client,
   Map<String, String>? headers,
-  Map<LayerPolylineIndexes, String>? layerProperties,
+  Key? key,
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  bool polylineCulling = false,
 }) async {
   var method = client == null ? get : client.get;
   var response = await method(urlString, headers: headers);
   var string = response.body;
   return _string(
     string,
-    layerMap: layerProperties,
     polylinePropertie: polylineLayerProperties,
     mapController: mapController,
+    bufferOptions: bufferOptions,
+    key: key,
+    polylineCulling: polylineCulling,
   );
 }
 
-List<Polyline> _string(
+Widget _string(
   String string, {
-  Map<LayerPolylineIndexes, String>? layerMap,
+  Key? key,
   required PolylineProperties polylinePropertie,
   MapController? mapController,
+  BufferOptions? bufferOptions,
+  required bool polylineCulling,
 }) {
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
 
-  List<List<Polyline>> polylines = geojson.features.map((elm) {
-    if (elm != null) {
-      var geometry = elm.geometry;
-      var properties = elm.properties;
-      var polylineProperties = PolylineProperties.fromMap(
-        properties,
-        layerMap,
-        polylineLayerProperties: polylinePropertie,
-      );
+  var features = geojson.features;
+  List<List<Widget>> polylines = features.map((feature) {
+    List<Polyline> listPolylines = [];
+    PolygonProperties polygonBufferProperties = const PolygonProperties();
+    if (feature != null) {
+      var geometry = feature.geometry;
+      var properties = feature.properties;
+
+      PolylineProperties polylineProperties = PolylineProperties.fromMap(properties, polylinePropertie);
+      polygonBufferProperties = PolygonProperties.fromMap(properties, getBufferProperties(bufferOptions));
+
       if (geometry is GeoJSONLineString) {
-        return [geometry.coordinates.toPolyline(polylineProperties: polylineProperties)];
+        listPolylines = [geometry.coordinates.toPolyline(polylineProperties: polylineProperties)];
       } else if (geometry is GeoJSONMultiLineString) {
         var coordinates = geometry.coordinates;
-        return coordinates.map((e) {
+        listPolylines = coordinates.map((e) {
           return e.toPolyline(polylineProperties: polylineProperties);
         }).toList();
       }
-      var bbox = elm.bbox;
-      if (bbox != null && mapController != null) {
-        var latLngBounds = LatLngBounds(
-          latlong2.LatLng(bbox[1], bbox[0]),
-          latlong2.LatLng(bbox[3], bbox[2]),
-        );
-        mapController.fitBounds(latLngBounds);
-      }
     }
-    return [Polyline(points: [])];
+    zoomTo(features, mapController);
+
+    var fStack = [
+      if (bufferOptions != null)
+        PolygonLayer(
+          polygons: listPolylines.toBuffers(
+            bufferOptions.buffer,
+            polygonBufferProperties,
+          ),
+          key: key,
+        ),
+      if ((bufferOptions != null && !bufferOptions.buffersOnly) || bufferOptions == null)
+        PolylineLayer(
+          polylineCulling: polylineCulling,
+          polylines: listPolylines,
+          key: key,
+        ),
+    ];
+    return fStack;
   }).toList();
-  return polylines.expand((element) => element).toList();
+  return Stack(children: polylines.expand((element) => element).toList());
 }
 
 class PowerGeoJSONPolylines {
@@ -141,11 +158,12 @@ class PowerGeoJSONPolylines {
     String url, {
     Client? client,
     Map<String, String>? headers,
-    Map<LayerPolylineIndexes, String>? layerProperties,
+    // layer
+    Key? key,
     PolylineProperties polylineLayerProperties = const PolylineProperties(),
     MapController? mapController,
-    Key? key,
     bool polylineCulling = false,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     var uriString = url.toUri();
@@ -154,30 +172,16 @@ class PowerGeoJSONPolylines {
         uriString,
         headers: headers,
         client: client,
-        layerProperties: layerProperties,
         polylineLayerProperties: polylineLayerProperties,
         mapController: mapController,
+        key: key,
+        bufferOptions: bufferOptions,
+        polylineCulling: polylineCulling,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polylines2 = snap.data ?? [];
-            return Stack(
-              children: [
-                PolylineLayer(
-                  polylines: polylines2,
-                  key: key,
-                  polylineCulling: polylineCulling,
-                ),
-                if (bufferOptions != null)
-                  PolygonLayer(
-                    polygons: polylines2.toBuffers(
-                      bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
-                    ),
-                  ),
-              ],
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -189,40 +193,26 @@ class PowerGeoJSONPolylines {
 
   static Widget asset(
     String url, {
-    Map<LayerPolylineIndexes, String>? layerProperties,
     PolylineProperties polylineProperties = const PolylineProperties(),
     MapController? mapController,
     Key? key,
-    BufferOptions? bufferOptions,
     bool polylineCulling = false,
+    // buffer
+    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _assetPolylines(
         url,
-        layerProperties: layerProperties,
         polylineProperties: polylineProperties,
         mapController: mapController,
+        bufferOptions: bufferOptions,
+        key: key,
+        polylineCulling: polylineCulling,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polylines2 = snap.data ?? [];
-            return Stack(
-              children: [
-                PolylineLayer(
-                  polylines: polylines2,
-                  key: key,
-                  polylineCulling: polylineCulling,
-                ),
-                if (bufferOptions != null)
-                  PolygonLayer(
-                    polygons: polylines2.toBuffers(
-                      bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
-                    ),
-                  ),
-              ],
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -234,40 +224,26 @@ class PowerGeoJSONPolylines {
 
   static Widget file(
     String path, {
-    Map<LayerPolylineIndexes, String>? layerProperties,
-    PolylineProperties polylineLayerProperties = const PolylineProperties(),
+    PolylineProperties polylineProperties = const PolylineProperties(),
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _filePolylines(
         path,
-        layerProperties: layerProperties,
-        polylineLayerProperties: polylineLayerProperties,
+        polylineLayerProperties: polylineProperties,
         mapController: mapController,
+        polylineCulling: polylineCulling,
+        key: key,
+        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polylines2 = snap.data ?? [];
-            return Stack(
-              children: [
-                PolylineLayer(
-                  polylines: polylines2,
-                  key: key,
-                  polylineCulling: polylineCulling,
-                ),
-                if (bufferOptions != null)
-                  PolygonLayer(
-                    polygons: polylines2.toBuffers(
-                      bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
-                    ),
-                  ),
-              ],
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -279,40 +255,26 @@ class PowerGeoJSONPolylines {
 
   static Widget memory(
     Uint8List bytes, {
-    Map<LayerPolylineIndexes, String>? layerProperties,
     PolylineProperties polylineLayerProperties = const PolylineProperties(),
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _memoryPolylines(
         bytes,
-        layerProperties: layerProperties,
         polylineLayerProperties: polylineLayerProperties,
         mapController: mapController,
+        key: key,
+        bufferOptions: bufferOptions,
+        polylineCulling: polylineCulling,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
           if (snap.hasData) {
-            var polylines2 = snap.data ?? [];
-            return Stack(
-              children: [
-                PolylineLayer(
-                  polylines: polylines2,
-                  key: key,
-                  polylineCulling: polylineCulling,
-                ),
-                if (bufferOptions != null)
-                  PolygonLayer(
-                    polygons: polylines2.toBuffers(
-                      bufferOptions.buffer,
-                      bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
-                    ),
-                  ),
-              ],
-            );
+            return snap.data ?? const SizedBox();
           }
         } else if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
@@ -324,32 +286,20 @@ class PowerGeoJSONPolylines {
 
   static Widget string(
     String data, {
-    Map<LayerPolylineIndexes, String>? layerProperties,
     PolylineProperties polylineLayerProperties = const PolylineProperties(),
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
+    // buffer
     BufferOptions? bufferOptions,
   }) {
-    var string = _string(
+    return _string(
       data,
       polylinePropertie: polylineLayerProperties,
-    );
-    return Stack(
-      children: [
-        PolylineLayer(
-          polylines: string,
-          key: key,
-          polylineCulling: polylineCulling,
-        ),
-        if (bufferOptions != null)
-          PolygonLayer(
-            polygons: string.toBuffers(
-              bufferOptions.buffer,
-              bufferOptions.polygonBufferProperties ?? const PolygonProperties(),
-            ),
-          ),
-      ],
+      bufferOptions: bufferOptions,
+      key: key,
+      polylineCulling: polylineCulling,
+      mapController: mapController,
     );
   }
 }

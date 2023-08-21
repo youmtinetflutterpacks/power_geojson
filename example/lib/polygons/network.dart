@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:power_geojson/power_geojson.dart';
+import 'package:power_geojson_example/lib.dart';
 
 class NetworkGeoJSONPolygon extends StatelessWidget {
   const NetworkGeoJSONPolygon({
     Key? key,
-    required MapController mapController,
+    MapController? mapController,
   })  : _mapController = mapController,
         super(key: key);
 
-  final MapController _mapController;
+  final MapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.network(
-      "https://ymrabti.github.io/undisclosed-tools/assets/geojson/polygons.json",
-      /* bufferOptions: BufferOptions(
+      "$url/geojsons/assets_polygons.json",
+      bufferOptions: BufferOptions(
         buffer: 20,
-        // buffersOnly: true,
+        buffersOnly: true,
         polygonBufferProperties: PolygonProperties(
           fillColor: Colors.red.withOpacity(0.5),
           borderStokeWidth: 4,
           isDotted: true,
           borderColor: Colors.green,
         ),
-      ), */
-      layerProperties: {
-        LayerPolygonIndexes.fillColor: 'COLOR',
-        LayerPolygonIndexes.label: 'ECO_NAME',
-      },
+      ),
       polygonProperties: const PolygonProperties(
+        layerProperties: {
+          LayerPolygonIndexes.fillColor: 'COLOR',
+          LayerPolygonIndexes.label: 'ECO_NAME',
+        },
         isDotted: false,
         rotateLabel: true,
         borderStokeWidth: 0.02,

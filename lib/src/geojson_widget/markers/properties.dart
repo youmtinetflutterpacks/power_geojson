@@ -9,17 +9,17 @@ enum LayerMarkerIndexes {
 
 class MarkerProperties {
   final Key? key;
-  final Widget Function(BuildContext) builder;
   final double width;
   final double height;
   final AnchorPos? anchorPos;
   final bool? rotate;
   final Offset? rotateOrigin;
   final AlignmentGeometry? rotateAlignment;
+  final Map<LayerMarkerIndexes, String>? layerProperties;
 
   const MarkerProperties({
+    this.layerProperties,
     this.key,
-    required this.builder,
     this.width = 30.0,
     this.height = 30.0,
     this.anchorPos,
@@ -29,9 +29,9 @@ class MarkerProperties {
   });
   static MarkerProperties fromMap(
     Map<String, dynamic>? properties,
-    Map<LayerMarkerIndexes, String>? layerMarkerProperties,
     MarkerProperties markerLayerProperties,
   ) {
+    var layerMarkerProperties = markerLayerProperties.layerProperties;
     if (properties != null && layerMarkerProperties != null) {
       // width
       final String? keyPropertieWidth = layerMarkerProperties[LayerMarkerIndexes.width];
@@ -48,7 +48,6 @@ class MarkerProperties {
         height: propHeighgt ?? markerLayerProperties.height,
         rotate: propRotate,
         rotateAlignment: markerLayerProperties.rotateAlignment,
-        builder: markerLayerProperties.builder,
         rotateOrigin: markerLayerProperties.rotateOrigin,
         anchorPos: markerLayerProperties.anchorPos,
       );

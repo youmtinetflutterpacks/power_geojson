@@ -31,6 +31,7 @@ class PolygonProperties {
   static const StrokeJoin defStrokeJoin = StrokeJoin.round;
   final bool labeled;
   final bool isDotted;
+  final Map<LayerPolygonIndexes, String>? layerProperties;
   final PolygonLabelPlacement labelPlacement;
   final TextStyle labelStyle;
   final bool rotateLabel;
@@ -38,6 +39,7 @@ class PolygonProperties {
   final StrokeJoin strokeJoin;
 
   const PolygonProperties({
+    this.layerProperties,
     this.labeled = PolygonProperties.defLabeled,
     this.isDotted = PolygonProperties.defIsDotted,
     this.labelPlacement = PolygonProperties.defLabelPlacement,
@@ -54,9 +56,9 @@ class PolygonProperties {
   });
   static PolygonProperties fromMap(
     Map<String, dynamic>? properties,
-    Map<LayerPolygonIndexes, String>? layerProperties, {
-    PolygonProperties polygonLayerProperties = const PolygonProperties(),
-  }) {
+    PolygonProperties polygonLayerProperties,
+  ) {
+    var layerProperties = polygonLayerProperties.layerProperties;
     if (properties != null && layerProperties != null) {
       // fill
       final String? keyPropertieFillColor = layerProperties[LayerPolygonIndexes.fillColor];
@@ -79,7 +81,7 @@ class PolygonProperties {
         isFilled: isFilledMap && polygonLayerProperties.isFilled,
         fillColor: fillColor,
         borderColor: borderColor,
-        borderStokeWidth: properties[layerPropertieBWidth] ?? polygonLayerProperties.borderStokeWidth,
+        borderStokeWidth: (properties[layerPropertieBWidth] ?? polygonLayerProperties.borderStokeWidth).toDouble(),
         label: label2,
         labeled: isLabelled,
         disableHolesBorder: polygonLayerProperties.disableHolesBorder,
@@ -95,27 +97,3 @@ class PolygonProperties {
     }
   }
 }
-
-// Map<String, String> getProperties(Map<EnumPolygonProperties, String> layerProperties) {}
-
-//   static const bool defLabeled = false;
-//   static const bool defIsDotted = false;
-//   static const PolygonLabelPlacement defLabelPlacement = PolygonLabelPlacement.polylabel;
-//   static const TextStyle defLabelStyle = TextStyle();
-//   static const bool defRotateLabel = false;
-//   static const StrokeCap defStrokeCap = StrokeCap.round;
-//   static const StrokeJoin defStrokeJoin = StrokeJoin.round;
-//   final bool labeled;
-//   final bool isDotted;
-//   final PolygonLabelPlacement labelPlacement;
-//   final TextStyle labelStyle;
-//   final bool rotateLabel;
-//   final StrokeCap strokeCap;
-//   final StrokeJoin strokeJoin;
-// this.labeled = PolygonProperties.defLabeled,
-// this.isDotted = PolygonProperties.defIsDotted,
-// this.labelPlacement = PolygonProperties.defLabelPlacement,
-// this.labelStyle = PolygonProperties.defLabelStyle,
-// this.rotateLabel = PolygonProperties.defRotateLabel,
-// this.strokeCap = PolygonProperties.defStrokeCap,
-// this.strokeJoin = PolygonProperties.defStrokeJoin,

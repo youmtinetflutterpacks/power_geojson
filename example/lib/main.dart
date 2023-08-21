@@ -1,24 +1,191 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
 import 'package:power_geojson/power_geojson.dart';
-import 'package:console_tools/console_tools.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
-import 'package:power_geojson_example/custom/random_user_api/random_user_api.dart';
-import 'package:power_geojson_example/markers/asset.dart';
-/* import 'package:power_geojson_example/markers/index.dart';
-import 'package:power_geojson_example/polygons/asset.dart';
-import 'package:power_geojson_example/polygons/file.dart';
-import 'package:power_geojson_example/polygons/network.dart';
-import 'package:power_geojson_example/polygons/string.dart';
-import 'package:power_geojson_example/polylines/asset.dart'; */
+import 'package:power_geojson_example/lib.dart';
 
 void main() {
-  runApp(const GetMaterialApp(
-    home: PowerGeojsonSampleApp(),
-  ));
+  runApp(
+    const GetMaterialApp(
+      home: PowerGeojsonSampleApp(),
+    ),
+  );
+}
+
+class PowerGeojsonSampleApp extends StatefulWidget {
+  const PowerGeojsonSampleApp({
+    super.key,
+  });
+
+  @override
+  State<PowerGeojsonSampleApp> createState() => _PowerGeojsonSampleAppState();
+}
+
+class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
+  var latLng = const latlong2.LatLng(34.92849168609999, -2.3225879568537056);
+
+  final MapController _mapController = MapController();
+  final FlutterMapState mapState = FlutterMapState();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  GestureDetector gestureDetector() => GestureDetector(
+        onLongPressStart: (details) {},
+      );
+  @override
+  Widget build(BuildContext context) {
+    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
+    var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
+    // double distanceMETERS = 10;
+    // var distanceDMS = dmFromMeters(distanceMETERS);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Power GeoJSON Examples"),
+      ),
+      body: FlutterMap(
+        mapController: _mapController,
+        options: MapOptions(
+          center: center,
+          zoom: 11,
+          interactiveFlags: interactiveFlags2,
+          onLongPress: (tapPosition, point) {
+            Console.log('onLongPress $point', color: ConsoleColors.citron);
+          },
+          onMapEvent: (p0) {},
+          onMapReady: () async {
+            await _createFiles();
+            // await Future.delayed(const Duration(seconds: 1));
+            // var users = await UserProvider().getRandomUsers();
+            // _mapController.state = mapState;
+          },
+        ),
+        children: [
+          /* TileLayer(
+            urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            backgroundColor: const Color(0xFF202020),
+            maxZoom: 19,
+          ),
+           */
+          const AssetGeoJSONZones(),
+
+          /*TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            backgroundColor: const Color(0xFF202020),
+            maxZoom: 19,
+          ), */
+
+          /* FeatureLayer(
+            options: FeatureLayerOptions(
+              "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
+              "point",
+            ),
+            map: mapState,
+            stream: esri(),
+          ), */
+
+          /* 
+          */
+          //////////////// Polygons
+          const AssetGeoJSONPolygon(),
+          const AssetGeoJSONMultiPolygon(),
+
+          const FileGeoJSONPolygon(),
+          const FileGeoJSONMultiPolygon(),
+
+          const StringGeoJSONPolygon(),
+          const StringGeoJSONMultiPolygon(),
+
+          //   const NetworkGeoJSONPolygon(),
+          //////////////// Lines
+          const AssetGeoJSONLines(),
+          const AssetGeoJSONMultiLines(),
+
+          const FileGeoJSONPolylines(),
+          const FileGeoJSONMultiPolylines(),
+
+          const StringGeoJSONLines(),
+          const StringGeoJSONMultiLines(),
+
+          //////////////// Points
+          const AssetGeoJSONMarkerPoints(),
+          const AssetGeoJSONMarkerMultiPoints(),
+
+          const FileGeoJSONMarkers(),
+          const FileGeoJSONMultiMarkers(),
+
+          const StringGeoJSONPoints(),
+          const StringGeoJSONMultiPoints(),
+          //   MarkerLayer(markers: getMarkers()),
+
+          CircleOfMap(latLng: latLng),
+          /* const ClustersMarkers(), */
+        ],
+      ),
+    );
+  }
+
+  double recalc(DestinationDS distanceDMS) {
+    const latlong2.Distance distanc = latlong2.Distance();
+    final double m = distanc.as(
+      latlong2.LengthUnit.Meter,
+      const latlong2.LatLng(0, 0),
+      latlong2.LatLng(0, distanceDMS.dm),
+    );
+    return m;
+  }
+
+  /* Polygon getPolygon() {
+    var polygon = ringsHoled.toPolygon(
+      polygonProperties: PolygonProperties(
+        fillColor: const Color(0xFF5E0365).withOpacity(0.5),
+      ),
+    );
+    Console.log(polygon.isGeoPointInPolygon(latLng));
+    Console.log(polygon.isIntersectedWithPoint(latLng), color: ConsoleColors.teal);
+    return polygon;
+  } */
+
+  Stream<void> esri() async* {
+    await Future.delayed(const Duration(seconds: 1));
+    yield 1;
+  }
+}
+
+Future<void> _createFiles() async {
+  final assetsPoints = await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
+  final assetsMultipoints = await rootBundle.loadString('assets/geojsons/files/files_pointsmultiples.geojson');
+  final assetsLines = await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
+  final assetsMultilines = await rootBundle.loadString('assets/geojsons/files/files_linesmultiples.geojson');
+  final assetsPolygons = await rootBundle.loadString('assets/geojsons/files/files_polygons.geojson');
+  final assetsMultipolygons = await rootBundle.loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
+  await _createFile('files_points', assetsPoints);
+  await _createFile('files_multipoints', assetsMultipoints);
+  await _createFile('files_lines', assetsLines);
+  await _createFile('files_multilines', assetsMultilines);
+  await _createFile('files_polygons', assetsPolygons);
+  await _createFile('files_multipolygons', assetsMultipolygons);
+}
+
+Future<File> _createFile(String filename, String data) async {
+  var list = await getExternalDir();
+  var directory = ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
+  final path = "$directory/$filename";
+  Console.log(path);
+  final File file = File(path);
+  var exists = await file.exists();
+  if (!exists) {
+    var savedFile = await file.writeAsString(data);
+    return savedFile;
+  }
+  return file;
 }
 
 class UserProvider extends GetConnect {
@@ -41,122 +208,6 @@ class UserProvider extends GetConnect {
 
   GetSocket userMessages() {
     return socket('https://yourapi/users/socket');
-  }
-}
-
-class PowerGeojsonSampleApp extends StatefulWidget {
-  const PowerGeojsonSampleApp({
-    super.key,
-  });
-
-  @override
-  State<PowerGeojsonSampleApp> createState() => _PowerGeojsonSampleAppState();
-}
-
-class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
-  var latLng = const latlong2.LatLng(34.92849168609999, -2.3225879568537056);
-
-  final MapController _mapController = MapController();
-  final FlutterMapState mapState = FlutterMapState();
-  bool start = false;
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  GestureDetector gestureDetector() => GestureDetector(
-        onLongPressStart: (details) {},
-      );
-  @override
-  Widget build(BuildContext context) {
-    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
-    var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
-    // double distanceMETERS = 10;
-    // var distanceDMS = dmFromMeters(distanceMETERS);
-    // var baseUrl = "https://server.arcgisonline.com/ArcGIS/rest/services";
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Power GeoJSON Examples"),
-      ),
-      body: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          center: center,
-          zoom: 11,
-          interactiveFlags: interactiveFlags2,
-          onLongPress: (tapPosition, point) {
-            Console.log('onLongPress $point', color: ConsoleColors.citron);
-          },
-          onMapEvent: (p0) {},
-          onMapReady: () async {
-            await Future.delayed(const Duration(seconds: 1));
-            // var users = await UserProvider().getRandomUsers();
-            _mapController.state = mapState;
-            start = true;
-          },
-        ),
-        children: [
-          /* TileLayer(
-            urlTemplate: '$baseUrl/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-            backgroundColor: const Color(0xFF202020),
-            maxZoom: 19,
-          ), */
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            backgroundColor: const Color(0xFF202020),
-            maxZoom: 19,
-          ),
-
-          /* FeatureLayer(
-            options: FeatureLayerOptions(
-              "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
-              "point",
-            ),
-            map: mapState,
-            stream: esri(),
-          ), */
-
-          /* NetworkGeoJSONPolygon(mapController: _mapController),
-          AssetGeoJSONPolygon(mapController: _mapController),
-          StringGeoJSONPolygon(mapController: _mapController),
-          FileGeoJSONPolygon(mapController: _mapController), */
-
-          /* const AssetGeoJSONPolyline(), */
-
-          const AssetGeoJSONMarkerExample1(),
-          const AssetGeoJSONMarkerExample2(),
-          //   MarkerLayer(markers: getMarkers()),
-          /* CircleOfMap(latLng: latLng),
-          const ClustersMarkers(), */
-        ],
-      ),
-    );
-  }
-
-  double recalc(DestinationDS distanceDMS) {
-    const latlong2.Distance distanc = latlong2.Distance();
-    final double m = distanc.as(
-      latlong2.LengthUnit.Meter,
-      const latlong2.LatLng(0, 0),
-      latlong2.LatLng(0, distanceDMS.dm),
-    );
-    return m;
-  }
-
-  Polygon getPolygon() {
-    var polygon = ringsHoled.toPolygon(
-      polygonProperties: PolygonProperties(
-        fillColor: const Color(0xFF5E0365).withOpacity(0.5),
-      ),
-    );
-    Console.log(polygon.isGeoPointInPolygon(latLng));
-    Console.log(polygon.isIntersectedWithPoint(latLng), color: ConsoleColors.teal);
-    return polygon;
-  }
-
-  Stream<void> esri() async* {
-    await Future.delayed(const Duration(seconds: 1));
-    yield 1;
   }
 }
 
@@ -184,3 +235,21 @@ class CircleOfMap extends StatelessWidget {
     );
   }
 }
+/* function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+function generateRandomColorList(count) {
+  const colorList = [];
+  for (let i = 0; i < count; i++) {
+    colorList.push(getRandomColor());
+  }
+  return colorList;
+} 
+console.log(generateRandomColorList(10)); 
+*/

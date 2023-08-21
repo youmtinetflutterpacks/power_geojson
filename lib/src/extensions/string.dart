@@ -10,7 +10,8 @@ extension StringX on String {
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
-  static Color fromHex(String hexString, Color fallColor) {
+  static Color fromHex(String? hexString, Color fallColor) {
+    if (hexString == null) return fallColor;
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) {
       buffer.write('ff');
