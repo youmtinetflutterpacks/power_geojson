@@ -1,1 +1,1 @@
-const url = 'https://laughing-seminars-leaving-paso.trycloudflare.com';
+const url = 'http://192.168.1.32:5500';

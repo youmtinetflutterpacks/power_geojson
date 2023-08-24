@@ -1,80 +1,17 @@
 import 'dart:math';
 
 import 'package:latlong2/latlong.dart';
-import 'package:dart_jts/dart_jts.dart' as dart_jts;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:point_in_polygon/point_in_polygon.dart';
 import 'package:power_geojson/power_geojson.dart';
 
-extension PolygonsX on List<Polygon> {
-  List<Polygon> toBuffers(
-    double radius,
-    PolygonProperties polygonBufferProperties,
-  ) {
-    return map((e) => e.buffer(radius, polygonProperties: polygonBufferProperties)).toList();
-  }
-
-  List<Polygon> toBuffersWithOriginals(
-    double radius, {
-    PolygonProperties? polygonBufferProperties,
-  }) {
-    return map(
-      (e) => e.toBuffer(
-        radius,
-        polygonBufferProperties: polygonBufferProperties,
-      ),
-    ).expand((e) => e).toList();
+extension ListABC<T> on List<T> {
+  T? firstWhereOrNull(bool Function(T) test, {T Function()? orElse}) {
+    return firstWhere(test, orElse: orElse);
   }
 }
 
 extension PolygonX on Polygon {
-  List<Polygon> toBuffer(double radius, {PolygonProperties? polygonBufferProperties}) {
-    return [buffer(radius, polygonProperties: polygonBufferProperties), this];
-  }
-
-  double area() {
-    return dart_jts.Area.ofRing(
-      points.toCoordinatesProjted(),
-    );
-  }
-
-  Polygon buffer(double radius, {PolygonProperties? polygonProperties}) {
-    var precesion = dart_jts.PrecisionModel.fixedPrecision(0);
-    //
-    var listCoordinate = points.toCoordinates();
-    var listLinearRing = dart_jts.LinearRing(listCoordinate, precesion, 10);
-    //
-    List<dart_jts.LinearRing>? holesLineString = holePointsList!.map((pts) {
-      var listCoordinates = pts.toCoordinates();
-      return dart_jts.LinearRing(listCoordinates, precesion, 10);
-    }).toList();
-    // consoleLog(holesLineString.length);
-    //
-    final geometryFactory = dart_jts.GeometryFactory.defaultPrecision();
-    final polygons = geometryFactory.createPolygon(listLinearRing, holesLineString);
-    var distanceDMS = dmFromMeters(radius);
-    final buffer = dart_jts.BufferOp.bufferOp3(polygons, distanceDMS, 10);
-    var bufferBolygon = buffer as dart_jts.Polygon;
-    var listPointsPolygon = bufferBolygon.shell!.points.toCoordinateArray().toLatLng();
-    var polygon = Polygon(
-      points: listPointsPolygon,
-      holePointsList: holePointsList,
-      isFilled: polygonProperties != null ? polygonProperties.isFilled : isFilled,
-      color: polygonProperties != null ? polygonProperties.fillColor : color,
-      borderColor: polygonProperties != null ? polygonProperties.borderColor : borderColor,
-      borderStrokeWidth: polygonProperties != null ? polygonProperties.borderStokeWidth : borderStrokeWidth,
-      disableHolesBorder: polygonProperties != null ? polygonProperties.disableHolesBorder : disableHolesBorder,
-      isDotted: polygonProperties != null ? polygonProperties.isDotted : isDotted,
-      label: polygonProperties != null ? polygonProperties.label : label,
-      labelPlacement: polygonProperties != null ? polygonProperties.labelPlacement : labelPlacement,
-      labelStyle: polygonProperties != null ? polygonProperties.labelStyle : labelStyle,
-      rotateLabel: polygonProperties != null ? polygonProperties.rotateLabel : rotateLabel,
-      strokeCap: polygonProperties != null ? polygonProperties.strokeCap : strokeCap,
-      strokeJoin: polygonProperties != null ? polygonProperties.strokeJoin : strokeJoin,
-    );
-    return polygon;
-  }
-
   bool isGeoPointInPolygon(LatLng latlng) {
     var isInPolygon = false;
     for (var i = 0, j = points.length - 1; i < points.length; j = i++) {

@@ -23,17 +23,6 @@ class StringGeoJSONPoints extends StatelessWidget {
         );
       },
       markerProperties: const MarkerProperties(),
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFFEF2874).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer Marker',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       mapController: _mapController,
     );
   }
@@ -60,20 +49,6 @@ class StringGeoJSONMultiPoints extends StatelessWidget {
           color: const Color(0xFF72077C),
         );
       },
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF3E05A8).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          isDotted: false,
-          labelStyle: const TextStyle(fontSize: 7),
-          borderColor: Colors.green,
-          layerProperties: {
-            LayerPolygonIndexes.label: 'color',
-            LayerPolygonIndexes.fillColor: 'color',
-          },
-        ),
-      ),
       markerProperties: const MarkerProperties(),
       mapController: _mapController,
     );

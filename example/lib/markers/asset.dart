@@ -12,18 +12,6 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.asset(
       'assets/geojsons/assets_points.geojson',
-      bufferOptions: BufferOptions(
-        buffer: 600,
-        buffersOnly: false,
-        polygonBufferProperties: const PolygonProperties(
-          fillColor: Color(0xFF2BEB04),
-          isFilled: true,
-          layerProperties: {
-            LayerPolygonIndexes.fillColor: 'color',
-            LayerPolygonIndexes.label: 'color',
-          },
-        ),
-      ),
       markerProperties: const MarkerProperties(),
       builder: (markerProps, props) {
         return Transform.rotate(
@@ -45,15 +33,6 @@ class AssetGeoJSONMarkerMultiPoints extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.asset(
       'assets/geojsons/assets_pointsmultiples.geojson',
-      bufferOptions: BufferOptions(
-        buffer: 400,
-        polygonBufferProperties: const PolygonProperties(
-          isFilled: true,
-          layerProperties: {
-            LayerPolygonIndexes.fillColor: 'color',
-          },
-        ),
-      ),
       markerProperties: MarkerProperties(
         anchorPos: AnchorPos.exactly(Anchor(0, 0)),
       ),

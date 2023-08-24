@@ -25,17 +25,6 @@ class FileGeoJSONMarkers extends StatelessWidget {
           ),
         );
       },
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF6D05A8).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       markerProperties: const MarkerProperties(),
       mapController: _mapController,
     );
@@ -55,17 +44,6 @@ class FileGeoJSONMultiMarkers extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_multipoints",
-      bufferOptions: BufferOptions(
-        buffer: 180,
-        // buffersOnly: true,
-        polygonBufferProperties: const PolygonProperties(
-          fillColor: Color(0xFFC4EF28),
-          borderStokeWidth: 0.3,
-          label: 'Buffer',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       builder: (markerProps, props) {
         return Transform.scale(
           scale: 1.1,

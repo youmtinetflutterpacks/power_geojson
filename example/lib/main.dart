@@ -103,7 +103,8 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
           const StringGeoJSONPolygon(),
           const StringGeoJSONMultiPolygon(),
 
-          //   const NetworkGeoJSONPolygon(),
+          const NetworkGeoJSONPolygon(),
+          const NetworkGeoJSONMultiPolygon(),
           //////////////// Lines
           const AssetGeoJSONLines(),
           const AssetGeoJSONMultiLines(),
@@ -114,6 +115,9 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
           const StringGeoJSONLines(),
           const StringGeoJSONMultiLines(),
 
+          const NetworkGeoJSONPolyline(),
+          const NetworkGeoJSONMultiPolyline(),
+
           //////////////// Points
           const AssetGeoJSONMarkerPoints(),
           const AssetGeoJSONMarkerMultiPoints(),
@@ -123,6 +127,9 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 
           const StringGeoJSONPoints(),
           const StringGeoJSONMultiPoints(),
+
+          const NetworkGeoJSONMarker(),
+          const NetworkGeoJSONMultiMarker(),
           //   MarkerLayer(markers: getMarkers()),
 
           CircleOfMap(latLng: latLng),

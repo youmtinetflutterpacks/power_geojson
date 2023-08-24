@@ -9,7 +9,6 @@ environment:
 
 dependencies:
   console_tools: ^1.0.0
-  dart_jts: ^0.2.1+1
   flutter:
     sdk: flutter
   flutter_map: ^5.0.0

@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  dart_jts:
-    dependency: transitive
-    description:
-      name: dart_jts
-      sha256: "21bfc566b63cb55cd6b27547b7a46dc2cc10117b5f72bce9d2f996cb0d023cd4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.2+2"
   dart_sort_queue:
     dependency: transitive
     description:
@@ -172,7 +164,7 @@ packages:
     source: hosted
     version: "4.6.5"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"

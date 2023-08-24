@@ -15,17 +15,6 @@ class StringGeoJSONPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.string(
       stringPolygons,
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF54A805).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       polygonProperties: const PolygonProperties(
         isDotted: false,
         fillColor: Color(0xFFA2210A),
@@ -59,21 +48,6 @@ class StringGeoJSONMultiPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.string(
       stringMultiPolygons,
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF3E05A8).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          isDotted: false,
-          labelStyle: const TextStyle(fontSize: 7),
-          borderColor: Colors.green,
-          layerProperties: {
-            LayerPolygonIndexes.label: 'color',
-            LayerPolygonIndexes.fillColor: 'color',
-          },
-        ),
-      ),
       polygonProperties: const PolygonProperties(
         isDotted: false,
         fillColor: Color(0xFFA2210A),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:dart_jts/dart_jts.dart' as dart_jts;
 
 extension StringX on String {
   Uri toUri() {
@@ -41,40 +40,5 @@ extension LantLngX<T> on List<List<double>> {
       var y = e[0];
       return LatLng(x, y);
     }).toList();
-  }
-}
-
-extension LantLngCoordinate<T> on List<dart_jts.Coordinate> {
-  List<LatLng> toLatLng() {
-    return map((e) {
-      var x = e.x;
-      var y = e.y;
-      return LatLng(x, y);
-    }).toList();
-  }
-}
-
-extension Coordinatex on List<LatLng> {
-  List<dart_jts.Coordinate> toCoordinates() {
-    return map((e) => e.toCoordinate()).toList();
-  }
-
-  List<dart_jts.Coordinate> toCoordinatesProjted() {
-    return map((e) => e.toCoordinateProjted()).toList();
-  }
-
-  LatLng? firstWhereOrNull(bool Function(LatLng) test) {
-    var whr = where(test);
-    return whr.isEmpty ? null : whr.first;
-  }
-}
-
-extension CoordinateXX on LatLng {
-  dart_jts.Coordinate toCoordinate() {
-    return dart_jts.Coordinate(latitude, longitude);
-  }
-
-  dart_jts.Coordinate toCoordinateProjted() {
-    return dart_jts.Coordinate(latitude * 6371e3, longitude * 6371e3);
   }
 }

@@ -8,17 +8,10 @@ import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 export 'properties.dart';
 
-class BufferPolygon {
-  PolygonLayer bufferLayer;
-  List<Polygon> polygons;
-  BufferPolygon({required this.bufferLayer, required this.polygons});
-}
-
 Future<Widget> _filePolygons(
   String path, {
   required PolygonProperties polygonLayerProperties,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   Key? key,
   bool polygonCulling = false,
 }) async {
@@ -29,7 +22,6 @@ Future<Widget> _filePolygons(
     return _string(
       readasstring,
       polygonProperties: polygonLayerProperties,
-      bufferOptions: bufferOptions,
       polygonCulling: polygonCulling,
       mapController: mapController,
       key: key,
@@ -43,7 +35,6 @@ Future<Widget> _memoryPolygons(
   Uint8List list, {
   required PolygonProperties polygonLayerProperties,
   bool polygonCulling = false,
-  BufferOptions? bufferOptions,
   Key? key,
   MapController? mapController,
 }) async {
@@ -53,7 +44,6 @@ Future<Widget> _memoryPolygons(
     string,
     polygonProperties: polygonLayerProperties,
     key: key,
-    bufferOptions: bufferOptions,
     polygonCulling: polygonCulling,
     mapController: mapController,
   );
@@ -64,7 +54,6 @@ Future<Widget> _assetPolygons(
   required PolygonProperties polygonLayerProperties,
   bool polygonCulling = false,
   Key? key,
-  BufferOptions? bufferOptions,
   MapController? mapController,
 }) async {
   final string = await rootBundle.loadString(path);
@@ -72,7 +61,6 @@ Future<Widget> _assetPolygons(
     string,
     polygonProperties: polygonLayerProperties,
     key: key,
-    bufferOptions: bufferOptions,
     polygonCulling: polygonCulling,
     mapController: mapController,
   );
@@ -85,7 +73,6 @@ Future<Widget> _networkPolygons(
   required PolygonProperties polygonLayerProperties,
   bool polygonCulling = false,
   Key? key,
-  BufferOptions? bufferOptions,
   MapController? mapController,
 }) async {
   var method = client == null ? get : client.get;
@@ -95,7 +82,6 @@ Future<Widget> _networkPolygons(
     string,
     polygonProperties: polygonLayerProperties,
     key: key,
-    bufferOptions: bufferOptions,
     polygonCulling: polygonCulling,
     mapController: mapController,
   );
@@ -109,20 +95,17 @@ Widget _string(
   PolygonProperties polygonProperties = const PolygonProperties(),
   MapController? mapController,
   // buffer
-  BufferOptions? bufferOptions,
 }) {
-  Console.log(string.length);
+  Console.log(string.substring(0, 20));
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
   var features = geojson.features;
   var polygons = features.map((feature) {
-    PolygonProperties polygonBufferProperties = const PolygonProperties();
     List<Polygon> listPolygons = [];
     if (feature != null) {
       var geometry = feature.geometry;
       var properties = feature.properties;
       var polygonnProperties = PolygonProperties.fromMap(properties, polygonProperties);
 
-      polygonBufferProperties = PolygonProperties.fromMap(properties, getBufferProperties(bufferOptions));
       if (geometry is GeoJSONPolygon) {
         listPolygons = [geometry.coordinates.toPolygon(polygonProperties: polygonnProperties)];
       } else if (geometry is GeoJSONMultiPolygon) {
@@ -134,17 +117,7 @@ Widget _string(
     }
     zoomTo(features, mapController);
     return PolygonLayer(
-      polygons: bufferOptions != null
-          ? bufferOptions.buffersOnly
-              ? listPolygons.toBuffers(
-                  bufferOptions.buffer,
-                  polygonBufferProperties,
-                )
-              : listPolygons.toBuffersWithOriginals(
-                  bufferOptions.buffer,
-                  polygonBufferProperties: polygonBufferProperties,
-                )
-          : listPolygons,
+      polygons: listPolygons,
       key: key,
       polygonCulling: polygonCulling,
     );
@@ -163,7 +136,6 @@ class PowerGeoJSONPolygons {
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     var uriString = url.toUri();
     return FutureBuilder(
@@ -175,7 +147,6 @@ class PowerGeoJSONPolygons {
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
-        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -198,7 +169,6 @@ class PowerGeoJSONPolygons {
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _assetPolygons(
@@ -207,7 +177,6 @@ class PowerGeoJSONPolygons {
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
-        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -230,7 +199,6 @@ class PowerGeoJSONPolygons {
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _filePolygons(
@@ -239,7 +207,6 @@ class PowerGeoJSONPolygons {
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
-        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -262,7 +229,6 @@ class PowerGeoJSONPolygons {
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _memoryPolygons(
@@ -271,7 +237,6 @@ class PowerGeoJSONPolygons {
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
-        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -293,8 +258,6 @@ class PowerGeoJSONPolygons {
     bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    // buffer
-    BufferOptions? bufferOptions,
   }) {
     return _string(
       data,
@@ -302,7 +265,6 @@ class PowerGeoJSONPolygons {
       key: key,
       polygonCulling: polygonCulling,
       mapController: mapController,
-      bufferOptions: bufferOptions,
     );
   }
 }

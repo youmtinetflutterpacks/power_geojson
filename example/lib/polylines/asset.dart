@@ -9,14 +9,6 @@ class AssetGeoJSONLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.asset(
       'assets/geojsons/assets_lines.geojson',
-      bufferOptions: BufferOptions(
-        buffer: 50,
-        polygonBufferProperties: const PolygonProperties(
-          borderStokeWidth: 1,
-          isFilled: true,
-          fillColor: Color(0x8DCA7608),
-        ),
-      ),
       mapController: mapController,
       //   polylineCulling: true,
       polylineProperties: const PolylineProperties(
@@ -39,15 +31,6 @@ class AssetGeoJSONMultiLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.asset(
       'assets/geojsons/assets_linesmultiples.geojson',
-      bufferOptions: BufferOptions(
-        buffer: 150,
-        polygonBufferProperties: const PolygonProperties(
-          borderStokeWidth: 1,
-          isFilled: true,
-          label: "MultiLines",
-          fillColor: Color(0x8D0E8104),
-        ),
-      ),
       mapController: mapController,
       //   polylineCulling: true,
       polylineProperties: const PolylineProperties(

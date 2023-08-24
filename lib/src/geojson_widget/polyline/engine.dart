@@ -17,7 +17,6 @@ Future<Widget> _filePolylines(
   String path, {
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   Key? key,
   bool polylineCulling = false,
 }) async {
@@ -30,7 +29,6 @@ Future<Widget> _filePolylines(
       polylinePropertie: polylineLayerProperties,
       mapController: mapController,
       key: key,
-      bufferOptions: bufferOptions,
       polylineCulling: polylineCulling,
     );
   } else {
@@ -42,7 +40,6 @@ Future<Widget> _memoryPolylines(
   Uint8List list, {
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   Key? key,
   bool polylineCulling = false,
 }) async {
@@ -52,7 +49,6 @@ Future<Widget> _memoryPolylines(
     string,
     polylinePropertie: polylineLayerProperties,
     mapController: mapController,
-    bufferOptions: bufferOptions,
     key: key,
     polylineCulling: polylineCulling,
   );
@@ -62,7 +58,6 @@ Future<Widget> _assetPolylines(
   String path, {
   required PolylineProperties polylineProperties,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   Key? key,
   bool polylineCulling = false,
 }) async {
@@ -71,7 +66,6 @@ Future<Widget> _assetPolylines(
     string,
     polylinePropertie: polylineProperties,
     mapController: mapController,
-    bufferOptions: bufferOptions,
     key: key,
     polylineCulling: polylineCulling,
   );
@@ -84,7 +78,6 @@ Future<Widget> _networkPolylines(
   Key? key,
   required PolylineProperties polylineLayerProperties,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   bool polylineCulling = false,
 }) async {
   var method = client == null ? get : client.get;
@@ -94,7 +87,6 @@ Future<Widget> _networkPolylines(
     string,
     polylinePropertie: polylineLayerProperties,
     mapController: mapController,
-    bufferOptions: bufferOptions,
     key: key,
     polylineCulling: polylineCulling,
   );
@@ -105,7 +97,6 @@ Widget _string(
   Key? key,
   required PolylineProperties polylinePropertie,
   MapController? mapController,
-  BufferOptions? bufferOptions,
   required bool polylineCulling,
 }) {
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
@@ -113,13 +104,11 @@ Widget _string(
   var features = geojson.features;
   List<List<Widget>> polylines = features.map((feature) {
     List<Polyline> listPolylines = [];
-    PolygonProperties polygonBufferProperties = const PolygonProperties();
     if (feature != null) {
       var geometry = feature.geometry;
       var properties = feature.properties;
 
       PolylineProperties polylineProperties = PolylineProperties.fromMap(properties, polylinePropertie);
-      polygonBufferProperties = PolygonProperties.fromMap(properties, getBufferProperties(bufferOptions));
 
       if (geometry is GeoJSONLineString) {
         listPolylines = [geometry.coordinates.toPolyline(polylineProperties: polylineProperties)];
@@ -133,20 +122,11 @@ Widget _string(
     zoomTo(features, mapController);
 
     var fStack = [
-      if (bufferOptions != null)
-        PolygonLayer(
-          polygons: listPolylines.toBuffers(
-            bufferOptions.buffer,
-            polygonBufferProperties,
-          ),
-          key: key,
-        ),
-      if ((bufferOptions != null && !bufferOptions.buffersOnly) || bufferOptions == null)
-        PolylineLayer(
-          polylineCulling: polylineCulling,
-          polylines: listPolylines,
-          key: key,
-        ),
+      PolylineLayer(
+        polylineCulling: polylineCulling,
+        polylines: listPolylines,
+        key: key,
+      ),
     ];
     return fStack;
   }).toList();
@@ -160,11 +140,10 @@ class PowerGeoJSONPolylines {
     Map<String, String>? headers,
     // layer
     Key? key,
-    PolylineProperties polylineLayerProperties = const PolylineProperties(),
+    PolylineProperties polylineProperties = const PolylineProperties(),
     MapController? mapController,
     bool polylineCulling = false,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     var uriString = url.toUri();
     return FutureBuilder(
@@ -172,10 +151,9 @@ class PowerGeoJSONPolylines {
         uriString,
         headers: headers,
         client: client,
-        polylineLayerProperties: polylineLayerProperties,
+        polylineLayerProperties: polylineProperties,
         mapController: mapController,
         key: key,
-        bufferOptions: bufferOptions,
         polylineCulling: polylineCulling,
       ),
       builder: (context, snap) {
@@ -198,14 +176,12 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _assetPolylines(
         url,
         polylineProperties: polylineProperties,
         mapController: mapController,
-        bufferOptions: bufferOptions,
         key: key,
         polylineCulling: polylineCulling,
       ),
@@ -229,7 +205,6 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _filePolylines(
@@ -238,7 +213,6 @@ class PowerGeoJSONPolylines {
         mapController: mapController,
         polylineCulling: polylineCulling,
         key: key,
-        bufferOptions: bufferOptions,
       ),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.done) {
@@ -260,7 +234,6 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return FutureBuilder(
       future: _memoryPolylines(
@@ -268,7 +241,6 @@ class PowerGeoJSONPolylines {
         polylineLayerProperties: polylineLayerProperties,
         mapController: mapController,
         key: key,
-        bufferOptions: bufferOptions,
         polylineCulling: polylineCulling,
       ),
       builder: (context, snap) {
@@ -291,12 +263,10 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
     // buffer
-    BufferOptions? bufferOptions,
   }) {
     return _string(
       data,
       polylinePropertie: polylineLayerProperties,
-      bufferOptions: bufferOptions,
       key: key,
       polylineCulling: polylineCulling,
       mapController: mapController,

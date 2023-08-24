@@ -15,17 +15,6 @@ class StringGeoJSONLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.string(
       stringLines,
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF54A805).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer Line',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       polylineLayerProperties: const PolylineProperties(),
       mapController: _mapController,
     );
@@ -45,20 +34,6 @@ class StringGeoJSONMultiLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.string(
       stringMultiLines,
-      bufferOptions: BufferOptions(
-        buffer: 70,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF3E05A8).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          isDotted: false,
-          labelStyle: const TextStyle(fontSize: 7),
-          borderColor: Colors.green,
-          layerProperties: {
-            LayerPolygonIndexes.label: 'color',
-            LayerPolygonIndexes.fillColor: 'color',
-          },
-        ),
-      ),
       polylineLayerProperties: const PolylineProperties(),
       mapController: _mapController,
     );

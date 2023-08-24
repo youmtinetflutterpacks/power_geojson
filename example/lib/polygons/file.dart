@@ -60,17 +60,6 @@ class FileGeoJSONMultiPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_multipolygons",
-      bufferOptions: BufferOptions(
-        buffer: 80,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF28E2EF).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ),
       polygonProperties: const PolygonProperties(
         isDotted: false,
         rotateLabel: true,

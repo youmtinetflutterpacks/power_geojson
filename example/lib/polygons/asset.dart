@@ -63,17 +63,6 @@ class AssetGeoJSONMultiPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.asset(
       "assets/geojsons/assets_polygonsmultiples.geojson",
-      bufferOptions: BufferOptions(
-        buffer: 300,
-        buffersOnly: false,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF6D05A8).withOpacity(0.5),
-          borderStokeWidth: 4,
-          isDotted: true,
-          borderColor: Colors.green,
-          //   layerProperties: {LayerPolygonIndexes.fillColor: 'color'},
-        ),
-      ),
       polygonProperties: const PolygonProperties(
         isDotted: false,
         label: 'Asset Multipolygons',
@@ -104,17 +93,6 @@ class AssetGeoJSONZones extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.asset(
       "assets/geojsons/zonestypes.geojson",
-      bufferOptions: BufferOptions(
-        buffer: 300,
-        buffersOnly: false,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF6D05A8).withOpacity(0.5),
-          borderStokeWidth: 4,
-          isDotted: true,
-          borderColor: Colors.green,
-          layerProperties: {LayerPolygonIndexes.fillColor: 'color'},
-        ),
-      ),
       polygonProperties: const PolygonProperties(
         isDotted: false,
         fillColor: Color(0xFFA29A0A),
