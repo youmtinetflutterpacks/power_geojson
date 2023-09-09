@@ -16,7 +16,7 @@ class FileGeoJSONMarkers extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_points",
-      builder: (markerProps, props) {
+      /* builder: (context, markerProps, props) {
         return Transform.scale(
           scale: 1.1,
           child: SvgPicture.asset(
@@ -24,7 +24,7 @@ class FileGeoJSONMarkers extends StatelessWidget {
             color: HexColor.fromHex(props['color'], const Color(0xFFFFF238)),
           ),
         );
-      },
+      }, */
       markerProperties: const MarkerProperties(),
       mapController: _mapController,
     );
@@ -44,7 +44,7 @@ class FileGeoJSONMultiMarkers extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_multipoints",
-      builder: (markerProps, props) {
+      builder: (context, markerProps, props) {
         return Transform.scale(
           scale: 1.1,
           child: SvgPicture.asset(

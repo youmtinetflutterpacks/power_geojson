@@ -99,7 +99,7 @@ decodePolygon(a) {
 ringIsClockwise(ringToTest) {
   var total = 0, i = 0, rLength = ringToTest.length, pt1 = ringToTest[i];
   List<int> pt2;
-  for (i; i < rLength - 1; i++) {
+  for (int i = 0; i < rLength - 1; i++) {
     pt2 = ringToTest[i + 1];
     var pt22 = pt2[0];
     var pt12 = pt1[0] as int;

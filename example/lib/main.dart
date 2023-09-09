@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:console_tools/console_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -59,7 +60,16 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
           onLongPress: (tapPosition, point) {
             Console.log('onLongPress $point', color: ConsoleColors.citron);
           },
-          onMapEvent: (p0) {},
+          onMapEvent: (mapEvent) async {
+            var txt = await PowerGeoJSONFeatureCollections.asset(
+              "assets/geojsons/assets_polygonsmultiples.geojson",
+              featureCollectionProperties: const FeatureCollectionProperties(),
+              builder: (p0, p1) {
+                return const SizedBox();
+              },
+            );
+            Console.log(txt);
+          },
           onMapReady: () async {
             await _createFiles();
             // await Future.delayed(const Duration(seconds: 1));

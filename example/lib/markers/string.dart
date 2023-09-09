@@ -16,12 +16,12 @@ class StringGeoJSONPoints extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.string(
       stringMarkers,
-      builder: (markerProperties, properties) {
+      /* builder: (context, markerProperties, properties) {
         return SvgPicture.asset(
           "assets/icons/position.svg",
           color: const Color(0xFFEF2874),
         );
-      },
+      }, */
       markerProperties: const MarkerProperties(),
       mapController: _mapController,
     );
@@ -41,7 +41,7 @@ class StringGeoJSONMultiPoints extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.string(
       stringMultiMarkers,
-      builder: (markerProperties, properties) {
+      builder: (context, markerProperties, properties) {
         return SvgPicture.asset(
           "assets/icons/position.svg",
           height: 300,

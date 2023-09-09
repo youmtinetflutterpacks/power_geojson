@@ -7,12 +7,6 @@ import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 
-class BufferPolyline {
-  PolygonLayer bufferLayer;
-  PolylineLayer polylines;
-  BufferPolyline({required this.bufferLayer, required this.polylines});
-}
-
 Future<Widget> _filePolylines(
   String path, {
   required PolylineProperties polylineLayerProperties,
@@ -143,7 +137,6 @@ class PowerGeoJSONPolylines {
     PolylineProperties polylineProperties = const PolylineProperties(),
     MapController? mapController,
     bool polylineCulling = false,
-    // buffer
   }) {
     var uriString = url.toUri();
     return FutureBuilder(
@@ -175,7 +168,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    // buffer
   }) {
     return FutureBuilder(
       future: _assetPolylines(
@@ -204,7 +196,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    // buffer
   }) {
     return FutureBuilder(
       future: _filePolylines(
@@ -233,7 +224,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    // buffer
   }) {
     return FutureBuilder(
       future: _memoryPolylines(
@@ -262,7 +252,6 @@ class PowerGeoJSONPolylines {
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
-    // buffer
   }) {
     return _string(
       data,

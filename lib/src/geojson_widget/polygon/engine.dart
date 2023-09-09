@@ -94,9 +94,7 @@ Widget _string(
   bool polygonCulling = false,
   PolygonProperties polygonProperties = const PolygonProperties(),
   MapController? mapController,
-  // buffer
 }) {
-  Console.log(string.substring(0, 20));
   final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
   var features = geojson.features;
   var polygons = features.map((feature) {
@@ -135,7 +133,6 @@ class PowerGeoJSONPolygons {
     bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    // buffer
   }) {
     var uriString = url.toUri();
     return FutureBuilder(
@@ -168,7 +165,6 @@ class PowerGeoJSONPolygons {
     bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    // buffer
   }) {
     return FutureBuilder(
       future: _assetPolygons(
@@ -198,7 +194,6 @@ class PowerGeoJSONPolygons {
     bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    // buffer
   }) {
     return FutureBuilder(
       future: _filePolygons(
@@ -228,7 +223,6 @@ class PowerGeoJSONPolygons {
     bool polygonCulling = false,
     PolygonProperties polygonProperties = const PolygonProperties(),
     MapController? mapController,
-    // buffer
   }) {
     return FutureBuilder(
       future: _memoryPolygons(

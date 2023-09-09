@@ -13,7 +13,7 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
     return PowerGeoJSONMarkers.asset(
       'assets/geojsons/assets_points.geojson',
       markerProperties: const MarkerProperties(),
-      builder: (markerProps, props) {
+      builder: (context, markerProps, props) {
         return Transform.rotate(
           angle: pi,
           child: SvgPicture.asset(
@@ -36,12 +36,12 @@ class AssetGeoJSONMarkerMultiPoints extends StatelessWidget {
       markerProperties: MarkerProperties(
         anchorPos: AnchorPos.exactly(Anchor(0, 0)),
       ),
-      builder: (markerProps, props) {
+      /* builder: (context, markerProps, props) {
         return SvgPicture.asset(
           "assets/icons/position.svg",
           color: const Color(0xff73EF28),
         );
-      },
+      }, */
     );
   }
 }

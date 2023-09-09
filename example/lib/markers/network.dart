@@ -18,12 +18,12 @@ class NetworkGeoJSONMarker extends StatelessWidget {
     return PowerGeoJSONMarkers.network(
       "$url/others/network_points.json",
       markerProperties: const MarkerProperties(),
-      builder: (markerProperties, mapProperties) {
+      /* builder: (context, markerProperties, mapProperties) {
         return SvgPicture.asset(
           "assets/icons/position.svg",
           color: HexColor.fromHex(mapProperties['color'], const Color(0xFFFFF238)),
         );
-      },
+      }, */
       mapController: _mapController,
     );
   }
@@ -43,7 +43,7 @@ class NetworkGeoJSONMultiMarker extends StatelessWidget {
     return PowerGeoJSONMarkers.network(
       "$url/others/network_pointsmultiples.json",
       markerProperties: const MarkerProperties(),
-      builder: (markerProperties, mapProperties) {
+      builder: (context, markerProperties, mapProperties) {
         return SvgPicture.asset(
           "assets/icons/position.svg",
           color: HexColor.fromHex(mapProperties['color'], const Color(0xFF0FE24E)),
