@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:power_geojson/power_geojson.dart';
 import 'package:power_geojson_example/lib.dart';
 
@@ -70,6 +71,35 @@ class NetworkGeoJSONMultiPolygon extends StatelessWidget {
         ),
         labeled: true,
       ),
+      mapController: _mapController,
+    );
+  }
+}
+
+class NetworkGeoJSONMultiPolygon1 extends StatelessWidget {
+  const NetworkGeoJSONMultiPolygon1({
+    Key? key,
+    MapController? mapController,
+  })  : _mapController = mapController,
+        super(key: key);
+
+  final MapController? _mapController;
+
+  @override
+  Widget build(BuildContext context) {
+    return PowerGeoJSONPolygons.network(
+      "$url/geometries/multipolygon.json",
+      builder: (coordinates, map) {
+        TextFormField();
+        return Polygon(
+          points: coordinates.first.map((e) => LatLng(e[1], e[0])).toList(),
+          holePointsList: coordinates
+              .map((f) => f.map((e) => LatLng(e[1], e[0])).toList())
+              .toList(),
+          color: Colors.purple,
+          isFilled: true,
+        );
+      },
       mapController: _mapController,
     );
   }

@@ -1,16 +1,17 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geojson_vi/geojson_vi.dart';
 import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 export 'properties.dart';
 
 Future<Widget> _filePolygons(
   String path, {
-  required PolygonProperties polygonLayerProperties,
+  Polygon Function(
+          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+      builder,
+  PolygonProperties? polygonProperties,
   MapController? mapController,
   Key? key,
   bool polygonCulling = false,
@@ -21,7 +22,8 @@ Future<Widget> _filePolygons(
     var readasstring = await file.readAsString();
     return _string(
       readasstring,
-      polygonProperties: polygonLayerProperties,
+      builder: builder,
+      polygonProperties: polygonProperties,
       polygonCulling: polygonCulling,
       mapController: mapController,
       key: key,
@@ -33,7 +35,10 @@ Future<Widget> _filePolygons(
 
 Future<Widget> _memoryPolygons(
   Uint8List list, {
-  required PolygonProperties polygonLayerProperties,
+  Polygon Function(
+          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+      builder,
+  PolygonProperties? polygonProperties,
   bool polygonCulling = false,
   Key? key,
   MapController? mapController,
@@ -42,7 +47,8 @@ Future<Widget> _memoryPolygons(
   var string = await file.readAsString();
   return _string(
     string,
-    polygonProperties: polygonLayerProperties,
+    builder: builder,
+    polygonProperties: polygonProperties,
     key: key,
     polygonCulling: polygonCulling,
     mapController: mapController,
@@ -51,7 +57,10 @@ Future<Widget> _memoryPolygons(
 
 Future<Widget> _assetPolygons(
   String path, {
-  required PolygonProperties polygonLayerProperties,
+  Polygon Function(
+          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+      builder,
+  PolygonProperties? polygonProperties,
   bool polygonCulling = false,
   Key? key,
   MapController? mapController,
@@ -59,7 +68,8 @@ Future<Widget> _assetPolygons(
   final string = await rootBundle.loadString(path);
   return _string(
     string,
-    polygonProperties: polygonLayerProperties,
+    builder: builder,
+    polygonProperties: polygonProperties,
     key: key,
     polygonCulling: polygonCulling,
     mapController: mapController,
@@ -68,9 +78,12 @@ Future<Widget> _assetPolygons(
 
 Future<Widget> _networkPolygons(
   Uri urlString, {
+  Polygon Function(
+          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+      builder,
   Client? client,
   Map<String, String>? headers,
-  required PolygonProperties polygonLayerProperties,
+  PolygonProperties? polygonProperties,
   bool polygonCulling = false,
   Key? key,
   MapController? mapController,
@@ -80,7 +93,8 @@ Future<Widget> _networkPolygons(
   var string = response.body;
   return _string(
     string,
-    polygonProperties: polygonLayerProperties,
+    builder: builder,
+    polygonProperties: polygonProperties,
     key: key,
     polygonCulling: polygonCulling,
     mapController: mapController,
@@ -89,38 +103,35 @@ Future<Widget> _networkPolygons(
 
 Widget _string(
   String string, {
+  Polygon Function(
+          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+      builder,
   // layer
   Key? key,
   bool polygonCulling = false,
-  PolygonProperties polygonProperties = const PolygonProperties(),
+  PolygonProperties? polygonProperties,
   MapController? mapController,
 }) {
-  final geojson = GeoJSONFeatureCollection.fromMap(jsonDecode(string));
-  var features = geojson.features;
-  var polygons = features.map((feature) {
-    List<Polygon> listPolygons = [];
-    if (feature != null) {
-      var geometry = feature.geometry;
-      var properties = feature.properties;
-      var polygonnProperties = PolygonProperties.fromMap(properties, polygonProperties);
+  final geojson = PowerGeoJSONFeatureCollection.fromJson(string);
 
-      if (geometry is GeoJSONPolygon) {
-        listPolygons = [geometry.coordinates.toPolygon(polygonProperties: polygonnProperties)];
-      } else if (geometry is GeoJSONMultiPolygon) {
-        var coordinates = geometry.coordinates;
-        listPolygons = coordinates.map((e) {
-          return e.toPolygon(polygonProperties: polygonnProperties);
-        }).toList();
-      }
-    }
-    zoomTo(features, mapController);
-    return PolygonLayer(
-      polygons: listPolygons,
-      key: key,
-      polygonCulling: polygonCulling,
-    );
-  }).toList();
-  return Stack(children: polygons);
+  var polygons = geojson.geoJSONPolygons.map(
+    (e) {
+      return builder != null
+          ? builder(e.geometry.coordinates, e.properties)
+          : e.geometry.coordinates.toPolygon(
+              polygonProperties: PolygonProperties.fromMap(
+                  e.properties, polygonProperties ?? const PolygonProperties()),
+            );
+    },
+  ).toList();
+
+  List<List<double>?> bbox = geojson.geoJSONPoints.map((e) => e.bbox).toList();
+  zoomTo(bbox, mapController);
+  return PolygonLayer(
+    polygons: polygons,
+    key: key,
+    polygonCulling: polygonCulling,
+  );
 }
 
 class PowerGeoJSONPolygons {
@@ -131,16 +142,22 @@ class PowerGeoJSONPolygons {
     // layer
     Key? key,
     bool polygonCulling = false,
-    PolygonProperties polygonProperties = const PolygonProperties(),
+    Polygon Function(
+            List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+        builder,
+    PolygonProperties? polygonProperties,
     MapController? mapController,
   }) {
+    assert((builder == null && polygonProperties != null) ||
+        (polygonProperties == null && builder != null));
     var uriString = url.toUri();
     return FutureBuilder(
       future: _networkPolygons(
         uriString,
+        builder: builder,
         headers: headers,
         client: client,
-        polygonLayerProperties: polygonProperties,
+        polygonProperties: polygonProperties,
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
@@ -163,13 +180,19 @@ class PowerGeoJSONPolygons {
     // layer
     Key? key,
     bool polygonCulling = false,
-    PolygonProperties polygonProperties = const PolygonProperties(),
+    Polygon Function(
+            List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+        builder,
+    PolygonProperties? polygonProperties,
     MapController? mapController,
   }) {
+    assert((builder == null && polygonProperties != null) ||
+        (polygonProperties == null && builder != null));
     return FutureBuilder(
       future: _assetPolygons(
         url,
-        polygonLayerProperties: polygonProperties,
+        builder: builder,
+        polygonProperties: polygonProperties,
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
@@ -192,13 +215,19 @@ class PowerGeoJSONPolygons {
     // layer
     Key? key,
     bool polygonCulling = false,
-    PolygonProperties polygonProperties = const PolygonProperties(),
+    PolygonProperties? polygonProperties,
+    Polygon Function(
+            List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+        builder,
     MapController? mapController,
   }) {
+    assert((builder == null && polygonProperties != null) ||
+        (polygonProperties == null && builder != null));
     return FutureBuilder(
       future: _filePolygons(
         path,
-        polygonLayerProperties: polygonProperties,
+        builder: builder,
+        polygonProperties: polygonProperties,
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
@@ -221,13 +250,19 @@ class PowerGeoJSONPolygons {
     // layer
     Key? key,
     bool polygonCulling = false,
-    PolygonProperties polygonProperties = const PolygonProperties(),
+    PolygonProperties? polygonProperties,
+    Polygon Function(
+            List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+        builder,
     MapController? mapController,
   }) {
+    assert((builder == null && polygonProperties != null) ||
+        (polygonProperties == null && builder != null));
     return FutureBuilder(
       future: _memoryPolygons(
         bytes,
-        polygonLayerProperties: polygonProperties,
+        builder: builder,
+        polygonProperties: polygonProperties,
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
@@ -250,11 +285,17 @@ class PowerGeoJSONPolygons {
     // layer
     Key? key,
     bool polygonCulling = false,
-    PolygonProperties polygonProperties = const PolygonProperties(),
+    Polygon Function(
+            List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
+        builder,
+    PolygonProperties? polygonProperties,
     MapController? mapController,
   }) {
+    assert((builder == null && polygonProperties != null) ||
+        (polygonProperties == null && builder != null));
     return _string(
       data,
+      builder: builder,
       polygonProperties: polygonProperties,
       key: key,
       polygonCulling: polygonCulling,

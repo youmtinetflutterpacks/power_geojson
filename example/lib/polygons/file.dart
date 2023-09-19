@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 class FileGeoJSONPolygon extends StatelessWidget {
@@ -15,17 +16,6 @@ class FileGeoJSONPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_polygons",
-      /* bufferOptions: BufferOptions(
-        buffer: 700,
-        // buffersOnly: true,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF6D05A8).withOpacity(0.5),
-          borderStokeWidth: 0.3,
-          label: 'Buffer',
-          isDotted: false,
-          borderColor: Colors.green,
-        ),
-      ), */
       polygonProperties: const PolygonProperties(
         isDotted: false,
         rotateLabel: true,
@@ -60,7 +50,7 @@ class FileGeoJSONMultiPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_multipolygons",
-      polygonProperties: const PolygonProperties(
+      /* polygonProperties: const PolygonProperties(
         isDotted: false,
         rotateLabel: true,
         label: 'File Multi',
@@ -75,7 +65,17 @@ class FileGeoJSONMultiPolygon extends StatelessWidget {
           ],
         ),
         labeled: true,
-      ),
+      ), */
+      builder: (coordinates, map) {
+        TextFormField();
+        return Polygon(
+          points: coordinates.first.map((e) => LatLng(e[1], e[0])).toList(),
+          holePointsList: coordinates
+              .map((f) => f.map((e) => LatLng(e[1], e[0])).toList())
+              .toList(),
+          color: Colors.purple,
+        );
+      },
       mapController: _mapController,
     );
   }

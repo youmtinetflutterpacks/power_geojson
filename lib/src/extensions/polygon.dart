@@ -6,12 +6,15 @@ import 'package:point_in_polygon/point_in_polygon.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 extension ListABC<T> on List<T> {
-  T? firstWhereOrNull(bool Function(T) test, {T Function()? orElse}) {
-    return firstWhere(test, orElse: orElse);
+  /// Returns the first element that matches the test; if none is found, it returns null.
+  T? firstWhereOrNull(bool Function(T) test) {
+    var first = where(test);
+    return first.isEmpty ? null : first.first;
   }
 }
 
 extension PolygonX on Polygon {
+  /// Determines whether a point resides within a polygon.
   bool isGeoPointInPolygon(LatLng latlng) {
     var isInPolygon = false;
     for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
@@ -20,6 +23,7 @@ extension PolygonX on Polygon {
     return isInPolygon;
   }
 
+  /// Determines whether a point resides within a polygon.
   bool isIntersectedWithPoint(LatLng latlng) {
     var currPoint = Point(
       x: latlng.latitude,
@@ -37,9 +41,10 @@ extension PolygonX on Polygon {
     return pInP;
   }
 
+  /// Determines whether a point resides within a polygon.
   bool isGeoPointInsidePolygon(LatLng position) {
-    // Check if the point sits exactly on a vertex
-    // var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
+    /// Check if the point sits exactly on a vertex
+    /// var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
     LatLng? vertexPosition = points.firstWhereOrNull((point) => point == position);
     if (vertexPosition != null) {
       return true;
@@ -72,6 +77,7 @@ extension PolygonX on Polygon {
 }
 
 extension PolygonsXX on List<List<List<double>>> {
+  /// Converts a list coords of a Polygon into a [Polygon]
   Polygon toPolygon({PolygonProperties polygonProperties = const PolygonProperties()}) {
     var holes = sublist(1).map((f) => f.toLatLng()).toList();
     var polygon = Polygon(

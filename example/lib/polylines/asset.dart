@@ -25,7 +25,8 @@ class AssetGeoJSONLines extends StatelessWidget {
 }
 
 class AssetGeoJSONMultiLines extends StatelessWidget {
-  const AssetGeoJSONMultiLines({Key? key, this.mapController}) : super(key: key);
+  const AssetGeoJSONMultiLines({Key? key, this.mapController})
+      : super(key: key);
   final MapController? mapController;
   @override
   Widget build(BuildContext context) {

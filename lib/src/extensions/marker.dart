@@ -3,20 +3,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:power_geojson/power_geojson.dart';
 import 'package:flutter/material.dart';
 
-extension MarkerX on Marker {
-  CircleMarker bufferCircle(double radius, PolygonProperties polygonProperties) {
-    return CircleMarker(
-      point: point,
-      radius: radius,
-      borderStrokeWidth: polygonProperties.borderStokeWidth,
-      color: polygonProperties.fillColor,
-      useRadiusInMeter: true,
-      borderColor: polygonProperties.borderColor,
-    );
-  }
-}
-
 extension MarkerXX on List<double> {
+  /// Converts a list coords of point into a [Marker]
   Marker toMarker({
     required MarkerProperties markerProperties,
     required Widget Function(BuildContext buildContext) builder,

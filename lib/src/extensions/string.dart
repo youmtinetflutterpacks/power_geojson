@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 extension StringX on String {
+  /// Parses a String Uri
   Uri toUri() {
     return Uri.parse(this);
   }
@@ -33,11 +34,19 @@ extension HexColor on Color {
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }
 
+/// An extension on lists of lists containing double values to provide a
+/// convenient method for converting them into a list of LatLng objects.
 extension LantLngX<T> on List<List<double>> {
+  /// Converts a list of lists of double values representing latitude and longitude
+  /// into a list of LatLng objects.
+  ///
+  /// Each inner list should contain two double values in the order [longitude, latitude].
+  ///
+  /// Returns a list of LatLng objects.
   List<LatLng> toLatLng() {
     return map((e) {
-      var x = e[1];
-      var y = e[0];
+      var x = e[1]; // Latitude
+      var y = e[0]; // Longitude
       return LatLng(x, y);
     }).toList();
   }

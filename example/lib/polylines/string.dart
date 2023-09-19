@@ -15,7 +15,7 @@ class StringGeoJSONLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.string(
       stringLines,
-      polylineLayerProperties: const PolylineProperties(),
+      polylineProperties: const PolylineProperties(),
       mapController: _mapController,
     );
   }
@@ -34,7 +34,7 @@ class StringGeoJSONMultiLines extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolylines.string(
       stringMultiLines,
-      polylineLayerProperties: const PolylineProperties(),
+      polylineProperties: const PolylineProperties(),
       mapController: _mapController,
     );
   }

@@ -45,11 +45,12 @@ class FileGeoJSONMultiMarkers extends StatelessWidget {
     return PowerGeoJSONMarkers.file(
       "/storage/emulated/0/Android/data/com.ymrabtipacks.power_geojson_example/files/files_multipoints",
       builder: (context, markerProps, props) {
+        var props2 = props ?? {};
         return Transform.scale(
           scale: 1.1,
           child: SvgPicture.asset(
             "assets/icons/position.svg",
-            color: HexColor.fromHex(props['color'], const Color(0xFF9F38FF)),
+            color: HexColor.fromHex(props2['color'], const Color(0xFF9F38FF)),
           ),
         );
       },

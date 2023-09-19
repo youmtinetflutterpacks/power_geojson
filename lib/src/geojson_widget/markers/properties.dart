@@ -27,20 +27,23 @@ class MarkerProperties {
     this.rotateOrigin,
     this.rotateAlignment,
   });
-  static MarkerProperties fromMap(
+  factory MarkerProperties.fromMap(
     Map<String, dynamic>? properties,
     MarkerProperties markerLayerProperties,
   ) {
     var layerMarkerProperties = markerLayerProperties.layerProperties;
     if (properties != null && layerMarkerProperties != null) {
       // width
-      final String? keyPropertieWidth = layerMarkerProperties[LayerMarkerIndexes.width];
+      final String? keyPropertieWidth =
+          layerMarkerProperties[LayerMarkerIndexes.width];
       double? propWidth = properties[keyPropertieWidth];
       // width
-      final String? keyPropertieHeight = layerMarkerProperties[LayerMarkerIndexes.height];
+      final String? keyPropertieHeight =
+          layerMarkerProperties[LayerMarkerIndexes.height];
       double? propHeighgt = properties[keyPropertieHeight];
       // width
-      final String? keyPropertieRotate = layerMarkerProperties[LayerMarkerIndexes.rotate];
+      final String? keyPropertieRotate =
+          layerMarkerProperties[LayerMarkerIndexes.rotate];
       bool? propRotate = properties[keyPropertieRotate];
       return MarkerProperties(
         key: markerLayerProperties.key,

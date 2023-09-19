@@ -24,7 +24,17 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
   late final proj4.Projection google;
   late final Proj4Crs epsg26191CRS;
 
-  final resolutions = <double>[32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128];
+  final resolutions = <double>[
+    32768,
+    16384,
+    8192,
+    4096,
+    2048,
+    1024,
+    512,
+    256,
+    128
+  ];
   proj4.Point point = proj4.Point(x: -2.328758, y: 34.928685);
   String initText = 'Map centered to';
   double? maxZoom;
@@ -124,7 +134,8 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
           errorTileCallback: (tile, error, trace) {
             Console.log(tile.imageInfo);
           },
-          urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          urlTemplate:
+              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
           userAgentPackageName: 'dev.fleaflet.flutter_map.example',
         ),
         MarkerLayer(
@@ -170,7 +181,8 @@ class WMSTileLayer extends StatelessWidget {
         crs: epsg26191CRS,
         transparent: true,
         format: 'image/jpeg',
-        baseUrl: 'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
+        baseUrl:
+            'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
         layers: ['gebco_north_polar_view'],
       ),
     );

@@ -43,7 +43,10 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
       );
   @override
   Widget build(BuildContext context) {
-    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
+    var interactiveFlags2 = InteractiveFlag.doubleTapZoom |
+        InteractiveFlag.drag |
+        InteractiveFlag.pinchZoom |
+        InteractiveFlag.pinchMove;
     var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     // double distanceMETERS = 10;
     // var distanceDMS = dmFromMeters(distanceMETERS);
@@ -82,16 +85,15 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
             urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
             backgroundColor: const Color(0xFF202020),
             maxZoom: 19,
-          ),
-           */
-          const AssetGeoJSONZones(),
+          ), */
 
-          /*TileLayer(
+          TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             backgroundColor: const Color(0xFF202020),
             maxZoom: 19,
-          ), */
+          ),
 
+          const AssetGeoJSONZones(),
           /* FeatureLayer(
             options: FeatureLayerOptions(
               "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
@@ -115,6 +117,9 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 
           const NetworkGeoJSONPolygon(),
           const NetworkGeoJSONMultiPolygon(),
+          NetworkGeoJSONMultiPolygon1(
+            mapController: _mapController,
+          ),
           //////////////// Lines
           const AssetGeoJSONLines(),
           const AssetGeoJSONMultiLines(),
@@ -149,16 +154,6 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
     );
   }
 
-  double recalc(DestinationDS distanceDMS) {
-    const latlong2.Distance distanc = latlong2.Distance();
-    final double m = distanc.as(
-      latlong2.LengthUnit.Meter,
-      const latlong2.LatLng(0, 0),
-      latlong2.LatLng(0, distanceDMS.dm),
-    );
-    return m;
-  }
-
   /* Polygon getPolygon() {
     var polygon = ringsHoled.toPolygon(
       polygonProperties: PolygonProperties(
@@ -177,12 +172,18 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 }
 
 Future<void> _createFiles() async {
-  final assetsPoints = await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
-  final assetsMultipoints = await rootBundle.loadString('assets/geojsons/files/files_pointsmultiples.geojson');
-  final assetsLines = await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
-  final assetsMultilines = await rootBundle.loadString('assets/geojsons/files/files_linesmultiples.geojson');
-  final assetsPolygons = await rootBundle.loadString('assets/geojsons/files/files_polygons.geojson');
-  final assetsMultipolygons = await rootBundle.loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
+  final assetsPoints =
+      await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
+  final assetsMultipoints = await rootBundle
+      .loadString('assets/geojsons/files/files_pointsmultiples.geojson');
+  final assetsLines =
+      await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
+  final assetsMultilines = await rootBundle
+      .loadString('assets/geojsons/files/files_linesmultiples.geojson');
+  final assetsPolygons = await rootBundle
+      .loadString('assets/geojsons/files/files_polygons.geojson');
+  final assetsMultipolygons = await rootBundle
+      .loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
   await _createFile('files_points', assetsPoints);
   await _createFile('files_multipoints', assetsMultipoints);
   await _createFile('files_lines', assetsLines);
@@ -193,7 +194,8 @@ Future<void> _createFiles() async {
 
 Future<File> _createFile(String filename, String data) async {
   var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
+  var directory =
+      ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
   final path = "$directory/$filename";
   Console.log(path);
   final File file = File(path);

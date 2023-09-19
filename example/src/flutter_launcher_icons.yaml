@@ -1,0 +1,8 @@
+# dart run flutter_launcher_icons -f src/flutter_launcher_icons.yaml
+flutter_launcher_icons:
+  android: launcher_icon
+  ios: true
+  image_path: geojson.png
+  remove_alpha_ios: true
+  adaptive_icon_background: "#ff307367"
+  adaptive_icon_foreground: geojson.png

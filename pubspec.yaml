@@ -28,7 +28,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - lib/icons/
+    - packages/power_geojson/icons/drop-pin.png
   plugin:
     platforms:
       android:
