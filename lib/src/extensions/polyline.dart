@@ -3,7 +3,8 @@ import 'package:power_geojson/power_geojson.dart';
 
 extension PolylineXX on List<List<double>> {
   /// Converts a list coords of a Polyline into a [Polyline]
-  Polyline toPolyline({PolylineProperties polylineProperties = const PolylineProperties()}) {
+  Polyline toPolyline(
+      {PolylineProperties polylineProperties = const PolylineProperties()}) {
     var polyline = Polyline(
       colorsStop: polylineProperties.colorsStop,
       gradientColors: polylineProperties.gradientColors,

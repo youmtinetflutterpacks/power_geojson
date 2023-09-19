@@ -6,6 +6,20 @@ import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 export 'properties.dart';
 
+/// Loads polygons from a file and returns a widget for map display.
+///
+/// The [path] parameter specifies the file path to the polygon data file.
+///
+/// Example:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: PolygonLoadingFunctions._filePolygons('path/to/file.geojson'),
+///   builder: (context, snapshot) {
+///     // Handle the result as needed
+///   },
+/// )
+/// ```
 Future<Widget> _filePolygons(
   String path, {
   Polygon Function(
@@ -33,6 +47,20 @@ Future<Widget> _filePolygons(
   }
 }
 
+/// Loads polygons from memory data and returns a widget for map display.
+///
+/// The [list] parameter specifies the polygon data as a `Uint8List`.
+///
+/// Example:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: PolygonLoadingFunctions._memoryPolygons(myGeojsonData),
+///   builder: (context, snapshot) {
+///     // Handle the result as needed
+///   },
+/// )
+/// ```
 Future<Widget> _memoryPolygons(
   Uint8List list, {
   Polygon Function(
@@ -55,6 +83,20 @@ Future<Widget> _memoryPolygons(
   );
 }
 
+/// Loads polygons from an asset file and returns a widget for map display.
+///
+/// The [path] parameter specifies the asset file path to the polygon data.
+///
+/// Example:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: PolygonLoadingFunctions._assetPolygons('assets/geojson_data.json'),
+///   builder: (context, snapshot) {
+///     // Handle the result as needed
+///   },
+/// )
+/// ```
 Future<Widget> _assetPolygons(
   String path, {
   Polygon Function(
@@ -76,6 +118,20 @@ Future<Widget> _assetPolygons(
   );
 }
 
+/// Loads polygons from a network source and returns a widget for map display.
+///
+/// The [urlString] parameter specifies the URL to the polygon data source.
+///
+/// Example:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: PolygonLoadingFunctions._networkPolygons(Uri.parse('https://example.com/geojson_data.json')),
+///   builder: (context, snapshot) {
+///     // Handle the result as needed
+///   },
+/// )
+/// ```
 Future<Widget> _networkPolygons(
   Uri urlString, {
   Polygon Function(
@@ -101,6 +157,20 @@ Future<Widget> _networkPolygons(
   );
 }
 
+/// Parses the polygon data provided as a string and returns a widget for map display.
+///
+/// The [string] parameter contains the polygon data in GeoJSON format.
+///
+/// Example:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: PolygonLoadingFunctions._string(myGeojsonData),
+///   builder: (context, snapshot) {
+///     // Handle the result as needed
+///   },
+/// )
+/// ```
 Widget _string(
   String string, {
   Polygon Function(
@@ -134,7 +204,69 @@ Widget _string(
   );
 }
 
+/// A utility class for loading and displaying polygons on a map from various sources.
+///
+/// The `PowerGeoJSONPolygons` class provides static methods for loading polygon data
+/// from network sources, assets, files, memory, or directly from a string in GeoJSON format.
+/// It also allows customizing polygon rendering through a builder function or polygon properties.
+///
+/// Example usage:
+///
+/// ```dart
+/// // Load polygons from a network source
+/// PowerGeoJSONPolygons.network(
+///   'https://example.com/polygon_data.geojson',
+///   builder: (coordinates, properties) {
+///     // Customize polygon rendering
+///     return Polygon(
+///       points: coordinates[0].map((point) => LatLng(point[1], point[0])).toList(),
+///       // Add more polygon properties as needed
+///     );
+///   },
+///   mapController: myMapController,
+/// )
+///
+/// // Load polygons from an asset file
+/// PowerGeoJSONPolygons.asset(
+///   'assets/polygon_data.geojson',
+///   polygonProperties: PolygonProperties(
+///     fillColor: Colors.blue,
+///     strokeColor: Colors.red,
+///   ),
+/// )
+///
+/// // Load polygons from memory data
+/// PowerGeoJSONPolygons.memory(
+///   myGeojsonData,
+///   polygonCulling: true,
+/// )
+///
+/// // Load polygons from a string in GeoJSON format
+/// PowerGeoJSONPolygons.string(
+///   '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[...]]}}',
+///   mapController: myMapController,
+/// )
+/// ```
 class PowerGeoJSONPolygons {
+  /// Loads and displays polygons from a network source on a map.
+  ///
+  /// The [url] parameter specifies the URL of the polygon data source.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolygons.network(
+  ///   'https://example.com/polygon_data.geojson',
+  ///   builder: (coordinates, properties) {
+  ///     // Customize polygon rendering
+  ///     return Polygon(
+  ///       points: coordinates[0].map((point) => LatLng(point[1], point[0])).toList(),
+  ///       // Add more polygon properties as needed
+  ///     );
+  ///   },
+  ///   mapController: myMapController,
+  /// )
+  /// ```
   static Widget network(
     String url, {
     Client? client,
@@ -175,6 +307,21 @@ class PowerGeoJSONPolygons {
     );
   }
 
+  /// Loads and displays polygons from an asset file on a map.
+  ///
+  /// The [url] parameter specifies the asset file path to the polygon data.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolygons.asset(
+  ///   'assets/polygon_data.geojson',
+  ///   polygonProperties: PolygonProperties(
+  ///     fillColor: Colors.blue,
+  ///     strokeColor: Colors.red,
+  ///   ),
+  /// )
+  /// ```
   static Widget asset(
     String url, {
     // layer
@@ -210,6 +357,20 @@ class PowerGeoJSONPolygons {
     );
   }
 
+  /// Loads and displays polygons from a file on a map.
+  ///
+  /// The [path] parameter specifies the file path to the polygon data file.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolygons.file(
+  ///   'path/to/polygon_data.geojson',
+  ///   polygonProperties: PolygonProperties(
+  ///     strokeColor: Colors.green,
+  ///   ),
+  /// )
+  /// ```
   static Widget file(
     String path, {
     // layer
@@ -245,6 +406,18 @@ class PowerGeoJSONPolygons {
     );
   }
 
+  /// Loads and displays polygons from memory data on a map.
+  ///
+  /// The [bytes] parameter contains the polygon data as a `Uint8List`.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolygons.memory(
+  ///   myGeojsonData,
+  ///   polygonCulling: true,
+  /// )
+  /// ```
   static Widget memory(
     Uint8List bytes, {
     // layer
@@ -280,6 +453,18 @@ class PowerGeoJSONPolygons {
     );
   }
 
+  /// Loads and displays polygons from a string in GeoJSON format on a map.
+  ///
+  /// The [data] parameter contains the polygon data in GeoJSON format.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolygons.string(
+  ///   '{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[...]]}}',
+  ///   mapController: myMapController,
+  /// )
+  /// ```
   static Widget string(
     String data, {
     // layer

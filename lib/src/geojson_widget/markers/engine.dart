@@ -6,33 +6,98 @@ import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 export 'properties.dart';
 
-Future<List<int>> loadAssetImage() async {
+/// Loads an image asset named 'drop-pin.png' from the 'packages/power_geojson/icons/'
+/// directory using the Flutter framework's `rootBundle`.
+///
+/// This function is asynchronous and returns a `Future` that resolves to a `List<int>`
+/// representing the binary image data.
+///
+///
+/// Returns a `Future` containing a `List<int>` representing the image data.
+Future<List<int>> _loadAssetImage() async {
+  // Load the image asset data asynchronously.
   final ByteData data =
       await rootBundle.load('packages/power_geojson/icons/drop-pin.png');
+
+  // Convert the ByteData buffer to a List<int>.
   final List<int> bytes = data.buffer.asUint8List();
+
   return bytes;
 }
 
+/// Default marker builder function used to create markers for a map.
+///
+/// This function asynchronously loads an image asset, 'drop-pin.png', and creates a marker
+/// with the loaded image using the provided [markerProperties] for customization.
+///
+/// The [context] is required for building the widget tree, [markerProperties] defines the
+/// appearance of the marker, and [properties] is an optional map of additional properties
+/// associated with the marker.
+///
+/// If the image asset is successfully loaded, an [Image] widget displaying the image is returned.
+/// If the asset loading is still in progress, a [CupertinoActivityIndicator] is displayed
+/// as a loading indicator.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Widget marker = _defaultMarkerBuilder(
+///   context,
+///   MarkerProperties(height: 48, width: 48),
+///   {'property1': 'value1', 'property2': 'value2'},
+/// );
+/// ```
+///
+/// Returns a widget representing the marker.
 Widget _defaultMarkerBuilder(BuildContext context,
     MarkerProperties markerProperties, Map<String, dynamic>? properties) {
   return FutureBuilder<List<int>>(
-      future: loadAssetImage(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var uint8list = Uint8List.fromList(snapshot.data!);
-          return Image(
-            image: MemoryImage(uint8list),
-            height: markerProperties.height,
-            width: markerProperties.width,
-          );
-        } else {
-          return const Center(
-            child: CupertinoActivityIndicator(),
-          );
-        }
-      });
+    future: _loadAssetImage(),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        var uint8list = Uint8List.fromList(snapshot.data!);
+        return Image(
+          image: MemoryImage(uint8list),
+          height: markerProperties.height,
+          width: markerProperties.width,
+        );
+      } else {
+        return const Center(
+          child: CupertinoActivityIndicator(),
+        );
+      }
+    },
+  );
 }
 
+/// Asynchronously creates a collection of markers based on data read from a file.
+///
+/// This function reads data from a file specified by the [path] parameter, which should
+/// contain GeoJSON data. It then processes the GeoJSON data and generates markers using
+/// the provided [builder] function or a default marker builder.
+///
+/// The [markerLayerProperties] parameter defines the appearance of the marker layer.
+///
+/// The [mapController] parameter can be used to control the map view associated with the markers.
+///
+/// The [key] parameter is optional and can be used to uniquely identify this widget.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Future<Widget> fileMarkerWidget = _fileMarkers(
+///   'path_to_geojson_file.json',
+///   markerLayerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
+///
+/// Returns a widget representing the markers generated from the GeoJSON data.
 Future<Widget> _fileMarkers(
   String path, {
   required MarkerProperties markerLayerProperties,
@@ -45,10 +110,10 @@ Future<Widget> _fileMarkers(
   final file = File(path);
   var exists = await file.exists();
   if (exists) {
-    var readasstring = await file.readAsString();
+    var readAsString = await file.readAsString();
     return _string(
-      readasstring,
-      markerPropertie: markerLayerProperties,
+      readAsString,
+      markerProperties: markerLayerProperties,
       mapController: mapController,
       key: key,
       builder: builder,
@@ -58,6 +123,35 @@ Future<Widget> _fileMarkers(
   }
 }
 
+/// Asynchronously creates a collection of markers based on GeoJSON data provided as a Uint8List.
+///
+/// This function processes GeoJSON data provided as a Uint8List, and generates markers using
+/// the provided [builder] function or a default marker builder.
+///
+/// The [list] parameter should contain GeoJSON data in the form of a Uint8List.
+///
+/// The [markerLayerProperties] parameter defines the appearance of the marker layer.
+///
+/// The [mapController] parameter can be used to control the map view associated with the markers.
+///
+/// The [key] parameter is optional and can be used to uniquely identify this widget.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Future<Widget> memoryMarkerWidget = _memoryMarkers(
+///   myUint8ListGeoJSONData,
+///   markerLayerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
+///
+/// Returns a widget representing the markers generated from the provided GeoJSON data.
 Future<Widget> _memoryMarkers(
   Uint8List list, {
   required MarkerProperties markerLayerProperties,
@@ -71,13 +165,42 @@ Future<Widget> _memoryMarkers(
   var string = await file.readAsString();
   return _string(
     string,
-    markerPropertie: markerLayerProperties,
+    markerProperties: markerLayerProperties,
     mapController: mapController,
     key: key,
     builder: builder,
   );
 }
 
+/// Asynchronously creates a collection of markers based on GeoJSON data loaded from an asset file.
+///
+/// This function loads GeoJSON data from an asset file specified by the [path] parameter
+/// and generates markers using the provided [builder] function or a default marker builder.
+///
+/// The [path] parameter specifies the path to the GeoJSON asset file.
+///
+/// The [markerProperties] parameter defines the appearance of the marker layer.
+///
+/// The [mapController] parameter can be used to control the map view associated with the markers.
+///
+/// The [key] parameter is optional and can be used to uniquely identify this widget.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Future<Widget> assetMarkerWidget = _assetMarkers(
+///   'assets/my_geojson_data.json',
+///   markerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
+///
+/// Returns a widget representing the markers generated from the provided GeoJSON asset file.
 Future<Widget> _assetMarkers(
   String path, {
   required MarkerProperties markerProperties,
@@ -90,13 +213,46 @@ Future<Widget> _assetMarkers(
   final string = await rootBundle.loadString(path);
   return _string(
     string,
-    markerPropertie: markerProperties,
+    markerProperties: markerProperties,
     mapController: mapController,
     key: key,
     builder: builder,
   );
 }
 
+/// Asynchronously creates a collection of markers based on GeoJSON data retrieved from a network URL.
+///
+/// This function performs an HTTP GET request to the specified [urlString] to fetch GeoJSON data.
+/// It then generates markers using the provided [builder] function or a default marker builder.
+///
+/// The [urlString] parameter specifies the URL of the GeoJSON data.
+///
+/// The [markerLayerProperties] parameter defines the appearance of the marker layer.
+///
+/// The [key] parameter is optional and can be used to uniquely identify this widget.
+///
+/// The [client] parameter allows you to specify an optional HTTP client for making the network request.
+///
+/// The [headers] parameter allows you to specify optional HTTP headers for the network request.
+///
+/// The [mapController] parameter can be used to control the map view associated with the markers.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Future<Widget> networkMarkerWidget = _networkMarkers(
+///   Uri.parse('https://example.com/my_geojson_data.json'),
+///   markerLayerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
+///
+/// Returns a widget representing the markers generated from the GeoJSON data fetched from the network URL.
 Future<Widget> _networkMarkers(
   Uri urlString, {
   required MarkerProperties markerLayerProperties,
@@ -113,22 +269,52 @@ Future<Widget> _networkMarkers(
   var string = response.body;
   return _string(
     string,
-    markerPropertie: markerLayerProperties,
+    markerProperties: markerLayerProperties,
     mapController: mapController,
     key: key,
     builder: builder,
   );
 }
 
+/// Parses a GeoJSON string and generates a marker layer with markers based on the GeoJSON data.
+///
+/// This function takes a [string] representing GeoJSON data and creates a collection of markers
+/// from the GeoJSON Point features contained within it.
+///
+/// The [key] parameter is optional and can be used to uniquely identify this widget.
+///
+/// The [builder] parameter is an optional function that can be used to customize the appearance of markers.
+/// If not provided, a default marker builder is used.
+///
+/// The [markerProperties] parameter defines the appearance properties for the markers.
+///
+/// The [mapController] parameter can be used to control the map view associated with the markers.
+///
+/// Example Usage:
+///
+/// ```dart
+/// Widget geoJsonMarkers = _string(
+///   '{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [0, 0]}}]}',
+///   markerPropertie: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
+///
+/// Returns a widget representing the marker layer generated from the parsed GeoJSON data.
 Widget _string(
   String string, {
   Key? key,
-  //marker props
+  // Marker properties
   Widget Function(BuildContext context, MarkerProperties markerProperties,
           Map<String, dynamic>? map)?
       builder,
-  required MarkerProperties markerPropertie,
-  // others
+  required MarkerProperties markerProperties,
+  // Other properties
   MapController? mapController,
 }) {
   final geojson = PowerGeoJSONFeatureCollection.fromJson(string);
@@ -137,9 +323,9 @@ Widget _string(
     (e) {
       return e.geometry.coordinates.toMarker(
         markerProperties:
-            MarkerProperties.fromMap(e.properties, markerPropertie),
+            MarkerProperties.fromMap(e.properties, markerProperties),
         builder: (BuildContext context) => (builder ?? _defaultMarkerBuilder)(
-            context, markerPropertie, e.properties),
+            context, markerProperties, e.properties),
       );
     },
   ).toList();
@@ -158,13 +344,96 @@ Widget _string(
   );
 }
 
+/// A utility class for fetching and rendering markers from various sources.
+///
+/// The [PowerGeoJSONMarkers] class provides static methods for fetching and rendering markers
+/// from network sources, assets, files, memory, and GeoJSON strings.
+///
+/// Example Usage:
+///
+/// ```dart
+/// // Fetch and render markers from a network source
+/// Widget networkMarkers = PowerGeoJSONMarkers.network(
+///   'https://example.com/markers.geojson',
+///   markerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+///
+/// // Fetch and render markers from an asset
+/// Widget assetMarkers = PowerGeoJSONMarkers.asset(
+///   'assets/markers.geojson',
+///   markerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+///
+/// // Fetch and render markers from a file
+/// Widget fileMarkers = PowerGeoJSONMarkers.file(
+///   '/path/to/markers.geojson',
+///   markerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+///
+/// // Render markers from GeoJSON string
+/// Widget geoJsonMarkers = PowerGeoJSONMarkers.string(
+///   '{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [0, 0]}}]}',
+///   markerProperties: MarkerProperties(height: 48, width: 48),
+///   builder: (context, markerProperties, properties) {
+///     // Custom marker builder logic
+///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+///   },
+///   mapController: myMapController,
+///   key: UniqueKey(),
+/// );
+/// ```
 class PowerGeoJSONMarkers {
-  /// Fetches markers from a network source.
+  /// Fetches and renders markers from a network source using GeoJSON data.
   ///
-  /// [polygonProperties] is a map containing properties to customize the appearance of markers.
-  /// [layerProperties] specifies the layer options for rendering the markers.
+  /// The [network] method fetches GeoJSON data from the specified [url] and renders markers
+  /// on the map based on the GeoJSON feature collection. You can customize the appearance
+  /// of the markers using [markerProperties] and provide a custom marker builder function [builder].
   ///
-  /// Returns a [Widget] representing the fetched markers.
+  /// Example Usage:
+  ///
+  /// ```dart
+  /// // Fetch and render markers from a network source
+  /// Widget networkMarkers = PowerGeoJSONMarkers.network(
+  ///   'https://example.com/markers.geojson',
+  ///   markerProperties: MarkerProperties(height: 48, width: 48),
+  ///   builder: (context, markerProperties, properties) {
+  ///     // Custom marker builder logic
+  ///     return MyCustomMarkerWidget(markerProperties: markerProperties, data: properties);
+  ///   },
+  ///   mapController: myMapController,
+  ///   key: UniqueKey(),
+  /// );
+  /// ```
+  ///
+  /// Parameters:
+  /// - [url]: The URL of the GeoJSON data source.
+  /// - [client]: (Optional) A custom HTTP client for making the network request.
+  /// - [headers]: (Optional) Additional HTTP headers for the network request.
+  /// - [builder]: (Optional) A custom marker builder function that takes context, marker properties,
+  ///   and properties map as arguments.
+  /// - [markerProperties]: The properties to customize the appearance of the markers.
+  /// - [mapController]: (Optional) The map controller used to adjust the map view based on marker bounds.
+  /// - [key]: (Optional) A unique key for the widget.
+  ///
+  /// Returns a [Widget] representing the fetched and rendered markers.
   static Widget network(
     String url, {
     Client? client,
@@ -200,6 +469,44 @@ class PowerGeoJSONMarkers {
     );
   }
 
+  /// Creates a widget that displays a marker on a map using an asset image.
+  ///
+  /// The `url` parameter specifies the asset image URL to be used as the marker icon.
+  ///
+  /// The `markerProperties` parameter is required and contains properties for the marker,
+  /// such as position and rotation.
+  ///
+  /// The `mapController` parameter allows you to specify a custom [MapController] to control
+  /// the map view. If not provided, the default [MapController] will be used.
+  ///
+  /// The `builder` parameter is an optional callback function that allows you to customize
+  /// the marker widget's appearance. It takes a [BuildContext], [MarkerProperties], and a
+  /// map of extra data as arguments and should return a widget. If not provided, a default
+  /// marker widget will be used.
+  ///
+  /// The `key` parameter is an optional key that can be used to uniquely identify this widget.
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// asset(
+  ///   'assets/marker.png',
+  ///   markerProperties: MarkerProperties(
+  ///     position: LatLng(37.7749, -122.4194),
+  ///     rotation: 45.0,
+  ///   ),
+  ///   mapController: myMapController,
+  ///   builder: (context, markerProperties, extraData) {
+  ///     return Icon(Icons.location_on, color: Colors.red);
+  ///   },
+  /// )
+  /// ```
+  ///
+  /// In this example, the `asset` widget will display a marker on the map using the
+  /// 'assets/marker.png' image, with custom properties, a custom builder function,
+  /// and a specified map controller.
+  ///
+  /// Returns a [FutureBuilder] widget that will build the marker widget once the asset is loaded.
   static Widget asset(
     String url, {
     required MarkerProperties markerProperties,
@@ -230,6 +537,47 @@ class PowerGeoJSONMarkers {
     );
   }
 
+  /// Creates a widget that displays a marker on a map using an image file located
+  /// at the specified `path`.
+  ///
+  /// The `path` parameter specifies the file path to the image that will be used
+  /// as the marker icon.
+  ///
+  /// The `markerProperties` parameter is required and contains properties for the marker,
+  /// such as position and rotation.
+  ///
+  /// The `mapController` parameter allows you to specify a custom [MapController] to control
+  /// the map view. If not provided, the default [MapController] will be used.
+  ///
+  /// The `builder` parameter is an optional callback function that allows you to customize
+  /// the marker widget's appearance. It takes a [BuildContext], [MarkerProperties], and a
+  /// map of extra data as arguments and should return a widget. If not provided, a default
+  /// marker widget will be used.
+  ///
+  /// The `key` parameter is an optional key that can be used to uniquely identify this widget.
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// file(
+  ///   '/path/to/marker.png',
+  ///   markerProperties: MarkerProperties(
+  ///     position: LatLng(37.7749, -122.4194),
+  ///     rotation: 45.0,
+  ///   ),
+  ///   mapController: myMapController,
+  ///   builder: (context, markerProperties, extraData) {
+  ///     return Icon(Icons.location_on, color: Colors.blue);
+  ///   },
+  /// )
+  /// ```
+  ///
+  /// In this example, the `file` widget will display a marker on the map using the
+  /// image file located at '/path/to/marker.png', with custom properties, a custom
+  /// builder function, and a specified map controller.
+  ///
+  /// Returns a [FutureBuilder] widget that will build the marker widget once the file
+  /// is loaded.
   static Widget file(
     String path, {
     required MarkerProperties markerProperties,
@@ -260,6 +608,47 @@ class PowerGeoJSONMarkers {
     );
   }
 
+  /// Creates a widget that displays a marker on a map using image data provided as
+  /// a `Uint8List`.
+  ///
+  /// The `bytes` parameter specifies the image data as a `Uint8List` that will be used
+  /// as the marker icon.
+  ///
+  /// The `markerLayerProperties` parameter is required and contains properties for the marker,
+  /// such as position and rotation.
+  ///
+  /// The `mapController` parameter allows you to specify a custom [MapController] to control
+  /// the map view. If not provided, the default [MapController] will be used.
+  ///
+  /// The `builder` parameter is an optional callback function that allows you to customize
+  /// the marker widget's appearance. It takes a [BuildContext], [MarkerProperties], and a
+  /// map of extra data as arguments and should return a widget. If not provided, a default
+  /// marker widget will be used.
+  ///
+  /// The `key` parameter is an optional key that can be used to uniquely identify this widget.
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// memory(
+  ///   myImageBytes,
+  ///   markerLayerProperties: MarkerProperties(
+  ///     position: LatLng(37.7749, -122.4194),
+  ///     rotation: 45.0,
+  ///   ),
+  ///   mapController: myMapController,
+  ///   builder: (context, markerProperties, extraData) {
+  ///     return Icon(Icons.location_on, color: Colors.green);
+  ///   },
+  /// )
+  /// ```
+  ///
+  /// In this example, the `memory` widget will display a marker on the map using the
+  /// image data provided in `myImageBytes`, with custom properties, a custom builder
+  /// function, and a specified map controller.
+  ///
+  /// Returns a [FutureBuilder] widget that will build the marker widget once the image data
+  /// is loaded.
   static Widget memory(
     Uint8List bytes, {
     required MarkerProperties markerLayerProperties,
@@ -290,6 +679,45 @@ class PowerGeoJSONMarkers {
     );
   }
 
+  /// Creates a widget that displays a marker on a map using data provided as a `String`.
+  ///
+  /// The `data` parameter specifies the data as a `String` that will be used as the
+  /// marker icon.
+  ///
+  /// The `markerProperties` parameter is required and contains properties for the marker,
+  /// such as position and rotation.
+  ///
+  /// The `mapController` parameter allows you to specify a custom [MapController] to control
+  /// the map view. If not provided, the default [MapController] will be used.
+  ///
+  /// The `builder` parameter is an optional callback function that allows you to customize
+  /// the marker widget's appearance. It takes a [BuildContext], [MarkerProperties], and a
+  /// map of extra data as arguments and should return a widget. If not provided, a default
+  /// marker widget will be used.
+  ///
+  /// The `key` parameter is an optional key that can be used to uniquely identify this widget.
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// string(
+  ///   'https://example.com/marker.png',
+  ///   markerProperties: MarkerProperties(
+  ///     position: LatLng(37.7749, -122.4194),
+  ///     rotation: 45.0,
+  ///   ),
+  ///   mapController: myMapController,
+  ///   builder: (context, markerProperties, extraData) {
+  ///     return Icon(Icons.location_on, color: Colors.orange);
+  ///   },
+  /// )
+  /// ```
+  ///
+  /// In this example, the `string` widget will display a marker on the map using the
+  /// provided data as the marker icon, with custom properties, a custom builder
+  /// function, and a specified map controller.
+  ///
+  /// Returns a widget that displays the marker on the map.
   static Widget string(
     String data, {
     required MarkerProperties markerProperties,
@@ -301,7 +729,7 @@ class PowerGeoJSONMarkers {
   }) {
     return _string(
       data,
-      markerPropertie: markerProperties,
+      markerProperties: markerProperties,
       key: key,
       builder: builder,
       mapController: mapController,

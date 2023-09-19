@@ -18,7 +18,15 @@ extension PolygonX on Polygon {
   bool isGeoPointInPolygon(LatLng latlng) {
     var isInPolygon = false;
     for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
-      if ((((points[i].latitude <= latlng.latitude) && (latlng.latitude < points[j].latitude)) || ((points[j].latitude <= latlng.latitude) && (latlng.latitude < points[i].latitude))) && (latlng.longitude < (points[j].longitude - points[i].longitude) * (latlng.latitude - points[i].latitude) / (points[j].latitude - points[i].latitude) + points[i].longitude)) isInPolygon = !isInPolygon;
+      if ((((points[i].latitude <= latlng.latitude) &&
+                  (latlng.latitude < points[j].latitude)) ||
+              ((points[j].latitude <= latlng.latitude) &&
+                  (latlng.latitude < points[i].latitude))) &&
+          (latlng.longitude <
+              (points[j].longitude - points[i].longitude) *
+                      (latlng.latitude - points[i].latitude) /
+                      (points[j].latitude - points[i].latitude) +
+                  points[i].longitude)) isInPolygon = !isInPolygon;
     }
     return isInPolygon;
   }
@@ -45,7 +53,8 @@ extension PolygonX on Polygon {
   bool isGeoPointInsidePolygon(LatLng position) {
     /// Check if the point sits exactly on a vertex
     /// var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
-    LatLng? vertexPosition = points.firstWhereOrNull((point) => point == position);
+    LatLng? vertexPosition =
+        points.firstWhereOrNull((point) => point == position);
     if (vertexPosition != null) {
       return true;
     }
@@ -58,16 +67,26 @@ extension PolygonX on Polygon {
       LatLng vertex1 = points[i - 1];
       LatLng vertex2 = points[i];
 
-      if (vertex1.latitude == vertex2.latitude && vertex1.latitude == position.latitude && position.longitude > min(vertex1.longitude, vertex2.longitude) && position.longitude < max(vertex1.longitude, vertex2.longitude)) {
+      if (vertex1.latitude == vertex2.latitude &&
+          vertex1.latitude == position.latitude &&
+          position.longitude > min(vertex1.longitude, vertex2.longitude) &&
+          position.longitude < max(vertex1.longitude, vertex2.longitude)) {
         return true;
       }
 
-      if (position.latitude > min(vertex1.latitude, vertex2.latitude) && position.latitude <= max(vertex1.latitude, vertex2.latitude) && position.longitude <= max(vertex1.longitude, vertex2.longitude) && vertex1.latitude != vertex2.latitude) {
-        var xinters = (position.latitude - vertex1.latitude) * (vertex2.longitude - vertex1.longitude) / (vertex2.latitude - vertex1.latitude) + vertex1.longitude;
+      if (position.latitude > min(vertex1.latitude, vertex2.latitude) &&
+          position.latitude <= max(vertex1.latitude, vertex2.latitude) &&
+          position.longitude <= max(vertex1.longitude, vertex2.longitude) &&
+          vertex1.latitude != vertex2.latitude) {
+        var xinters = (position.latitude - vertex1.latitude) *
+                (vertex2.longitude - vertex1.longitude) /
+                (vertex2.latitude - vertex1.latitude) +
+            vertex1.longitude;
         if (xinters == position.longitude) {
           return true;
         }
-        if (vertex1.longitude == vertex2.longitude || position.longitude <= xinters) {
+        if (vertex1.longitude == vertex2.longitude ||
+            position.longitude <= xinters) {
           intersections++;
         }
       }
@@ -78,7 +97,8 @@ extension PolygonX on Polygon {
 
 extension PolygonsXX on List<List<List<double>>> {
   /// Converts a list coords of a Polygon into a [Polygon]
-  Polygon toPolygon({PolygonProperties polygonProperties = const PolygonProperties()}) {
+  Polygon toPolygon(
+      {PolygonProperties polygonProperties = const PolygonProperties()}) {
     var holes = sublist(1).map((f) => f.toLatLng()).toList();
     var polygon = Polygon(
       points: first.toLatLng(),

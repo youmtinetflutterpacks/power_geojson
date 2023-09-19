@@ -5,6 +5,44 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 
+/// Loads and displays polylines from a file on a map.
+///
+/// The [_filePolylines] function loads polyline data from a file specified by
+/// the [path] parameter and displays it on a map. You can customize the rendering
+/// of the polylines using [polylineProperties] and [builder].
+///
+/// Example usage:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: _filePolylines(
+///     'path/to/polyline_data.json',
+///     polylineProperties: PolylineProperties(
+///       color: Colors.blue,
+///       width: 3.0,
+///     ),
+///     mapController: myMapController,
+///   ),
+///   builder: (context, snapshot) {
+///     if (snapshot.connectionState == ConnectionState.done) {
+///       if (snapshot.hasData) {
+///         return snapshot.data ?? const SizedBox();
+///       }
+///     } else if (snapshot.connectionState == ConnectionState.waiting) {
+///       return const Center(child: CircularProgressIndicator());
+///     }
+///     return const Text('Error loading polylines');
+///   },
+/// )
+/// ```
+///
+/// The [polylineCulling] parameter allows you to enable or disable culling of
+/// polylines that are outside the map's viewport, improving performance.
+///
+/// If the file specified by [path] does not exist, the function returns a `Text`
+/// widget displaying "Not Found".
+///
+/// Returns a widget displaying the loaded polylines on the map.
 Future<Widget> _filePolylines(
   String path, {
   required PolylineProperties polylineProperties,
@@ -32,6 +70,41 @@ Future<Widget> _filePolylines(
   }
 }
 
+/// Loads and displays polylines from a Uint8List in memory on a map.
+///
+/// The [_memoryPolylines] function loads polyline data from a Uint8List specified by
+/// the [list] parameter and displays it on a map. You can customize the rendering
+/// of the polylines using [polylineProperties] and [builder].
+///
+/// Example usage:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: _memoryPolylines(
+///     myUint8ListData,
+///     polylineProperties: PolylineProperties(
+///       color: Colors.blue,
+///       width: 3.0,
+///     ),
+///     mapController: myMapController,
+///   ),
+///   builder: (context, snapshot) {
+///     if (snapshot.connectionState == ConnectionState.done) {
+///       if (snapshot.hasData) {
+///         return snapshot.data ?? const SizedBox();
+///       }
+///     } else if (snapshot.connectionState == ConnectionState.waiting) {
+///       return const Center(child: CircularProgressIndicator());
+///     }
+///     return const Text('Error loading polylines');
+///   },
+/// )
+/// ```
+///
+/// The [polylineCulling] parameter allows you to enable or disable culling of
+/// polylines that are outside the map's viewport, improving performance.
+///
+/// Returns a widget displaying the loaded polylines on the map.
 Future<Widget> _memoryPolylines(
   Uint8List list, {
   required PolylineProperties polylineProperties,
@@ -54,6 +127,41 @@ Future<Widget> _memoryPolylines(
   );
 }
 
+/// Loads and displays polylines from an asset file on a map.
+///
+/// The [_assetPolylines] function loads polyline data from an asset file specified by
+/// the [path] parameter and displays it on a map. You can customize the rendering
+/// of the polylines using [polylineProperties] and [builder].
+///
+/// Example usage:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: _assetPolylines(
+///     'assets/polyline_data.json',
+///     polylineProperties: PolylineProperties(
+///       color: Colors.blue,
+///       width: 3.0,
+///     ),
+///     mapController: myMapController,
+///   ),
+///   builder: (context, snapshot) {
+///     if (snapshot.connectionState == ConnectionState.done) {
+///       if (snapshot.hasData) {
+///         return snapshot.data ?? const SizedBox();
+///       }
+///     } else if (snapshot.connectionState == ConnectionState.waiting) {
+///       return const Center(child: CircularProgressIndicator());
+///     }
+///     return const Text('Error loading polylines');
+///   },
+/// )
+/// ```
+///
+/// The [polylineCulling] parameter allows you to enable or disable culling of
+/// polylines that are outside the map's viewport, improving performance.
+///
+/// Returns a widget displaying the loaded polylines on the map.
 Future<Widget> _assetPolylines(
   String path, {
   required PolylineProperties polylineProperties,
@@ -75,6 +183,41 @@ Future<Widget> _assetPolylines(
   );
 }
 
+/// Loads and displays polylines from a network URL on a map.
+///
+/// The [_networkPolylines] function fetches polyline data from a network URL specified by
+/// the [urlString] parameter and displays it on a map. You can customize the rendering
+/// of the polylines using [polylineProperties] and [builder].
+///
+/// Example usage:
+///
+/// ```dart
+/// FutureBuilder(
+///   future: _networkPolylines(
+///     Uri.parse('https://example.com/polyline_data.json'),
+///     polylineProperties: PolylineProperties(
+///       color: Colors.blue,
+///       width: 3.0,
+///     ),
+///     mapController: myMapController,
+///   ),
+///   builder: (context, snapshot) {
+///     if (snapshot.connectionState == ConnectionState.done) {
+///       if (snapshot.hasData) {
+///         return snapshot.data ?? const SizedBox();
+///       }
+///     } else if (snapshot.connectionState == ConnectionState.waiting) {
+///       return const Center(child: CircularProgressIndicator());
+///     }
+///     return const Text('Error loading polylines');
+///   },
+/// )
+/// ```
+///
+/// The [polylineCulling] parameter allows you to enable or disable culling of
+/// polylines that are outside the map's viewport, improving performance.
+///
+/// Returns a widget displaying the loaded polylines on the map.
 Future<Widget> _networkPolylines(
   Uri urlString, {
   Client? client,
@@ -100,6 +243,29 @@ Future<Widget> _networkPolylines(
   );
 }
 
+/// Creates a widget to display polylines from GeoJSON string data on a map.
+///
+/// The [_string] function parses GeoJSON string data specified by the [string] parameter
+/// and displays polylines on a map. You can customize the rendering of the polylines
+/// using [polylineProperties] and [builder].
+///
+/// Example usage:
+///
+/// ```dart
+/// _string(
+///   myGeoJSONStringData,
+///   polylineProperties: PolylineProperties(
+///     color: Colors.blue,
+///     width: 3.0,
+///   ),
+///   mapController: myMapController,
+/// );
+/// ```
+///
+/// The [polylineCulling] parameter allows you to enable or disable culling of
+/// polylines that are outside the map's viewport, improving performance.
+///
+/// Returns a widget displaying the parsed polylines on the map.
 Widget _string(
   String string, {
   Key? key,
@@ -133,6 +299,29 @@ Widget _string(
 }
 
 class PowerGeoJSONPolylines {
+  /// Loads and displays polylines from a network URL on a map.
+  ///
+  /// The [PowerGeoJSONPolylines.network] method fetches polyline data from a network URL specified by
+  /// the [url] parameter and displays it on a map. You can customize the rendering
+  /// of the polylines using [polylineProperties] and [builder].
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolylines.network(
+  ///   'https://example.com/polyline_data.json',
+  ///   polylineProperties: PolylineProperties(
+  ///     color: Colors.blue,
+  ///     width: 3.0,
+  ///   ),
+  ///   mapController: myMapController,
+  /// );
+  /// ```
+  ///
+  /// The [polylineCulling] parameter allows you to enable or disable culling of
+  /// polylines that are outside the map's viewport, improving performance.
+  ///
+  /// Returns a widget displaying the loaded polylines on the map.
   static Widget network(
     String url, {
     Client? client,
@@ -171,6 +360,29 @@ class PowerGeoJSONPolylines {
     );
   }
 
+  /// Loads and displays polylines from an asset file on a map.
+  ///
+  /// The [PowerGeoJSONPolylines.asset] method loads polyline data from an asset file specified by
+  /// the [url] parameter and displays it on a map. You can customize the rendering
+  /// of the polylines using [polylineProperties] and [builder].
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolylines.asset(
+  ///   'assets/polyline_data.json',
+  ///   polylineProperties: PolylineProperties(
+  ///     color: Colors.blue,
+  ///     width: 3.0,
+  ///   ),
+  ///   mapController: myMapController,
+  /// );
+  /// ```
+  ///
+  /// The [polylineCulling] parameter allows you to enable or disable culling of
+  /// polylines that are outside the map's viewport, improving performance.
+  ///
+  /// Returns a widget displaying the loaded polylines on the map.
   static Widget asset(
     String url, {
     PolylineProperties polylineProperties = const PolylineProperties(),
@@ -235,6 +447,29 @@ class PowerGeoJSONPolylines {
     );
   }
 
+  /// Loads and displays polylines from a local file on a map.
+  ///
+  /// The [PowerGeoJSONPolylines.file] method reads polyline data from a local file specified by
+  /// the [path] parameter and displays it on a map. You can customize the rendering
+  /// of the polylines using [polylineProperties] and [builder].
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolylines.file(
+  ///   '/path/to/local/polyline_data.json',
+  ///   polylineProperties: PolylineProperties(
+  ///     color: Colors.blue,
+  ///     width: 3.0,
+  ///   ),
+  ///   mapController: myMapController,
+  /// );
+  /// ```
+  ///
+  /// The [polylineCulling] parameter allows you to enable or disable culling of
+  /// polylines that are outside the map's viewport, improving performance.
+  ///
+  /// Returns a widget displaying the loaded polylines on the map.
   static Widget memory(
     Uint8List bytes, {
     PolylineProperties polylineProperties = const PolylineProperties(),
@@ -267,6 +502,29 @@ class PowerGeoJSONPolylines {
     );
   }
 
+  /// Displays polylines from GeoJSON data provided as a string on a map.
+  ///
+  /// The [PowerGeoJSONPolylines.string] method takes GeoJSON data as a string
+  /// provided in the [data] parameter and displays the polylines on a map.
+  /// You can customize the rendering of the polylines using [polylineProperties] and [builder].
+  ///
+  /// Example usage:
+  ///
+  /// ```dart
+  /// PowerGeoJSONPolylines.string(
+  ///   '{ "type": "FeatureCollection", ... }',
+  ///   polylineProperties: PolylineProperties(
+  ///     color: Colors.blue,
+  ///     width: 3.0,
+  ///   ),
+  ///   mapController: myMapController,
+  /// );
+  /// ```
+  ///
+  /// The [polylineCulling] parameter allows you to enable or disable culling of
+  /// polylines that are outside the map's viewport, improving performance.
+  ///
+  /// Returns a widget displaying the loaded polylines on the map.
   static Widget string(
     String data, {
     PolylineProperties polylineProperties = const PolylineProperties(),
