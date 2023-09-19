@@ -98,8 +98,11 @@ See the [CHANGELOG.md](CHANGELOG.md) file for details about recent updates.
 # Issues and Contributions
 ------------------------
 
-Please file any issues, bugs, or feature requests on the [GitHub repository]([Contribute](https://github.com/youmtinet-flutter-packs/power_geojson)
-). Contributions are welcome!
+Please file any issues, bugs, or feature requests on the 
+[GitHub repository]([Contribute](https://github.com/youmtinet-flutter-packs/power_geojson))
+[GitLab repository]([Contribute](https://gitlab.com/flutter381/power_geojson))
+[BitBucket repository]([Contribute](https://bitbucket.org/youmti/power_geojson))
+. Contributions are welcome!
 
 # License
 -------
