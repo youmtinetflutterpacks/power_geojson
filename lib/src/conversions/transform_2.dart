@@ -16,18 +16,17 @@ Map esriToGeo(esrijson) {
   // first, grab the properties
   var features = esrijson["features"] as List;
   var esriGeomType = esrijson["geometryType"];
-//   var count = features.length;
   geojson["type"] = "FeatureCollection";
-  """
+
   // Not sure how to distinguish a single
   // Feature from an array of a single Feature
   // Or do I even have to?
-  if count > 1:
-    geojson["type"] = "FeatureCollection"
-  else:
-    geojson["type"] = "Feature"
-  """;
-
+  /* var count = features.length;
+  if (count > 1) {
+    geojson["type"] = "FeatureCollection";
+  } else {
+    geojson["type"] = "Feature";
+  } */
   var feats = [];
   for (var feat in features) {
     feats.add(extract(feat, esriGeomType));

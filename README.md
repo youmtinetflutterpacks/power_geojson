@@ -20,7 +20,7 @@ Add the following dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  power_geojson: ^0.0.2
+  power_geojson: ^0.0.3
 ```
 Certainly! Below is a template for a `README.md` file for your Flutter package based on the provided code snippets. You can customize it further with additional details and examples as needed:
 
@@ -41,7 +41,7 @@ Add the following dependency to your
 `pubspec.yaml`:  
 dependencies:   
 ```yaml 
-power_geojson: ^0.0.2
+power_geojson: ^0.0.3
 ```
 
 Usage

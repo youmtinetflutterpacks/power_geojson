@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.3] - 2023-09-19
+
+fixing errors
+
 ## [0.0.2] - 2023-09-19
 ### Added
 - Added the `PowerGeoJSONPolygons` class to display polygons on a map.
