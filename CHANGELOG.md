@@ -1,8 +1,12 @@
 # Change Log
 
+## [0.0.4] - 2023-09-20
+
+- fixing errors
+
 ## [0.0.3] - 2023-09-19
 
-fixing errors
+- fixing errors
 
 ## [0.0.2] - 2023-09-19
 ### Added

@@ -20,7 +20,7 @@ Add the following dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  power_geojson: ^0.0.3
+  power_geojson: latest
 ```
 Certainly! Below is a template for a `README.md` file for your Flutter package based on the provided code snippets. You can customize it further with additional details and examples as needed:
 
@@ -41,7 +41,7 @@ Add the following dependency to your
 `pubspec.yaml`:  
 dependencies:   
 ```yaml 
-power_geojson: ^0.0.3
+power_geojson: latest
 ```
 
 Usage
@@ -99,9 +99,10 @@ See the [CHANGELOG.md](CHANGELOG.md) file for details about recent updates.
 ------------------------
 
 Please file any issues, bugs, or feature requests on the 
-[GitHub repository]([Contribute](https://github.com/youmtinet-flutter-packs/power_geojson))
-[GitLab repository]([Contribute](https://gitlab.com/flutter381/power_geojson))
-[BitBucket repository]([Contribute](https://bitbucket.org/youmti/power_geojson))
+* [GitHub repository](https://github.com/youmtinet-flutter-packs/power_geojson)
+* [GitLab repository](https://gitlab.com/flutter381/power_geojson)
+* [BitBucket repository](https://bitbucket.org/youmti/power_geojson)
+
 . Contributions are welcome!
 
 # License

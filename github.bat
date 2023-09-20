@@ -1,1 +1,0 @@
-git add . && git commit -m "Initial Stable commit too gitlab" && git push -u gitlab main
