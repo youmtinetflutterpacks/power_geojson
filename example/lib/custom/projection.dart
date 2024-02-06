@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart' as flutter_map;
+import 'package:flutter_map/flutter_map.dart';
 
 class PerojectionFlutterMap extends StatefulWidget {
   const PerojectionFlutterMap({Key? key}) : super(key: key);
@@ -15,28 +15,22 @@ class _PerojectionFlutterMapState extends State<PerojectionFlutterMap> {
   }
 }
 
-class CrsCustom extends flutter_map.Crs {
+class CrsCustom extends Crs {
   @override
-  // TODO: implement code
   String get code => throw UnimplementedError();
 
   @override
-  // TODO: implement infinite
   bool get infinite => throw UnimplementedError();
 
   @override
-  // TODO: implement projection
-  flutter_map.Projection get projection => throw UnimplementedError();
+  Projection get projection => throw UnimplementedError();
 
   @override
-  // TODO: implement transformation
-  flutter_map.Transformation get transformation => throw UnimplementedError();
+  Transformation get transformation => throw UnimplementedError();
 
   @override
-  // TODO: implement wrapLat
   (double, double)? get wrapLat => throw UnimplementedError();
 
   @override
-  // TODO: implement wrapLng
   (double, double)? get wrapLng => throw UnimplementedError();
 }

@@ -46,9 +46,7 @@ import 'package:power_geojson/power_geojson.dart';
 Future<Widget> _filePolylines(
   String path, {
   required PolylineProperties polylineProperties,
-  Polyline Function(
-          PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-      builder,
+  Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   Key? key,
   bool polylineCulling = false,
@@ -108,9 +106,7 @@ Future<Widget> _filePolylines(
 Future<Widget> _memoryPolylines(
   Uint8List list, {
   required PolylineProperties polylineProperties,
-  Polyline Function(
-          PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-      builder,
+  Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   Key? key,
   bool polylineCulling = false,
@@ -165,9 +161,7 @@ Future<Widget> _memoryPolylines(
 Future<Widget> _assetPolylines(
   String path, {
   required PolylineProperties polylineProperties,
-  Polyline Function(
-          PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-      builder,
+  Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   Key? key,
   bool polylineCulling = false,
@@ -224,9 +218,7 @@ Future<Widget> _networkPolylines(
   Map<String, String>? headers,
   Key? key,
   required PolylineProperties polylineProperties,
-  Polyline Function(
-          PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-      builder,
+  Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   bool polylineCulling = false,
 }) async {
@@ -270,9 +262,7 @@ Widget _string(
   String string, {
   Key? key,
   required PolylineProperties polylineProperties,
-  Polyline Function(
-          PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-      builder,
+  Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   required bool polylineCulling,
 }) {
@@ -283,8 +273,7 @@ Widget _string(
       return builder != null
           ? builder(polylineProperties, e.properties)
           : e.geometry.coordinates.toPolyline(
-              polylineProperties:
-                  PolylineProperties.fromMap(e.properties, polylineProperties),
+              polylineProperties: PolylineProperties.fromMap(e.properties, polylineProperties),
             );
     },
   ).toList();
@@ -329,9 +318,7 @@ class PowerGeoJSONPolylines {
     // layer
     Key? key,
     PolylineProperties polylineProperties = const PolylineProperties(),
-    Polyline Function(
-            PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-        builder,
+    Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
     MapController? mapController,
     bool polylineCulling = false,
   }) {
@@ -386,9 +373,7 @@ class PowerGeoJSONPolylines {
   static Widget asset(
     String url, {
     PolylineProperties polylineProperties = const PolylineProperties(),
-    Polyline Function(
-            PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-        builder,
+    Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
@@ -418,9 +403,7 @@ class PowerGeoJSONPolylines {
   static Widget file(
     String path, {
     PolylineProperties polylineProperties = const PolylineProperties(),
-    Polyline Function(
-            PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-        builder,
+    Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
@@ -473,9 +456,7 @@ class PowerGeoJSONPolylines {
   static Widget memory(
     Uint8List bytes, {
     PolylineProperties polylineProperties = const PolylineProperties(),
-    Polyline Function(
-            PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-        builder,
+    Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
@@ -528,9 +509,7 @@ class PowerGeoJSONPolylines {
   static Widget string(
     String data, {
     PolylineProperties polylineProperties = const PolylineProperties(),
-    Polyline Function(
-            PolylineProperties polylineProperties, Map<String, dynamic>? map)?
-        builder,
+    Polyline Function(PolylineProperties polylineProperties, Map<String, dynamic>? map)? builder,
     MapController? mapController,
     Key? key,
     bool polylineCulling = false,
