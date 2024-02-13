@@ -7,17 +7,15 @@ extension MarkerXX on List<double> {
   /// Converts a list coords of point into a [Marker]
   Marker toMarker({
     required MarkerProperties markerProperties,
-    required Widget Function(BuildContext buildContext) builder,
+    required Widget child,
   }) {
     var marker = Marker(
       height: markerProperties.height,
       width: markerProperties.width,
       rotate: markerProperties.rotate,
-      builder: builder,
-      rotateAlignment: markerProperties.rotateAlignment,
-      anchorPos: markerProperties.anchorPos,
+      child: child,
+      alignment: markerProperties.rotateAlignment,
       key: markerProperties.key,
-      rotateOrigin: markerProperties.rotateOrigin,
       point: LatLng(this[1], this[0]),
     );
     return marker;

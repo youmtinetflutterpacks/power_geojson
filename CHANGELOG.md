@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.2+8] - 2023-02-06
+
+- Up To Date Dependencies
+
 ## [1.0.1+7] - 2023-02-06
 
 - Removing POINT_IN_POLYGON

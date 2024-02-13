@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 /// An enumeration representing indexes for marker layer properties.
 ///
@@ -61,16 +60,12 @@ class MarkerProperties {
 
   /// The anchor position of the marker, specifying its relative position within
   /// the marker's bounding box.
-  final AnchorPos? anchorPos;
 
   /// A flag indicating whether the marker should rotate.
   final bool? rotate;
 
-  /// The rotation origin for the marker.
-  final Offset? rotateOrigin;
-
   /// The alignment for the marker's rotation.
-  final AlignmentGeometry? rotateAlignment;
+  final Alignment? rotateAlignment;
 
   /// A map of layer-specific properties associated with the marker.
   final Map<LayerMarkerIndexes, String>? layerProperties;
@@ -92,9 +87,7 @@ class MarkerProperties {
     this.key,
     this.width = 30.0,
     this.height = 30.0,
-    this.anchorPos,
     this.rotate,
-    this.rotateOrigin,
     this.rotateAlignment,
   });
 
@@ -109,16 +102,13 @@ class MarkerProperties {
   ) {
     var layerMarkerProperties = markerLayerProperties.layerProperties;
     if (properties != null && layerMarkerProperties != null) {
-      final String? keyPropertieWidth =
-          layerMarkerProperties[LayerMarkerIndexes.width];
+      final String? keyPropertieWidth = layerMarkerProperties[LayerMarkerIndexes.width];
       double? propWidth = properties[keyPropertieWidth];
 
-      final String? keyPropertieHeight =
-          layerMarkerProperties[LayerMarkerIndexes.height];
+      final String? keyPropertieHeight = layerMarkerProperties[LayerMarkerIndexes.height];
       double? propHeight = properties[keyPropertieHeight];
 
-      final String? keyPropertieRotate =
-          layerMarkerProperties[LayerMarkerIndexes.rotate];
+      final String? keyPropertieRotate = layerMarkerProperties[LayerMarkerIndexes.rotate];
       bool? propRotate = properties[keyPropertieRotate];
 
       return MarkerProperties(
@@ -127,8 +117,6 @@ class MarkerProperties {
         height: propHeight ?? markerLayerProperties.height,
         rotate: propRotate,
         rotateAlignment: markerLayerProperties.rotateAlignment,
-        rotateOrigin: markerLayerProperties.rotateOrigin,
-        anchorPos: markerLayerProperties.anchorPos,
       );
     } else {
       return markerLayerProperties;

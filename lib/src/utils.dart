@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:power_geojson/src/src.dart';
 
@@ -56,14 +56,12 @@ void zoomTo(List<List<double>?> features, MapController? mapController) {
       return previousValue;
     },
   );
-  mapController.fitBounds(latLngBounds, options: const FitBoundsOptions());
+  mapController.fitCamera(CameraFit.bounds(bounds: latLngBounds));
 }
 
-Future<Directory> getDocumentsDir() async =>
-    await path_provider.getApplicationDocumentsDirectory();
+Future<Directory> getDocumentsDir() async => await path_provider.getApplicationDocumentsDirectory();
 
 Future<List<Directory>?> getExternalDir() async {
-  var externalStorageDirectories =
-      await path_provider.getExternalStorageDirectories();
+  var externalStorageDirectories = await path_provider.getExternalStorageDirectories();
   return externalStorageDirectories;
 }

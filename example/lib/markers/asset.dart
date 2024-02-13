@@ -6,8 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 class AssetGeoJSONMarkerPoints extends StatelessWidget {
-  const AssetGeoJSONMarkerPoints({Key? key, this.mapController})
-      : super(key: key);
+  const AssetGeoJSONMarkerPoints({Key? key, this.mapController}) : super(key: key);
   final MapController? mapController;
   @override
   Widget build(BuildContext context) {
@@ -28,16 +27,13 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
 }
 
 class AssetGeoJSONMarkerMultiPoints extends StatelessWidget {
-  const AssetGeoJSONMarkerMultiPoints({Key? key, this.mapController})
-      : super(key: key);
+  const AssetGeoJSONMarkerMultiPoints({Key? key, this.mapController}) : super(key: key);
   final MapController? mapController;
   @override
   Widget build(BuildContext context) {
     return PowerGeoJSONMarkers.asset(
       'assets/geojsons/assets_pointsmultiples.geojson',
-      markerProperties: MarkerProperties(
-        anchorPos: AnchorPos.exactly(Anchor(0, 0)),
-      ),
+      markerProperties: const MarkerProperties(),
       /* builder: (context, markerProps, props) {
         return SvgPicture.asset(
           "assets/icons/position.svg",

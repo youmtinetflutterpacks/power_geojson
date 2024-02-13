@@ -16,8 +16,7 @@ export 'properties.dart';
 /// Returns a `Future` containing a `List<int>` representing the image data.
 Future<List<int>> _loadAssetImage() async {
   // Load the image asset data asynchronously.
-  final ByteData data =
-      await rootBundle.load('packages/power_geojson/icons/drop-pin.png');
+  final ByteData data = await rootBundle.load('packages/power_geojson/icons/drop-pin.png');
 
   // Convert the ByteData buffer to a List<int>.
   final List<int> bytes = data.buffer.asUint8List();
@@ -49,8 +48,7 @@ Future<List<int>> _loadAssetImage() async {
 /// ```
 ///
 /// Returns a widget representing the marker.
-Widget _defaultMarkerBuilder(BuildContext context,
-    MarkerProperties markerProperties, Map<String, dynamic>? properties) {
+Widget _defaultMarkerBuilder(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? properties) {
   return FutureBuilder<List<int>>(
     future: _loadAssetImage(),
     builder: (context, snapshot) {
@@ -101,9 +99,7 @@ Widget _defaultMarkerBuilder(BuildContext context,
 Future<Widget> _fileMarkers(
   String path, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -155,9 +151,7 @@ Future<Widget> _fileMarkers(
 Future<Widget> _memoryMarkers(
   Uint8List list, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -205,9 +199,7 @@ Future<Widget> _assetMarkers(
   String path, {
   required MarkerProperties markerProperties,
   MapController? mapController,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
@@ -259,9 +251,7 @@ Future<Widget> _networkMarkers(
   Key? key,
   Client? client,
   Map<String, String>? headers,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   MapController? mapController,
 }) async {
   var method = client == null ? get : client.get;
@@ -310,9 +300,7 @@ Widget _string(
   String string, {
   Key? key,
   // Marker properties
-  Widget Function(BuildContext context, MarkerProperties markerProperties,
-          Map<String, dynamic>? map)?
-      builder,
+  Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   required MarkerProperties markerProperties,
   // Other properties
   MapController? mapController,
@@ -322,10 +310,10 @@ Widget _string(
   var markers = geojson.geoJSONPoints.map(
     (e) {
       return e.geometry.coordinates.toMarker(
-        markerProperties:
-            MarkerProperties.fromMap(e.properties, markerProperties),
-        builder: (BuildContext context) => (builder ?? _defaultMarkerBuilder)(
-            context, markerProperties, e.properties),
+        markerProperties: MarkerProperties.fromMap(e.properties, markerProperties),
+        child: Builder(builder: (context) {
+          return (builder ?? _defaultMarkerBuilder)(context, markerProperties, e.properties);
+        }),
       );
     },
   ).toList();
@@ -337,9 +325,7 @@ Widget _string(
   return MarkerLayer(
     markers: markers,
     rotate: firstMarker.rotate ?? false,
-    rotateAlignment: firstMarker.rotateAlignment,
-    rotateOrigin: firstMarker.rotateOrigin,
-    anchorPos: firstMarker.anchorPos,
+    alignment: firstMarker.alignment ?? Alignment.bottomCenter,
     key: key,
   );
 }
@@ -438,9 +424,7 @@ class PowerGeoJSONMarkers {
     String url, {
     Client? client,
     Map<String, String>? headers,
-    Widget Function(BuildContext context, MarkerProperties markerProperties,
-            Map<String, dynamic>? map)?
-        builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
@@ -511,9 +495,7 @@ class PowerGeoJSONMarkers {
     String url, {
     required MarkerProperties markerProperties,
     MapController? mapController,
-    Widget Function(BuildContext context, MarkerProperties markerProperties,
-            Map<String, dynamic>? map)?
-        builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
     Key? key,
   }) {
     return FutureBuilder(
@@ -583,9 +565,7 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties,
-            Map<String, dynamic>? map)?
-        builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   }) {
     return FutureBuilder(
       future: _fileMarkers(
@@ -654,9 +634,7 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties,
-            Map<String, dynamic>? map)?
-        builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
   }) {
     return FutureBuilder(
       future: _memoryMarkers(
@@ -723,9 +701,7 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties,
-            Map<String, dynamic>? properties)?
-        builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? properties)? builder,
   }) {
     return _string(
       data,
