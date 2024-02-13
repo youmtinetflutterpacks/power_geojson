@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:point_in_polygon/point_in_polygon.dart';
+// import 'package:point_in_polygon/point_in_polygon.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 extension ListABC<T> on List<T> {
@@ -29,24 +29,6 @@ extension PolygonX on Polygon {
                   points[i].longitude)) isInPolygon = !isInPolygon;
     }
     return isInPolygon;
-  }
-
-  /// Determines whether a point resides within a polygon.
-  bool isIntersectedWithPoint(LatLng latlng) {
-    var currPoint = Point(
-      x: latlng.latitude,
-      y: latlng.longitude,
-    );
-    var pInP = Poly.isPointInPolygon(
-      currPoint,
-      points.map((e) {
-        return Point(
-          x: e.latitude,
-          y: e.longitude,
-        );
-      }).toList(),
-    );
-    return pInP;
   }
 
   /// Determines whether a point resides within a polygon.

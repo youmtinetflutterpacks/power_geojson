@@ -2,7 +2,8 @@ class PowerJSON {
   final StringSink _buffer = StringBuffer('');
   final List<bool> _hasItemsOnLevel = List.of([false]);
   final Map<String, Object?> _properties;
-  final List<_PrivateContainer> _containerTypeOnLevel = List.of([_PrivateContainer.root]);
+  final List<_PrivateContainer> _containerTypeOnLevel =
+      List.of([_PrivateContainer.root]);
   final String _startSquareBracket = '[';
   final String _endSquareBracket = ']';
   final String _startCurlyBracket = '{';

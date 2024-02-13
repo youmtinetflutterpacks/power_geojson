@@ -451,10 +451,11 @@ packages:
   point_in_polygon:
     dependency: transitive
     description:
-      name: point_in_polygon
-      sha256: "5a3b96871b06b5c28193421fd6203942d7b89a624bcd1851981020a426dcaf51"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: version2
+      resolved-ref: e912e4951d4e53086093a431b119b2e3897baf7c
+      url: "https://github.com/youmtinet-flutter-packs/point_in_polygon.git"
+    source: git
     version: "1.0.0"
   pointycastle:
     dependency: transitive
@@ -478,7 +479,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0+6"
   process:
     dependency: transitive
     description:
