@@ -28,7 +28,8 @@ Future<String> _defaultFileLoadBuilder(String path) async {
 /// - [headers]: Optional HTTP headers to include in the request.
 ///
 /// Returns a [Future] that completes with the response body as a string.
-Future<String> _defaultNetworkLoader(Client? client, Uri uri, Map<String, String>? headers) async {
+Future<String> _defaultNetworkLoader(
+    Client? client, Uri uri, Map<String, String>? headers) async {
   var method = client == null ? get : client.get;
   var response = await method(uri, headers: headers);
   var string = response.body;
@@ -54,7 +55,10 @@ Future<String> _defaultNetworkLoader(Client? client, Uri uri, Map<String, String
 Future<Widget> _fileFeatureCollections(
   String path, {
   required FeatureCollectionProperties featureCollectionLayerProperties,
-  required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+  required Widget Function(
+          FeatureCollectionProperties featureCollectionProperties,
+          Map<String, dynamic>? map)
+      builder,
   required Future<String> Function(String filePath) fileLoadBuilder,
   MapController? mapController,
   bool polylineCulling = false,
@@ -91,7 +95,10 @@ Future<Widget> _fileFeatureCollections(
 Future<Widget> _memoryFeatureCollections(
   Uint8List list, {
   required FeatureCollectionProperties featureCollectionLayerProperties,
-  required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+  required Widget Function(
+          FeatureCollectionProperties featureCollectionProperties,
+          Map<String, dynamic>? map)
+      builder,
   MapController? mapController,
   bool polylineCulling = false,
   bool polygonCulling = false,
@@ -131,7 +138,10 @@ Future<Widget> _assetFeatureCollections(
   bool polylineCulling = false,
   bool polygonCulling = false,
   MapController? mapController,
-  required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+  required Widget Function(
+          FeatureCollectionProperties featureCollectionProperties,
+          Map<String, dynamic>? map)
+      builder,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
@@ -172,8 +182,13 @@ Future<Widget> _networkFeatureCollections(
   Map<String, String>? headers,
   bool polylineCulling = false,
   bool polygonCulling = false,
-  required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
-  required Future<String> Function(Client? client, Uri uri, Map<String, String>? map) networkLoadBuilder,
+  required Widget Function(
+          FeatureCollectionProperties featureCollectionProperties,
+          Map<String, dynamic>? map)
+      builder,
+  required Future<String> Function(
+          Client? client, Uri uri, Map<String, String>? map)
+      networkLoadBuilder,
   MapController? mapController,
 }) async {
   String string = await networkLoadBuilder(client, uri, headers);
@@ -206,13 +221,17 @@ Future<Widget> _networkFeatureCollections(
 Widget _string(
   String json, {
   Key? key,
-  required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+  required Widget Function(
+          FeatureCollectionProperties featureCollectionProperties,
+          Map<String, dynamic>? map)
+      builder,
   required FeatureCollectionProperties featureCollectionPropertie,
   bool polylineCulling = false,
   bool polygonCulling = false,
   MapController? mapController,
 }) {
-  PowerGeoJSONFeatureCollection parseGeoJSON = PowerGeoJSONFeatureCollection.fromJson(json);
+  PowerGeoJSONFeatureCollection parseGeoJSON =
+      PowerGeoJSONFeatureCollection.fromJson(json);
   var points = parseGeoJSON.geoJSONPoints
       .map(
         (e) => e.geometry.coordinates.toMarker(
@@ -237,7 +256,8 @@ Widget _string(
         polylines: parseGeoJSON.geoJSONLineStrings
             .map(
               (e) => e.geometry.coordinates.toPolyline(
-                polylineProperties: featureCollectionPropertie.polylineProperties,
+                polylineProperties:
+                    featureCollectionPropertie.polylineProperties,
               ),
             )
             .toList(),
@@ -286,7 +306,8 @@ class PowerGeoJSONFeatureCollections {
     bool polylineCulling = false,
     bool polygonCulling = false,
     MapController? mapController,
-    Future<String> Function(Client? client, Uri uri, Map<String, String>? map)? networkLoadBuilder,
+    Future<String> Function(Client? client, Uri uri, Map<String, String>? map)?
+        networkLoadBuilder,
     Key? key,
   }) {
     var uri = url.toUri();
@@ -322,7 +343,10 @@ class PowerGeoJSONFeatureCollections {
     bool polylineCulling = false,
     bool polygonCulling = false,
     MapController? mapController,
-    required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+    required Widget Function(
+            FeatureCollectionProperties featureCollectionProperties,
+            Map<String, dynamic>? map)
+        builder,
     Key? key,
   }) {
     return _assetFeatureCollections(
@@ -357,7 +381,10 @@ class PowerGeoJSONFeatureCollections {
     MapController? mapController,
     Key? key,
     Future<String> Function(String)? fileLoadBuilder,
-    required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+    required Widget Function(
+            FeatureCollectionProperties featureCollectionProperties,
+            Map<String, dynamic>? map)
+        builder,
   }) {
     return _fileFeatureCollections(
       path,
@@ -390,7 +417,10 @@ class PowerGeoJSONFeatureCollections {
     Key? key,
     bool polylineCulling = false,
     bool polygonCulling = false,
-    required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? map) builder,
+    required Widget Function(
+            FeatureCollectionProperties featureCollectionProperties,
+            Map<String, dynamic>? map)
+        builder,
   }) {
     return _memoryFeatureCollections(
       bytes,
@@ -422,7 +452,10 @@ class PowerGeoJSONFeatureCollections {
     bool polygonCulling = false,
     MapController? mapController,
     Key? key,
-    required Widget Function(FeatureCollectionProperties featureCollectionProperties, Map<String, dynamic>? properties) builder,
+    required Widget Function(
+            FeatureCollectionProperties featureCollectionProperties,
+            Map<String, dynamic>? properties)
+        builder,
   }) {
     return _string(
       data,

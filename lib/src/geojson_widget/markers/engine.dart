@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -16,7 +17,8 @@ export 'properties.dart';
 /// Returns a `Future` containing a `List<int>` representing the image data.
 Future<List<int>> _loadAssetImage() async {
   // Load the image asset data asynchronously.
-  final ByteData data = await rootBundle.load('packages/power_geojson/icons/drop-pin.png');
+  final ByteData data =
+      await rootBundle.load('packages/power_geojson/icons/drop-pin.png');
 
   // Convert the ByteData buffer to a List<int>.
   final List<int> bytes = data.buffer.asUint8List();
@@ -48,23 +50,20 @@ Future<List<int>> _loadAssetImage() async {
 /// ```
 ///
 /// Returns a widget representing the marker.
-Widget _defaultMarkerBuilder(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? properties) {
-  return FutureBuilder<List<int>>(
+Widget _defaultMarkerBuilder(BuildContext context,
+    MarkerProperties markerProperties, Map<String, dynamic>? properties) {
+  return EnhancedFutureBuilder<List<int>>(
     future: _loadAssetImage(),
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        var uint8list = Uint8List.fromList(snapshot.data!);
-        return Image(
-          image: MemoryImage(uint8list),
-          height: markerProperties.height,
-          width: markerProperties.width,
-        );
-      } else {
-        return const Center(
-          child: CupertinoActivityIndicator(),
-        );
-      }
+    rememberFutureResult: true,
+    whenDone: (snapshotData) {
+      var uint8list = Uint8List.fromList(snapshotData);
+      return Image(
+        image: MemoryImage(uint8list),
+        height: markerProperties.height,
+        width: markerProperties.width,
+      );
     },
+    whenNotDone: const Center(child: CupertinoActivityIndicator()),
   );
 }
 
@@ -99,7 +98,9 @@ Widget _defaultMarkerBuilder(BuildContext context, MarkerProperties markerProper
 Future<Widget> _fileMarkers(
   String path, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+  required Widget Function(BuildContext context,
+          MarkerProperties markerProperties, Map<String, dynamic>? map)?
+      builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -151,7 +152,9 @@ Future<Widget> _fileMarkers(
 Future<Widget> _memoryMarkers(
   Uint8List list, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+  required Widget Function(BuildContext context,
+          MarkerProperties markerProperties, Map<String, dynamic>? map)?
+      builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -199,7 +202,9 @@ Future<Widget> _assetMarkers(
   String path, {
   required MarkerProperties markerProperties,
   MapController? mapController,
-  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+  required Widget Function(BuildContext context,
+          MarkerProperties markerProperties, Map<String, dynamic>? map)?
+      builder,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
@@ -250,20 +255,25 @@ Future<Widget> _networkMarkers(
   required MarkerProperties markerLayerProperties,
   Key? key,
   Client? client,
+  required List<int> statusCodes,
   Map<String, String>? headers,
-  required Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+  required Widget Function(BuildContext context,
+          MarkerProperties markerProperties, Map<String, dynamic>? map)?
+      builder,
   MapController? mapController,
 }) async {
   var method = client == null ? get : client.get;
   var response = await method(urlString, headers: headers);
   var string = response.body;
-  return _string(
-    string,
-    markerProperties: markerLayerProperties,
-    mapController: mapController,
-    key: key,
-    builder: builder,
-  );
+  return statusCodes.contains(response.statusCode)
+      ? _string(
+          string,
+          markerProperties: markerLayerProperties,
+          mapController: mapController,
+          key: key,
+          builder: builder,
+        )
+      : Text('${response.statusCode}');
 }
 
 /// Parses a GeoJSON string and generates a marker layer with markers based on the GeoJSON data.
@@ -300,7 +310,9 @@ Widget _string(
   String string, {
   Key? key,
   // Marker properties
-  Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+  Widget Function(BuildContext context, MarkerProperties markerProperties,
+          Map<String, dynamic>? map)?
+      builder,
   required MarkerProperties markerProperties,
   // Other properties
   MapController? mapController,
@@ -310,9 +322,11 @@ Widget _string(
   var markers = geojson.geoJSONPoints.map(
     (e) {
       return e.geometry.coordinates.toMarker(
-        markerProperties: MarkerProperties.fromMap(e.properties, markerProperties),
+        markerProperties:
+            MarkerProperties.fromMap(e.properties, markerProperties),
         child: Builder(builder: (context) {
-          return (builder ?? _defaultMarkerBuilder)(context, markerProperties, e.properties);
+          return (builder ?? _defaultMarkerBuilder)(
+              context, markerProperties, e.properties);
         }),
       );
     },
@@ -424,32 +438,29 @@ class PowerGeoJSONMarkers {
     String url, {
     Client? client,
     Map<String, String>? headers,
-    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+    List<int> statusCodes = const [200],
+    Widget Function(BuildContext context, MarkerProperties markerProperties,
+            Map<String, dynamic>? map)?
+        builder,
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
   }) {
     var uriString = url.toUri();
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _networkMarkers(
         uriString,
         headers: headers,
         client: client,
+        statusCodes: statusCodes,
         markerLayerProperties: markerProperties,
         builder: builder,
         mapController: mapController,
         key: key,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -495,10 +506,12 @@ class PowerGeoJSONMarkers {
     String url, {
     required MarkerProperties markerProperties,
     MapController? mapController,
-    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties,
+            Map<String, dynamic>? map)?
+        builder,
     Key? key,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _assetMarkers(
         url,
         markerProperties: markerProperties,
@@ -506,16 +519,9 @@ class PowerGeoJSONMarkers {
         builder: builder,
         key: key,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -565,9 +571,11 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties,
+            Map<String, dynamic>? map)?
+        builder,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _fileMarkers(
         path,
         markerLayerProperties: markerProperties,
@@ -575,16 +583,9 @@ class PowerGeoJSONMarkers {
         builder: builder,
         key: key,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -634,9 +635,11 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerLayerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? map)? builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties,
+            Map<String, dynamic>? map)?
+        builder,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _memoryMarkers(
         bytes,
         markerLayerProperties: markerLayerProperties,
@@ -644,16 +647,9 @@ class PowerGeoJSONMarkers {
         builder: builder,
         key: key,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -701,7 +697,9 @@ class PowerGeoJSONMarkers {
     required MarkerProperties markerProperties,
     MapController? mapController,
     Key? key,
-    Widget Function(BuildContext context, MarkerProperties markerProperties, Map<String, dynamic>? properties)? builder,
+    Widget Function(BuildContext context, MarkerProperties markerProperties,
+            Map<String, dynamic>? properties)?
+        builder,
   }) {
     return _string(
       data,

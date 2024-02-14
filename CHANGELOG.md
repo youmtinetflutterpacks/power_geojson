@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.3+9] - 2023-02-06
+
+- Bugs fix
+- Enhanced FutureBuilder
+- Whitelisted StatusCodes for network
+
 ## [1.0.2+8] - 2023-02-06
 
 - Up To Date Dependencies

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -139,6 +140,7 @@ Future<Widget> _networkPolygons(
       builder,
   Client? client,
   Map<String, String>? headers,
+  required List<int> statusCodes,
   PolygonProperties? polygonProperties,
   bool polygonCulling = false,
   Key? key,
@@ -147,14 +149,16 @@ Future<Widget> _networkPolygons(
   var method = client == null ? get : client.get;
   var response = await method(urlString, headers: headers);
   var string = response.body;
-  return _string(
-    string,
-    builder: builder,
-    polygonProperties: polygonProperties,
-    key: key,
-    polygonCulling: polygonCulling,
-    mapController: mapController,
-  );
+  return statusCodes.contains(response.statusCode)
+      ? _string(
+          string,
+          builder: builder,
+          polygonProperties: polygonProperties,
+          key: key,
+          polygonCulling: polygonCulling,
+          mapController: mapController,
+        )
+      : Text('${response.statusCode}');
 }
 
 /// Parses the polygon data provided as a string and returns a widget for map display.
@@ -270,6 +274,7 @@ class PowerGeoJSONPolygons {
   static Widget network(
     String url, {
     Client? client,
+    List<int> statusCodes = const [200],
     Map<String, String>? headers,
     // layer
     Key? key,
@@ -283,27 +288,21 @@ class PowerGeoJSONPolygons {
     assert((builder == null && polygonProperties != null) ||
         (polygonProperties == null && builder != null));
     var uriString = url.toUri();
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _networkPolygons(
         uriString,
         builder: builder,
         headers: headers,
         client: client,
+        statusCodes: statusCodes,
         polygonProperties: polygonProperties,
         key: key,
         polygonCulling: polygonCulling,
         mapController: mapController,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -335,7 +334,7 @@ class PowerGeoJSONPolygons {
   }) {
     assert((builder == null && polygonProperties != null) ||
         (polygonProperties == null && builder != null));
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _assetPolygons(
         url,
         builder: builder,
@@ -344,16 +343,9 @@ class PowerGeoJSONPolygons {
         polygonCulling: polygonCulling,
         mapController: mapController,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -384,7 +376,7 @@ class PowerGeoJSONPolygons {
   }) {
     assert((builder == null && polygonProperties != null) ||
         (polygonProperties == null && builder != null));
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _filePolygons(
         path,
         builder: builder,
@@ -393,16 +385,9 @@ class PowerGeoJSONPolygons {
         polygonCulling: polygonCulling,
         mapController: mapController,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -431,7 +416,7 @@ class PowerGeoJSONPolygons {
   }) {
     assert((builder == null && polygonProperties != null) ||
         (polygonProperties == null && builder != null));
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _memoryPolygons(
         bytes,
         builder: builder,
@@ -440,16 +425,9 @@ class PowerGeoJSONPolygons {
         polygonCulling: polygonCulling,
         mapController: mapController,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 

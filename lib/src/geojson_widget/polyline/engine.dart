@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -221,6 +222,7 @@ Future<Widget> _assetPolylines(
 Future<Widget> _networkPolylines(
   Uri urlString, {
   Client? client,
+  required List<int> statusCodes,
   Map<String, String>? headers,
   Key? key,
   required PolylineProperties polylineProperties,
@@ -233,14 +235,16 @@ Future<Widget> _networkPolylines(
   var method = client == null ? get : client.get;
   var response = await method(urlString, headers: headers);
   var string = response.body;
-  return _string(
-    string,
-    polylineProperties: polylineProperties,
-    builder: builder,
-    mapController: mapController,
-    key: key,
-    polylineCulling: polylineCulling,
-  );
+  return statusCodes.contains(response.statusCode)
+      ? _string(
+          string,
+          polylineProperties: polylineProperties,
+          builder: builder,
+          mapController: mapController,
+          key: key,
+          polylineCulling: polylineCulling,
+        )
+      : Text('${response.statusCode}');
 }
 
 /// Creates a widget to display polylines from GeoJSON string data on a map.
@@ -325,6 +329,7 @@ class PowerGeoJSONPolylines {
   static Widget network(
     String url, {
     Client? client,
+    List<int> statusCodes = const [200],
     Map<String, String>? headers,
     // layer
     Key? key,
@@ -336,27 +341,21 @@ class PowerGeoJSONPolylines {
     bool polylineCulling = false,
   }) {
     var uriString = url.toUri();
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _networkPolylines(
         uriString,
         headers: headers,
         client: client,
+        statusCodes: statusCodes,
         polylineProperties: polylineProperties,
         builder: builder,
         mapController: mapController,
         key: key,
         polylineCulling: polylineCulling,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -393,7 +392,7 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _assetPolylines(
         url,
         polylineProperties: polylineProperties,
@@ -402,16 +401,9 @@ class PowerGeoJSONPolylines {
         key: key,
         polylineCulling: polylineCulling,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -425,7 +417,7 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _filePolylines(
         path,
         polylineProperties: polylineProperties,
@@ -434,16 +426,9 @@ class PowerGeoJSONPolylines {
         polylineCulling: polylineCulling,
         key: key,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -480,7 +465,7 @@ class PowerGeoJSONPolylines {
     Key? key,
     bool polylineCulling = false,
   }) {
-    return FutureBuilder(
+    return EnhancedFutureBuilder(
       future: _memoryPolylines(
         bytes,
         polylineProperties: polylineProperties,
@@ -489,16 +474,9 @@ class PowerGeoJSONPolylines {
         key: key,
         polylineCulling: polylineCulling,
       ),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasData) {
-            return snap.data ?? const SizedBox();
-          }
-        } else if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        return const SizedBox();
-      },
+      rememberFutureResult: true,
+      whenDone: (Widget snapshotData) => snapshotData,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
