@@ -5,6 +5,18 @@ import 'package:flutter_map/flutter_map.dart';
 // import 'package:point_in_polygon/point_in_polygon.dart';
 import 'package:power_geojson/power_geojson.dart';
 
+extension PointXList on List<double> {
+  LatLng toLatLng() {
+    return LatLng(last, first);
+  }
+}
+
+extension XListPoint on LatLng {
+  List<double> toList() {
+    return [longitude, latitude];
+  }
+}
+
 extension ListABC<T> on List<T> {
   /// Returns the first element that matches the test; if none is found, it returns null.
   T? firstWhereOrNull(bool Function(T) test) {
@@ -13,30 +25,53 @@ extension ListABC<T> on List<T> {
   }
 }
 
-extension PolygonX on Polygon {
-  /// Determines whether a point resides within a polygon.
-  bool isGeoPointInPolygon(LatLng latlng) {
+extension PolyX on Polygon {
+  bool isPointInsidePolygon(LatLng position) {
+    var list = [
+      points.map((e) => e.toList()).toList(),
+      ...(holePointsList ?? [])
+          .map((e) => e.map((f) => f.toList()).toList())
+          .toList(),
+    ];
+    return list.isGeoPointInPolygon(position);
+  }
+}
+
+extension ListListLatLngX on List<List<List<double>>> {
+  bool isGeoPointInPolygon(LatLng position) {
     var isInPolygon = false;
+    var points = first.toLatLng();
+
     for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
-      if ((((points[i].latitude <= latlng.latitude) &&
-                  (latlng.latitude < points[j].latitude)) ||
-              ((points[j].latitude <= latlng.latitude) &&
-                  (latlng.latitude < points[i].latitude))) &&
-          (latlng.longitude <
+      if ((((points[i].latitude <= position.latitude) &&
+                  (position.latitude < points[j].latitude)) ||
+              ((points[j].latitude <= position.latitude) &&
+                  (position.latitude < points[i].latitude))) &&
+          (position.longitude <
               (points[j].longitude - points[i].longitude) *
-                      (latlng.latitude - points[i].latitude) /
+                      (position.latitude - points[i].latitude) /
                       (points[j].latitude - points[i].latitude) +
                   points[i].longitude)) isInPolygon = !isInPolygon;
     }
     return isInPolygon;
   }
 
-  /// Determines whether a point resides within a polygon.
-  bool isGeoPointInsidePolygon(LatLng position) {
-    /// Check if the point sits exactly on a vertex
-    /// var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
-    LatLng? vertexPosition =
-        points.firstWhereOrNull((point) => point == position);
+  bool isPointInsidePolygon(LatLng position) {
+    var outHoles = length > 1
+        ? sublist(1).map((e) {
+            return ![e]._isPointInsidePolygon(position);
+          }).every((e) => e)
+        : true;
+    return _isPointInsidePolygon(position) && outHoles;
+  }
+
+  bool _isPointInsidePolygon(LatLng position) {
+    var points = first;
+    // Check if the point sits exactly on a vertex
+    // var vertexPosition = points.firstWhere((point) => point == position, orElse: () => null);
+    LatLng? vertexPosition = points
+        .firstWhereOrNull((point) => point.toLatLng() == position)
+        ?.toLatLng();
     if (vertexPosition != null) {
       return true;
     }
@@ -46,9 +81,10 @@ extension PolygonX on Polygon {
     var verticesCount = points.length;
 
     for (int i = 1; i < verticesCount; i++) {
-      LatLng vertex1 = points[i - 1];
-      LatLng vertex2 = points[i];
+      LatLng vertex1 = points[i - 1].toLatLng();
+      LatLng vertex2 = points[i].toLatLng();
 
+      // Check if point is on an horizontal polygon boundary
       if (vertex1.latitude == vertex2.latitude &&
           vertex1.latitude == position.latitude &&
           position.longitude > min(vertex1.longitude, vertex2.longitude) &&
@@ -65,6 +101,7 @@ extension PolygonX on Polygon {
                 (vertex2.latitude - vertex1.latitude) +
             vertex1.longitude;
         if (xinters == position.longitude) {
+          // Check if point is on the polygon boundary (other than horizontal)
           return true;
         }
         if (vertex1.longitude == vertex2.longitude ||
@@ -73,6 +110,8 @@ extension PolygonX on Polygon {
         }
       }
     }
+
+    // If the number of edges we passed through is odd, then it's in the polygon.
     return intersections % 2 != 0;
   }
 }

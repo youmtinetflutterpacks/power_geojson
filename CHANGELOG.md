@@ -1,20 +1,24 @@
 # Change Log
 
-## [1.0.3+9] - 2023-02-06
+## [1.0.4+10] - 2024-02-15
+
+- Add IsPointIsidePolygon
+
+## [1.0.3+9] - 2024-02-14
 
 - Bugs fix
 - Enhanced FutureBuilder
 - Whitelisted StatusCodes for network
 
-## [1.0.2+8] - 2023-02-06
+## [1.0.2+8] - 2024-02-13
 
 - Up To Date Dependencies
 
-## [1.0.1+7] - 2023-02-06
+## [1.0.1+7] - 2024-02-13
 
 - Removing POINT_IN_POLYGON
 
-## [1.0.0+6] - 2023-02-06
+## [1.0.0+6] - 2024-02-06
 
 - Adding PowerJSON
 
