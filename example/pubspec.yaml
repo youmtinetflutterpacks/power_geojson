@@ -15,7 +15,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.1.5
-  flutter_map: ^5.0.0
+  flutter_map: ^6.1.0
   # flutter_map_marker_cluster: ^1.1.1
   latlong2: ^0.9.0
   console_tools: ^1.0.0
@@ -24,6 +24,7 @@ dependencies:
   get: ^4.6.5
   http: ^1.0.0
   collection: ^1.16.0
+  enhanced_future_builder: ^2.0.0
 
 dev_dependencies:
   flutter_test:

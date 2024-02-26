@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:console_tools/console_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 
@@ -24,24 +26,14 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
   late final proj4.Projection google;
   late final Proj4Crs epsg26191CRS;
 
-  final resolutions = <double>[
-    32768,
-    16384,
-    8192,
-    4096,
-    2048,
-    1024,
-    512,
-    256,
-    128
-  ];
+  final resolutions = <double>[32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128];
   proj4.Point point = proj4.Point(x: -2.328758, y: 34.928685);
   String initText = 'Map centered to';
   double? maxZoom;
 
   final epsg26191Bounds = Bounds<double>(
-    const CustomPoint<double>(-276362.47, -296555.37),
-    const CustomPoint<double>(895990.96, 604816.69),
+    const Point<double>(-276362.47, -296555.37),
+    const Point<double>(895990.96, 604816.69),
   );
 
   @override
@@ -65,7 +57,7 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
       proj4Projection: epsg26191,
       resolutions: resolutions,
       bounds: epsg26191Bounds,
-      origins: [const CustomPoint(0, 0)],
+      origins: const [Point<double>(0, 0)],
       scales: null,
       transformation: null,
     );
@@ -117,8 +109,8 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
     return FlutterMap(
       options: MapOptions(
         crs: epsg26191CRS,
-        center: LatLng(point.x, point.y),
-        zoom: 3,
+        initialCenter: LatLng(point.x, point.y),
+        initialZoom: 3,
         //   maxZoom: maxZoom,
         onTap: (tapPosition, p) => setState(() {
           initText = 'You clicked at';
@@ -130,26 +122,21 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
         TileLayer(
           tileDisplay: const TileDisplay.fadeIn(),
           errorImage: const AssetImage('assets/images/flutter_logo.png'),
-          backgroundColor: Colors.green,
           errorTileCallback: (tile, error, trace) {
             Console.log(tile.imageInfo);
           },
-          urlTemplate:
-              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
           userAgentPackageName: 'dev.fleaflet.flutter_map.example',
         ),
         MarkerLayer(
           markers: [
             Marker(
               point: LatLng(point.y, point.x),
-              builder: (context) {
-                return const Icon(
-                  Icons.location_history_sharp,
-                  color: Colors.black,
-                );
-              },
-              anchorPos: AnchorPos.align(AnchorAlign.top),
-              rotateAlignment: Alignment.bottomCenter,
+              child: const Icon(
+                Icons.location_history_sharp,
+                color: Colors.black,
+              ),
+              alignment: Alignment.bottomCenter,
             )
           ],
         )
@@ -176,14 +163,12 @@ class WMSTileLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TileLayer(
-      backgroundColor: Colors.transparent,
       wmsOptions: WMSTileLayerOptions(
         crs: epsg26191CRS,
         transparent: true,
         format: 'image/jpeg',
-        baseUrl:
-            'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
-        layers: ['gebco_north_polar_view'],
+        baseUrl: 'https://www.gebco.net/data_and_products/gebco_web_services/north_polar_view_wms/mapserv?',
+        layers: const ['gebco_north_polar_view'],
       ),
     );
   }

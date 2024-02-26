@@ -18,6 +18,7 @@ dependencies:
   latlong2: ^0.9.0
   path_provider: ^2.1.2
   enhanced_future_builder: ^2.0.0
+  collection: ^1.17.2
   # To do: Add StreamBuilder
 
 dev_dependencies:

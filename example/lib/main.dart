@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:console_tools/console_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-
+import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:power_geojson/power_geojson.dart';
-import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as latlong2;
 import 'package:power_geojson_example/lib.dart';
 
@@ -17,6 +17,11 @@ void main() {
       home: PowerGeojsonSampleApp(),
     ),
   );
+}
+
+Future<PowerGeoPolygon> _assetPolygons(String path) async {
+  final string = await rootBundle.loadString(path);
+  return PowerGeoJSONFeatureCollection.fromJson(string).geoJSONPolygons.first;
 }
 
 class PowerGeojsonSampleApp extends StatefulWidget {
@@ -32,7 +37,6 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
   var latLng = const latlong2.LatLng(34.92849168609999, -2.3225879568537056);
 
   final MapController _mapController = MapController();
-  final FlutterMapState mapState = FlutterMapState();
   @override
   void initState() {
     super.initState();
@@ -43,13 +47,43 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
       );
   @override
   Widget build(BuildContext context) {
-    var interactiveFlags2 = InteractiveFlag.doubleTapZoom |
-        InteractiveFlag.drag |
-        InteractiveFlag.pinchZoom |
-        InteractiveFlag.pinchMove;
-    var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     // double distanceMETERS = 10;
     // var distanceDMS = dmFromMeters(distanceMETERS);
+    return Scaffold(
+      body: Center(
+        child: EnhancedFutureBuilder(
+          future: _assetPolygons('assets/geojsons/moorocco.geojson'),
+          whenDone: (polygon) {
+            return ClipPath(
+              clipper: PowerGeoJSONClipper(
+                polygon: polygon.geometry.coordinates.toPolygon(),
+              ),
+              child: Container(
+                color: Colors.red,
+                width: Get.width / 1.23,
+                height: Get.height / 1.5,
+                child: const Text(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            );
+          },
+          rememberFutureResult: false,
+          whenNotDone: const Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Scaffold map() {
+    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
+    var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Power GeoJSON Examples"),
@@ -57,9 +91,9 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
       body: FlutterMap(
         mapController: _mapController,
         options: MapOptions(
-          center: center,
-          zoom: 11,
-          interactiveFlags: interactiveFlags2,
+          initialCenter: center,
+          initialZoom: 11,
+          interactionOptions: InteractionOptions(flags: interactiveFlags2),
           onLongPress: (tapPosition, point) {
             Console.log('onLongPress $point', color: ConsoleColors.citron);
           },
@@ -77,34 +111,31 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
             await _createFiles();
             // await Future.delayed(const Duration(seconds: 1));
             // var users = await UserProvider().getRandomUsers();
-            // _mapController.state = mapState;
           },
         ),
         children: [
           /* TileLayer(
-            urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-            backgroundColor: const Color(0xFF202020),
-            maxZoom: 19,
-          ), */
+                urlTemplate: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                backgroundColor: const Color(0xFF202020),
+                maxZoom: 19,
+              ), */
 
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            backgroundColor: const Color(0xFF202020),
             maxZoom: 19,
           ),
 
           const AssetGeoJSONZones(),
           /* FeatureLayer(
-            options: FeatureLayerOptions(
-              "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
-              "point",
-            ),
-            map: mapState,
-            stream: esri(),
-          ), */
+                options: FeatureLayerOptions(
+                  "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
+                  "point",
+                ),
+                stream: esri(),
+              ), */
 
           /* 
-          */
+              */
           //////////////// Polygons
           const AssetGeoJSONPolygon(),
           const AssetGeoJSONMultiPolygon(),
@@ -172,18 +203,12 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 }
 
 Future<void> _createFiles() async {
-  final assetsPoints =
-      await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
-  final assetsMultipoints = await rootBundle
-      .loadString('assets/geojsons/files/files_pointsmultiples.geojson');
-  final assetsLines =
-      await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
-  final assetsMultilines = await rootBundle
-      .loadString('assets/geojsons/files/files_linesmultiples.geojson');
-  final assetsPolygons = await rootBundle
-      .loadString('assets/geojsons/files/files_polygons.geojson');
-  final assetsMultipolygons = await rootBundle
-      .loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
+  final assetsPoints = await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
+  final assetsMultipoints = await rootBundle.loadString('assets/geojsons/files/files_pointsmultiples.geojson');
+  final assetsLines = await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
+  final assetsMultilines = await rootBundle.loadString('assets/geojsons/files/files_linesmultiples.geojson');
+  final assetsPolygons = await rootBundle.loadString('assets/geojsons/files/files_polygons.geojson');
+  final assetsMultipolygons = await rootBundle.loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
   await _createFile('files_points', assetsPoints);
   await _createFile('files_multipoints', assetsMultipoints);
   await _createFile('files_lines', assetsLines);
@@ -194,8 +219,7 @@ Future<void> _createFiles() async {
 
 Future<File> _createFile(String filename, String data) async {
   var list = await getExternalDir();
-  var directory =
-      ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
+  var directory = ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
   final path = "$directory/$filename";
   Console.log(path);
   final File file = File(path);
@@ -272,3 +296,4 @@ function generateRandomColorList(count) {
 } 
 console.log(generateRandomColorList(10)); 
 */
+
