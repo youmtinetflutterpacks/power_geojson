@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.0.7+13] - 2024-02-27
+
+- Bug Fix
+
+## [1.0.6+12] - 2024-02-27
+
+- Bug Fix
+
+## [1.0.5+11] - 2024-02-27
+
+- Add PowerGeoJSONClipper
+- Enhance PowerGSON
+
 ## [1.0.4+10] - 2024-02-15
 
 - Add IsPointIsidePolygon

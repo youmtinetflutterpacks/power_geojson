@@ -82,7 +82,10 @@ class PowerJSON {
     if (value == null || value is bool || value is num || value is BigInt) {
       _buffer.write(value.toString());
     } else {
-      _buffer.write('"${value.toString()}"');
+      var replaceAll = '$value'.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+      _buffer.write(
+        '"$replaceAll"',
+      );
     }
   }
 

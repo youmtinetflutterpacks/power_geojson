@@ -60,9 +60,11 @@ void zoomTo(List<List<double>?> features, MapController? mapController) {
   mapController.fitCamera(CameraFit.bounds(bounds: latLngBounds));
 }
 
-Future<Directory> getDocumentsDir() async => await path_provider.getApplicationDocumentsDirectory();
+Future<Directory> getDocumentsDir() async =>
+    await path_provider.getApplicationDocumentsDirectory();
 
 Future<List<Directory>?> getExternalDir() async {
-  var externalStorageDirectories = await path_provider.getExternalStorageDirectories();
+  var externalStorageDirectories =
+      await path_provider.getExternalStorageDirectories();
   return externalStorageDirectories;
 }

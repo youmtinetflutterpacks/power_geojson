@@ -82,7 +82,10 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
   }
 
   Scaffold map() {
-    var interactiveFlags2 = InteractiveFlag.doubleTapZoom | InteractiveFlag.drag | InteractiveFlag.pinchZoom | InteractiveFlag.pinchMove;
+    var interactiveFlags2 = InteractiveFlag.doubleTapZoom |
+        InteractiveFlag.drag |
+        InteractiveFlag.pinchZoom |
+        InteractiveFlag.pinchMove;
     var center = const latlong2.LatLng(34.926447747065936, -2.3228343908943998);
     return Scaffold(
       appBar: AppBar(
@@ -203,12 +206,18 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 }
 
 Future<void> _createFiles() async {
-  final assetsPoints = await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
-  final assetsMultipoints = await rootBundle.loadString('assets/geojsons/files/files_pointsmultiples.geojson');
-  final assetsLines = await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
-  final assetsMultilines = await rootBundle.loadString('assets/geojsons/files/files_linesmultiples.geojson');
-  final assetsPolygons = await rootBundle.loadString('assets/geojsons/files/files_polygons.geojson');
-  final assetsMultipolygons = await rootBundle.loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
+  final assetsPoints =
+      await rootBundle.loadString('assets/geojsons/files/files_points.geojson');
+  final assetsMultipoints = await rootBundle
+      .loadString('assets/geojsons/files/files_pointsmultiples.geojson');
+  final assetsLines =
+      await rootBundle.loadString('assets/geojsons/files/files_lines.geojson');
+  final assetsMultilines = await rootBundle
+      .loadString('assets/geojsons/files/files_linesmultiples.geojson');
+  final assetsPolygons = await rootBundle
+      .loadString('assets/geojsons/files/files_polygons.geojson');
+  final assetsMultipolygons = await rootBundle
+      .loadString('assets/geojsons/files/files_polygonsmultiples.geojson');
   await _createFile('files_points', assetsPoints);
   await _createFile('files_multipoints', assetsMultipoints);
   await _createFile('files_lines', assetsLines);
@@ -219,7 +228,8 @@ Future<void> _createFiles() async {
 
 Future<File> _createFile(String filename, String data) async {
   var list = await getExternalDir();
-  var directory = ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
+  var directory =
+      ((list == null || list.isEmpty) ? Directory('/') : list[0]).path;
   final path = "$directory/$filename";
   Console.log(path);
   final File file = File(path);
@@ -296,4 +306,3 @@ function generateRandomColorList(count) {
 } 
 console.log(generateRandomColorList(10)); 
 */
-
