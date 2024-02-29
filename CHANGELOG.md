@@ -3,6 +3,7 @@
 ## [1.0.7+13] - 2024-02-29
 
 - Add Esri Json Support
+- Bug fixing
 
 ## [1.0.6+12] - 2024-02-27
 
