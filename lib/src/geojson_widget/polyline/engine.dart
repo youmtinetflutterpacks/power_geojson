@@ -59,7 +59,7 @@ Future<Widget> _filePolylines(
   if (exists) {
     var readasstring = await file.readAsString();
     return _string(
-      readasstring,
+      checkEsri(readasstring),
       polylineProperties: polylineProperties,
       builder: builder,
       mapController: mapController,
@@ -119,7 +119,7 @@ Future<Widget> _memoryPolylines(
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
-    string,
+    checkEsri(string),
     polylineProperties: polylineProperties,
     builder: builder,
     mapController: mapController,
@@ -175,7 +175,7 @@ Future<Widget> _assetPolylines(
 }) async {
   final string = await rootBundle.loadString(path);
   return _string(
-    string,
+    checkEsri(string),
     polylineProperties: polylineProperties,
     builder: builder,
     mapController: mapController,
@@ -237,7 +237,7 @@ Future<Widget> _networkPolylines(
   var string = response.body;
   return statusCodes.contains(response.statusCode)
       ? _string(
-          string,
+          checkEsri(string),
           polylineProperties: polylineProperties,
           builder: builder,
           mapController: mapController,
@@ -280,7 +280,7 @@ Widget _string(
   MapController? mapController,
   required bool polylineCulling,
 }) {
-  final geojson = PowerGeoJSONFeatureCollection.fromJson(string);
+  final geojson = PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
 
   var polylines = geojson.geoJSONLineStrings.map(
     (e) {

@@ -67,7 +67,7 @@ Future<Widget> _fileFeatureCollections(
 }) async {
   final readAsString = await fileLoadBuilder(path);
   return _string(
-    readAsString,
+    checkEsri(readAsString),
     featureCollectionPropertie: featureCollectionLayerProperties,
     mapController: mapController,
     key: key,
@@ -107,7 +107,7 @@ Future<Widget> _memoryFeatureCollections(
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
-    string,
+    checkEsri(string),
     featureCollectionPropertie: featureCollectionLayerProperties,
     mapController: mapController,
     key: key,
@@ -146,7 +146,7 @@ Future<Widget> _assetFeatureCollections(
 }) async {
   final string = await rootBundle.loadString(path);
   return _string(
-    string,
+    checkEsri(string),
     featureCollectionPropertie: featureCollectionProperties,
     mapController: mapController,
     key: key,
@@ -193,7 +193,7 @@ Future<Widget> _networkFeatureCollections(
 }) async {
   String string = await networkLoadBuilder(client, uri, headers);
   return _string(
-    string,
+    checkEsri(string),
     featureCollectionPropertie: featureCollectionProperties,
     mapController: mapController,
     key: key,
@@ -231,7 +231,7 @@ Widget _string(
   MapController? mapController,
 }) {
   PowerGeoJSONFeatureCollection parseGeoJSON =
-      PowerGeoJSONFeatureCollection.fromJson(json);
+      PowerGeoJSONFeatureCollection.fromJson(checkEsri(json));
   var points = parseGeoJSON.geoJSONPoints
       .map(
         (e) => e.geometry.coordinates.toMarker(

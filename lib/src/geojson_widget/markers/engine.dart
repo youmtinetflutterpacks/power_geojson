@@ -98,9 +98,11 @@ Widget _defaultMarkerBuilder(BuildContext context,
 Future<Widget> _fileMarkers(
   String path, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(
+    BuildContext context,
+    MarkerProperties markerProperties,
+    Map<String, dynamic>? map,
+  )? builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -109,7 +111,7 @@ Future<Widget> _fileMarkers(
   if (exists) {
     var readAsString = await file.readAsString();
     return _string(
-      readAsString,
+      checkEsri(readAsString),
       markerProperties: markerLayerProperties,
       mapController: mapController,
       key: key,
@@ -152,16 +154,18 @@ Future<Widget> _fileMarkers(
 Future<Widget> _memoryMarkers(
   Uint8List list, {
   required MarkerProperties markerLayerProperties,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(
+    BuildContext context,
+    MarkerProperties markerProperties,
+    Map<String, dynamic>? map,
+  )? builder,
   MapController? mapController,
   Key? key,
 }) async {
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
-    string,
+    checkEsri(string),
     markerProperties: markerLayerProperties,
     mapController: mapController,
     key: key,
@@ -202,14 +206,16 @@ Future<Widget> _assetMarkers(
   String path, {
   required MarkerProperties markerProperties,
   MapController? mapController,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(
+    BuildContext context,
+    MarkerProperties markerProperties,
+    Map<String, dynamic>? map,
+  )? builder,
   Key? key,
 }) async {
   final string = await rootBundle.loadString(path);
   return _string(
-    string,
+    checkEsri(string),
     markerProperties: markerProperties,
     mapController: mapController,
     key: key,
@@ -257,9 +263,11 @@ Future<Widget> _networkMarkers(
   Client? client,
   required List<int> statusCodes,
   Map<String, String>? headers,
-  required Widget Function(BuildContext context,
-          MarkerProperties markerProperties, Map<String, dynamic>? map)?
-      builder,
+  required Widget Function(
+    BuildContext context,
+    MarkerProperties markerProperties,
+    Map<String, dynamic>? map,
+  )? builder,
   MapController? mapController,
 }) async {
   var method = client == null ? get : client.get;
@@ -267,7 +275,7 @@ Future<Widget> _networkMarkers(
   var string = response.body;
   return statusCodes.contains(response.statusCode)
       ? _string(
-          string,
+          checkEsri(string),
           markerProperties: markerLayerProperties,
           mapController: mapController,
           key: key,
@@ -317,7 +325,7 @@ Widget _string(
   // Other properties
   MapController? mapController,
 }) {
-  final geojson = PowerGeoJSONFeatureCollection.fromJson(string);
+  final geojson = PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
 
   var markers = geojson.geoJSONPoints.map(
     (e) {

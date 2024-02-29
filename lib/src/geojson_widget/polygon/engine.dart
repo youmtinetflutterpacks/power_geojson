@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 export 'properties.dart';
+
+const List<String> _esriFields = [
+  "displayFieldName",
+  "fieldAliases",
+  "geometryType",
+  "spatialReference",
+  "fields",
+];
 
 /// Loads polygons from a file and returns a widget for map display.
 ///
@@ -24,8 +33,9 @@ export 'properties.dart';
 Future<Widget> _filePolygons(
   String path, {
   Polygon Function(
-          List<List<List<double>>> coordinates, Map<String, dynamic>? map)?
-      builder,
+    List<List<List<double>>> coordinates,
+    Map<String, dynamic>? map,
+  )? builder,
   PolygonProperties? polygonProperties,
   MapController? mapController,
   Key? key,
@@ -36,7 +46,7 @@ Future<Widget> _filePolygons(
   if (exists) {
     var readasstring = await file.readAsString();
     return _string(
-      readasstring,
+      checkEsri(readasstring),
       builder: builder,
       polygonProperties: polygonProperties,
       polygonCulling: polygonCulling,
@@ -46,6 +56,15 @@ Future<Widget> _filePolygons(
   } else {
     return const Text('Not Found');
   }
+}
+
+String checkEsri(String readasstring) {
+  var map = jsonDecode(readasstring) as Map<String, Object?>;
+  var isEsri = map.keys.every((field) => _esriFields.contains(field));
+  var checkEsri = isEsri
+      ? PowerJSON(PowerEsriJSON().toGeoJSON(map)).toText()
+      : readasstring;
+  return checkEsri;
 }
 
 /// Loads polygons from memory data and returns a widget for map display.
@@ -75,7 +94,7 @@ Future<Widget> _memoryPolygons(
   File file = File.fromRawPath(list);
   var string = await file.readAsString();
   return _string(
-    string,
+    checkEsri(string),
     builder: builder,
     polygonProperties: polygonProperties,
     key: key,
@@ -110,7 +129,7 @@ Future<Widget> _assetPolygons(
 }) async {
   final string = await rootBundle.loadString(path);
   return _string(
-    string,
+    checkEsri(string),
     builder: builder,
     polygonProperties: polygonProperties,
     key: key,
@@ -151,7 +170,7 @@ Future<Widget> _networkPolygons(
   var string = response.body;
   return statusCodes.contains(response.statusCode)
       ? _string(
-          string,
+          checkEsri(string),
           builder: builder,
           polygonProperties: polygonProperties,
           key: key,
@@ -186,7 +205,7 @@ PolygonLayer _string(
   PolygonProperties? polygonProperties,
   MapController? mapController,
 }) {
-  final geojson = PowerGeoJSONFeatureCollection.fromJson(string);
+  final geojson = PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
 
   var polygons = geojson.geoJSONPolygons.map(
     (e) {
