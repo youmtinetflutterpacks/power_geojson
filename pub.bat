@@ -48,6 +48,6 @@ git add .
 git commit -m "%commitMessage%"
 git tag "%tagName%"
 git push --tags
-git push -u "%remoteName%"
+git push -u %remoteName%
 
 echo Done!
