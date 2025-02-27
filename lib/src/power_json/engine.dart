@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class PowerJSON {
   final StringSink _buffer = StringBuffer('');
   final List<bool> _hasItemsOnLevel = List<bool>.of(<bool>[false]);
@@ -24,7 +26,10 @@ class PowerJSON {
     if (_markItem()) {
       _buffer.write(',');
     }
-    _buffer.write('"$name":');
+    if (name.isNotEmpty) {
+      // Fix: Avoid writing empty keys
+      _buffer.write('"$name":');
+    }
     if (value is Map<String, dynamic>) {
       _printMap(value);
     } else if (value is Iterable<dynamic>) {
@@ -47,8 +52,8 @@ class PowerJSON {
   void _printArray(Iterable<dynamic> array) {
     _startContainer(_PrivateContainer.propertyArray);
     _buffer.write(_startSquareBracket);
-    for (List<dynamic> item in array) {
-      _printArrayItemRecursive(item);
+    for (dynamic item in array) {
+      _printArrayItemRecursive(item); // Fix: Allow any type, not just List
     }
     _buffer.write(_endSquareBracket);
     _endContainer();
@@ -81,16 +86,16 @@ class PowerJSON {
     if (value == null || value is bool || value is num || value is BigInt) {
       _buffer.write(value.toString());
     } else {
-      String replaceAll = '$value'.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
-      _buffer.write(
-        '"$replaceAll"',
-      );
+      _buffer.write(jsonEncode(value)); // Fix: Proper JSON escaping
     }
   }
 
   String toText() {
-    return '$_buffer'.substring(3);
+    return _buffer.toString(); // Fix: Don't arbitrarily cut characters
   }
+
+  ////////////////////////
+  ///
 }
 
 enum _PrivateContainer {
