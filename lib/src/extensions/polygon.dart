@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 // import 'package:point_in_polygon/point_in_polygon.dart';
@@ -14,14 +15,6 @@ extension PointXList on List<double> {
 extension XListPoint on LatLng {
   List<double> toList() {
     return <double>[longitude, latitude];
-  }
-}
-
-extension ListABC<T> on List<T> {
-  /// Returns the first element that matches the test; if none is found, it returns null.
-  T? firstWhereOrNull(bool Function(T) test) {
-    Iterable<T> first = where(test);
-    return first.isEmpty ? null : first.first;
   }
 }
 

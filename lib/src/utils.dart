@@ -1,6 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:power_geojson/src/src.dart';
 export 'dart:developer';
 
 /// Zooms the map view to fit the specified geographic features.
