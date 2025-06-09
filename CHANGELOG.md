@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2.5+2]
+## [1.2.5+3]
 
 - Bug fixes (PowerJSON) for DateTime && Enums
 `2025-06-09`
