@@ -85,12 +85,14 @@ class PowerJSON {
   }
 
   void _printValue(Object? value) {
-    if (value == null || value is bool || value is num || value is BigInt || value is TimeOfDay) {
+    if (value == null || value is bool || value is num || value is BigInt) {
       _buffer.write(value.toString());
     } else if (value is DateTime) {
-      _buffer.write(value.toIso8601String());
+      _buffer.write('"${value.toIso8601String()}"');
     } else if (value is Enum) {
-      _buffer.write(value.name);
+      _buffer.write('"${value.name}"');
+    } else if (value is TimeOfDay) {
+      _buffer.write('"${value.toString()}"');
     } else {
       _buffer.write(jsonEncode(value));
     }
