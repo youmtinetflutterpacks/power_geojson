@@ -37,21 +37,26 @@ class PolylineProperties<T extends Object> {
     Map<String, dynamic>? properties,
     PolylineProperties<T> polylineProperties,
   ) {
-    Map<LayerPolylineIndexes, String>? layerProperties = polylineProperties.layerProperties;
+    Map<LayerPolylineIndexes, String>? layerProperties =
+        polylineProperties.layerProperties;
     if (properties != null && layerProperties != null) {
       // fill
-      final String? keyPropertieFillColor = layerProperties[LayerPolylineIndexes.color];
+      final String? keyPropertieFillColor =
+          layerProperties[LayerPolylineIndexes.color];
       String hexString = '${properties[keyPropertieFillColor]}';
       final Color color = HexColor.fromHex(hexString, polylineProperties.color);
       // border color
-      final String? keyPropertieBorderColor = layerProperties[LayerPolylineIndexes.borderColor];
+      final String? keyPropertieBorderColor =
+          layerProperties[LayerPolylineIndexes.borderColor];
       String hexString2 = '${properties[keyPropertieBorderColor]}';
       Color fall = polylineProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      String? keyPropertieBWidth = layerProperties[LayerPolylineIndexes.strokeWidth];
+      String? keyPropertieBWidth =
+          layerProperties[LayerPolylineIndexes.strokeWidth];
       double defBorderStokeWidth = polylineProperties.borderStrokeWidth;
-      final double borderWidth = properties[keyPropertieBWidth] ?? defBorderStokeWidth;
+      final double borderWidth =
+          properties[keyPropertieBWidth] ?? defBorderStokeWidth;
       return PolylineProperties<T>(
         colorsStop: polylineProperties.colorsStop,
         gradientColors: polylineProperties.gradientColors,

@@ -84,21 +84,26 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
               onMapReady: () async => await createFiles(),
             ),
             children: [
-              TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', maxZoom: 19),
+              TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  maxZoom: 19),
               AssetGeoJSONZones(),
               //////////////// Polygons
               AssetGeoJSONPolygon(),
-              if (!AppPlatform.isWeb || !AppPlatform.isWindows) FileGeoJSONPolygon(),
+              if (!AppPlatform.isWeb || !AppPlatform.isWindows)
+                FileGeoJSONPolygon(),
               StringGeoJSONPolygon(),
               NetworkGeoJSONPolygon(),
               //////////////// Lines
               AssetGeoJSONLines(),
-              if (!AppPlatform.isWeb || !AppPlatform.isWindows) FileGeoJSONLines(),
+              if (!AppPlatform.isWeb || !AppPlatform.isWindows)
+                FileGeoJSONLines(),
               StringGeoJSONLines(),
               NetworkGeoJSONLines(),
               //////////////// Points
               AssetGeoJSONMarkerPoints(popupController: _popupController),
-              if (!AppPlatform.isWeb || !AppPlatform.isWindows) FileGeoJSONMarkers(),
+              if (!AppPlatform.isWeb || !AppPlatform.isWindows)
+                FileGeoJSONMarkers(),
               StringGeoJSONPoints(),
               NetworkGeoJSONMarker(),
               // /////// /// ///// ///

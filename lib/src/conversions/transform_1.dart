@@ -16,7 +16,9 @@ const List<String> _esriFields = <String>[
 String checkEsri(String readasstring) {
   Map<String, Object?> map = jsonDecode(readasstring) as Map<String, Object?>;
   bool isEsri = map.keys.every((String field) => _esriFields.contains(field));
-  String checkEsri = isEsri ? PowerJSON(PowerEsriJSON(map).toGeoJSON()).toText() : readasstring;
+  String checkEsri = isEsri
+      ? PowerJSON(PowerEsriJSON(map).toGeoJSON()).toText()
+      : readasstring;
   return checkEsri;
 }
 
@@ -115,7 +117,10 @@ class PowerEsriJSON {
     } else {
       type = "MultiPolygon";
     }
-    return {"type": type, "coordinates": (coords.length == 1) ? coords[0] : coords};
+    return {
+      "type": type,
+      "coordinates": (coords.length == 1) ? coords[0] : coords
+    };
   }
 
   bool _ringIsClockwise(ringToTest) {

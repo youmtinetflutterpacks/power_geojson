@@ -231,7 +231,8 @@ Future<Widget> _networkPolylines<T extends Object>(
   MapController? mapController,
   required Widget Function(int? statusCode)? fallback,
 }) async {
-  Future<Response> Function(Uri url, {Map<String, String>? headers}) method = client == null ? get : client.get;
+  Future<Response> Function(Uri url, {Map<String, String>? headers}) method =
+      client == null ? get : client.get;
   Response response = await method(urlString, headers: headers);
   String string = response.body;
   if (statusCodes.contains(response.statusCode)) {
@@ -243,7 +244,8 @@ Future<Widget> _networkPolylines<T extends Object>(
       key: key,
     );
   } else {
-    return fallback?.call(response.statusCode) ?? Text('${response.statusCode}');
+    return fallback?.call(response.statusCode) ??
+        Text('${response.statusCode}');
   }
 }
 
@@ -280,19 +282,22 @@ Widget _string<T extends Object>(
   )? builder,
   MapController? mapController,
 }) {
-  final PowerGeoJSONFeatureCollection geojson = PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
+  final PowerGeoJSONFeatureCollection geojson =
+      PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
 
   List<Polyline<T>> polylines = geojson.geoJSONLineStrings.map(
     (PowerGeoLineString e) {
       return builder != null
           ? builder(e.geometry.coordinates.toLatLng(), e.properties)
           : e.geometry.coordinates.toPolyline<T>(
-              polylineProperties: PolylineProperties.fromMap(e.properties, polylineProperties),
+              polylineProperties:
+                  PolylineProperties.fromMap(e.properties, polylineProperties),
             );
     },
   ).toList();
 
-  List<List<double>?> bbox = geojson.geoJSONPoints.map((PowerGeoPoint e) => e.bbox).toList();
+  List<List<double>?> bbox =
+      geojson.geoJSONPoints.map((PowerGeoPoint e) => e.bbox).toList();
   zoomTo(bbox, mapController);
   return PolylineLayer<T>(
     polylines: polylines,

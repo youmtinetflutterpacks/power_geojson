@@ -76,7 +76,8 @@ class PolygonProperties<T extends Object> {
   static const StrokePattern defIsDotted = StrokePattern.solid();
 
   /// Default label placement for polygons.
-  static const PolygonLabelPlacement defLabelPlacement = PolygonLabelPlacement.polylabel;
+  static const PolygonLabelPlacement defLabelPlacement =
+      PolygonLabelPlacement.polylabel;
 
   /// Default label style for polygons.
   static const TextStyle defLabelStyle = TextStyle();
@@ -193,31 +194,39 @@ class PolygonProperties<T extends Object> {
     Map<String, dynamic>? properties,
     PolygonProperties<T> polygonLayerProperties,
   ) {
-    Map<LayerPolygonIndexes, String>? layerProperties = polygonLayerProperties.layerProperties;
+    Map<LayerPolygonIndexes, String>? layerProperties =
+        polygonLayerProperties.layerProperties;
     if (properties != null && layerProperties != null) {
       // fill
-      final String? keyPropertieFillColor = layerProperties[LayerPolygonIndexes.fillColor];
+      final String? keyPropertieFillColor =
+          layerProperties[LayerPolygonIndexes.fillColor];
       bool isFilledMap = keyPropertieFillColor != null;
       String hexString = '${properties[keyPropertieFillColor]}';
       Color? polyLayProp = polygonLayerProperties.fillColor;
-      final Color? fillColor = polyLayProp == null ? null : HexColor.fromHex(hexString, polyLayProp);
+      final Color? fillColor =
+          polyLayProp == null ? null : HexColor.fromHex(hexString, polyLayProp);
       // border color
-      final String? layerPropertieBorderColor = layerProperties[LayerPolygonIndexes.borderColor];
+      final String? layerPropertieBorderColor =
+          layerProperties[LayerPolygonIndexes.borderColor];
       String hexString2 = '${properties[layerPropertieBorderColor]}';
       Color fall = polygonLayerProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      String? layerPropertieBWidth = layerProperties[LayerPolygonIndexes.borderStokeWidth];
+      String? layerPropertieBWidth =
+          layerProperties[LayerPolygonIndexes.borderStokeWidth];
       // label
       final String? label = layerProperties[LayerPolygonIndexes.label];
       final bool labeled = properties[label] != null;
       bool isLabelled = labeled && polygonLayerProperties.labeled;
-      String label2 = labeled ? '${properties[label]}' : polygonLayerProperties.label;
+      String label2 =
+          labeled ? '${properties[label]}' : polygonLayerProperties.label;
       return PolygonProperties<T>(
         isFilled: isFilledMap && polygonLayerProperties.isFilled,
         fillColor: fillColor,
         borderColor: borderColor,
-        borderStokeWidth: (properties[layerPropertieBWidth] ?? polygonLayerProperties.borderStokeWidth).toDouble(),
+        borderStokeWidth: (properties[layerPropertieBWidth] ??
+                polygonLayerProperties.borderStokeWidth)
+            .toDouble(),
         label: label2,
         layerProperties: layerProperties,
         labeled: isLabelled,

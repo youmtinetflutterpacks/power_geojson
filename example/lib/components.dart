@@ -18,7 +18,7 @@ class CircleOfMap extends StatelessWidget {
         CircleMarker(
           point: latLng,
           radius: 500,
-          color: Colors.indigo.withOpacity(0.6),
+          color: Colors.indigo.withValues(alpha: 0.6),
           borderColor: Colors.black,
           borderStrokeWidth: 3,
           useRadiusInMeter: true,

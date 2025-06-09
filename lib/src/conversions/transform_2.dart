@@ -12,7 +12,8 @@ class PowerEsriJsonTransformer {
 
   Map<String, Object?> esriToGeo(Map<String, Object?> esrijson) {
     Map<String, Object?> geojson = <String, Object?>{};
-    List<Map<String, Object?>> features = esrijson["features"] as List<Map<String, Object?>>;
+    List<Map<String, Object?>> features =
+        esrijson["features"] as List<Map<String, Object?>>;
     String esriGeomType = '${esrijson["geometryType"]}';
     geojson["type"] = "FeatureCollection";
 
@@ -26,14 +27,16 @@ class PowerEsriJsonTransformer {
     return geojson;
   }
 
-  Map<String, Object?> _extract(Map<String, Object?> feature, String esriGeomType) {
+  Map<String, Object?> _extract(
+      Map<String, Object?> feature, String esriGeomType) {
     String geomType = _getGeomType(esriGeomType);
 
     return <String, Object?>{
       "type": "Feature",
       "geometry": <String, Object?>{
         "type": geomType,
-        "coordinates": _getCoordinates(feature["geometry"] as Map<String, Object?>, geomType),
+        "coordinates": _getCoordinates(
+            feature["geometry"] as Map<String, Object?>, geomType),
       },
       "properties": feature["attributes"],
     };

@@ -5,7 +5,7 @@ homepage: https://github.com/youmtinetflutterpacks/power_geojson
 repository: https://github.com/youmtinetflutterpacks/power_geojson
 
 environment:
-    sdk: ^3.5.4
+    sdk: ^3.6.1
     flutter: ">=2.18.0"
 
 dependencies:

@@ -30,7 +30,8 @@ class PowerEsriJsonTransform {
     }
   }
 
-  Map<String, Object?> _featureToGeo(Map<String, dynamic> featureIn, String geomType) {
+  Map<String, Object?> _featureToGeo(
+      Map<String, dynamic> featureIn, String geomType) {
     Map<String, dynamic> geometry = <String, Object?>{};
     geometry['type'] = geomType;
 
