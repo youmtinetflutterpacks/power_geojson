@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 class PowerJSON {
   final StringSink _buffer = StringBuffer('');
   final List<bool> _hasItemsOnLevel = List<bool>.of(<bool>[false]);
@@ -83,10 +85,14 @@ class PowerJSON {
   }
 
   void _printValue(Object? value) {
-    if (value == null || value is bool || value is num || value is BigInt) {
+    if (value == null || value is bool || value is num || value is BigInt || value is TimeOfDay) {
       _buffer.write(value.toString());
+    } else if (value is DateTime) {
+      _buffer.write(value.toIso8601String());
+    } else if (value is Enum) {
+      _buffer.write(value.name);
     } else {
-      _buffer.write(jsonEncode(value)); // Fix: Proper JSON escaping
+      _buffer.write(jsonEncode(value));
     }
   }
 
