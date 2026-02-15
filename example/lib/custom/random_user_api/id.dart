@@ -11,15 +11,10 @@ class Id {
   @override
   String toString() => 'Id(name: $name, value: $value)';
 
-  factory Id.fromMap(Map<String, dynamic> data) => Id(
-        name: data['name'] as String?,
-        value: data['value'] as dynamic,
-      );
+  factory Id.fromMap(Map<String, dynamic> data) =>
+      Id(name: data['name'] as String?, value: data['value'] as dynamic);
 
-  Map<String, dynamic> toMap() => {
-        'name': name,
-        'value': value,
-      };
+  Map<String, dynamic> toMap() => {'name': name, 'value': value};
 
   /// `dart:convert`
   ///
@@ -33,14 +28,8 @@ class Id {
   /// Converts [Id] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Id copyWith({
-    String? name,
-    dynamic value,
-  }) {
-    return Id(
-      name: name ?? this.name,
-      value: value ?? this.value,
-    );
+  Id copyWith({String? name, dynamic value}) {
+    return Id(name: name ?? this.name, value: value ?? this.value);
   }
 
   @override

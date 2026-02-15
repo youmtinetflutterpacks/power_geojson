@@ -14,14 +14,14 @@ class Timezone {
   }
 
   factory Timezone.fromMap(Map<String, dynamic> data) => Timezone(
-        offset: data['offset'] as String?,
-        description: data['description'] as String?,
-      );
+    offset: data['offset'] as String?,
+    description: data['description'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'offset': offset,
-        'description': description,
-      };
+    'offset': offset,
+    'description': description,
+  };
 
   /// `dart:convert`
   ///
@@ -35,10 +35,7 @@ class Timezone {
   /// Converts [Timezone] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Timezone copyWith({
-    String? offset,
-    String? description,
-  }) {
+  Timezone copyWith({String? offset, String? description}) {
     return Timezone(
       offset: offset ?? this.offset,
       description: description ?? this.description,

@@ -100,7 +100,8 @@ class MarkerProperties {
     Map<String, dynamic>? properties,
     MarkerProperties markerLayerProperties,
   ) {
-    var layerMarkerProperties = markerLayerProperties.layerProperties;
+    Map<LayerMarkerIndexes, String>? layerMarkerProperties =
+        markerLayerProperties.layerProperties;
     if (properties != null && layerMarkerProperties != null) {
       final String? keyPropertieWidth =
           layerMarkerProperties[LayerMarkerIndexes.width];

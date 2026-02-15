@@ -50,9 +50,9 @@ enum LayerPolygonIndexes {
 ///   borderStokeWidth: 2,
 /// );
 /// ```
-class PolygonProperties {
+class PolygonProperties<T extends Object> {
   /// Default fill color for polygons.
-  static const defFillColor = Color(0x9C2195F3);
+  static const Color defFillColor = Color(0x9C2195F3);
 
   /// Default value indicating whether holes should disable their border.
   static const bool defDisableHolesBorder = true;
@@ -73,11 +73,11 @@ class PolygonProperties {
   static const bool defLabeled = false;
 
   /// Default value indicating whether polygons are rendered as dotted lines.
-  static const bool defIsDotted = false;
+  static const StrokePattern defIsDotted = StrokePattern.solid();
 
   /// Default label placement for polygons.
-  static const PolygonLabelPlacement defLabelPlacement =
-      PolygonLabelPlacement.polylabel;
+  static const PolygonLabelPlacementCalculator defLabelPlacement =
+      PolygonLabelPlacementCalculator.centroid();
 
   /// Default label style for polygons.
   static const TextStyle defLabelStyle = TextStyle();
@@ -92,7 +92,7 @@ class PolygonProperties {
   static const StrokeJoin defStrokeJoin = StrokeJoin.round;
 
   /// The fill color of polygons.
-  final Color fillColor;
+  final Color? fillColor;
 
   /// The label associated with polygons.
   final String label;
@@ -103,7 +103,6 @@ class PolygonProperties {
   /// The border/stroke color of polygons.
   final Color borderColor;
 
-  /// Indicates whether polygons should be filled.
   final bool isFilled;
 
   /// Indicates whether holes should disable their border.
@@ -113,19 +112,22 @@ class PolygonProperties {
   final bool labeled;
 
   /// Indicates whether polygons are rendered as dotted lines.
-  final bool isDotted;
+  final StrokePattern pattern;
 
   /// The polygon layer properties.
   final Map<LayerPolygonIndexes, String>? layerProperties;
 
   /// The label placement for polygons.
-  final PolygonLabelPlacement labelPlacement;
+  final PolygonLabelPlacementCalculator labelPlacementCalculator;
 
   /// The label style for polygons.
   final TextStyle labelStyle;
 
   /// Indicates whether labels should be rotated.
   final bool rotateLabel;
+
+  /// hint value.
+  final T? hintValue;
 
   /// The stroke cap style for polygons.
   final StrokeCap strokeCap;
@@ -153,14 +155,15 @@ class PolygonProperties {
   const PolygonProperties({
     this.layerProperties,
     this.labeled = PolygonProperties.defLabeled,
-    this.isDotted = PolygonProperties.defIsDotted,
-    this.labelPlacement = PolygonProperties.defLabelPlacement,
+    this.pattern = PolygonProperties.defIsDotted,
+    this.labelPlacementCalculator = PolygonProperties.defLabelPlacement,
     this.labelStyle = PolygonProperties.defLabelStyle,
     this.rotateLabel = PolygonProperties.defRotateLabel,
     this.strokeCap = PolygonProperties.defStrokeCap,
     this.strokeJoin = PolygonProperties.defStrokeJoin,
     this.fillColor = PolygonProperties.defFillColor,
     this.label = PolygonProperties.defLabel,
+    this.hintValue,
     this.borderStokeWidth = PolygonProperties.defBorderStokeWidth,
     this.borderColor = PolygonProperties.defBorderColor,
     this.disableHolesBorder = PolygonProperties.defDisableHolesBorder,
@@ -187,46 +190,53 @@ class PolygonProperties {
   ///   PolygonProperties(),
   /// );
   /// ```
-  static PolygonProperties fromMap(
+  static PolygonProperties<T> fromMap<T extends Object>(
     Map<String, dynamic>? properties,
-    PolygonProperties polygonLayerProperties,
+    PolygonProperties<T> polygonLayerProperties,
   ) {
-    var layerProperties = polygonLayerProperties.layerProperties;
+    Map<LayerPolygonIndexes, String>? layerProperties =
+        polygonLayerProperties.layerProperties;
     if (properties != null && layerProperties != null) {
       // fill
       final String? keyPropertieFillColor =
           layerProperties[LayerPolygonIndexes.fillColor];
-      var isFilledMap = keyPropertieFillColor != null;
+      bool isFilledMap = keyPropertieFillColor != null;
       String hexString = '${properties[keyPropertieFillColor]}';
-      final Color fillColor =
-          HexColor.fromHex(hexString, polygonLayerProperties.fillColor);
+      Color? polyLayProp = polygonLayerProperties.fillColor;
+      final Color? fillColor = polyLayProp == null
+          ? null
+          : HexColor.fromHex(hexString, polyLayProp);
       // border color
       final String? layerPropertieBorderColor =
           layerProperties[LayerPolygonIndexes.borderColor];
       String hexString2 = '${properties[layerPropertieBorderColor]}';
-      var fall = polygonLayerProperties.borderColor;
+      Color fall = polygonLayerProperties.borderColor;
       final Color borderColor = HexColor.fromHex(hexString2, fall);
       // border width
-      var layerPropertieBWidth =
+      String? layerPropertieBWidth =
           layerProperties[LayerPolygonIndexes.borderStokeWidth];
       // label
       final String? label = layerProperties[LayerPolygonIndexes.label];
       final bool labeled = properties[label] != null;
-      var isLabelled = labeled && polygonLayerProperties.labeled;
-      String label2 =
-          labeled ? '${properties[label]}' : polygonLayerProperties.label;
-      return PolygonProperties(
+      bool isLabelled = labeled && polygonLayerProperties.labeled;
+      String label2 = labeled
+          ? '${properties[label]}'
+          : polygonLayerProperties.label;
+      return PolygonProperties<T>(
         isFilled: isFilledMap && polygonLayerProperties.isFilled,
         fillColor: fillColor,
         borderColor: borderColor,
-        borderStokeWidth: (properties[layerPropertieBWidth] ??
-                polygonLayerProperties.borderStokeWidth)
-            .toDouble(),
+        borderStokeWidth:
+            (properties[layerPropertieBWidth] ??
+                    polygonLayerProperties.borderStokeWidth)
+                .toDouble(),
         label: label2,
+        layerProperties: layerProperties,
         labeled: isLabelled,
         disableHolesBorder: polygonLayerProperties.disableHolesBorder,
-        isDotted: polygonLayerProperties.isDotted,
-        labelPlacement: polygonLayerProperties.labelPlacement,
+        pattern: polygonLayerProperties.pattern,
+        labelPlacementCalculator:
+            polygonLayerProperties.labelPlacementCalculator,
         labelStyle: polygonLayerProperties.labelStyle,
         rotateLabel: polygonLayerProperties.rotateLabel,
         strokeCap: polygonLayerProperties.strokeCap,

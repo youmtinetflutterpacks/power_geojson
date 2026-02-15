@@ -1,50 +1,157 @@
 # Change Log
 
-## [1.0.7+13] - 2024-02-29
+## [3.38.9]
+
+- Flutter Map 8.2.2 compatibility and dependency refresh
+- Unified GeoJSON loaders (asset, file, network, memory, string) with Esri JSON auto-detect
+- Marker clustering and HTTP fallback widgets exposed via `PowerMarkerClusterOptions`
+- Docs refreshed for markers, polylines, polygons, and PowerJSON utilities
+- Update plugin version to 3.38.9 to mirror the Flutter version.
+- Bug fixes and performance improvements in GeoJSON parsing and rendering
+`2026-02-15`
+
+## [1.2.5+5]
+
+- Minor Bug fixes
+`2025-06-09`
+
+## [1.2.5+4]
+
+- Bug fixes (PowerJSON) for DateTime && Enums
+`2025-06-09`
+
+## [1.2.5+3]
+
+- Bug fixes (PowerJSON) for DateTime && Enums
+`2025-06-09`
+
+## [1.2.5+1]
+
+`2025-05-14`
+
+## [1.2.5]
+
+`2025-02-27`
+
+- Bug fixes (PowerJSON)
+
+## [1.2.4-pre.1+7]
+
+`2025-02-18`
+
+- @MandaGate
+- Bug fixes
+
+## [1.2.3-pre.1+6]
+
+`2025-01-09`
+
+- @MandaGate
+- Bug fixes
+
+## [1.2.3-pre.1+5]
+
+`2025-01-09`
+
+- @MandaGate
+- Bug fixes
+
+## [1.1.3+24]
+
+`2025-01-09`
+
+- @MandaGate
+
+## [1.1.2+23]
+
+`2025-01-09`
+
+- Wasm Support
+
+## [1.0.9+15]
+
+`2025-01-07`
+
+- unplugin android/iOS
+
+## [1.0.8+14]
+
+`2024-02-29`
+
+- Upgrade flutter_map: ^7
+- add fallback widget
+- add marker_popup and clustering
+- add real_world data samples
+- upgrade targetSdk=34, flutter 3.24.4
+- Bug fixing
+
+## [1.0.7+13]
+
+`2024-02-29`
 
 - Add Esri Json Support
 - Bug fixing
 
-## [1.0.6+12] - 2024-02-27
+## [1.0.6+12]
+
+`2024-02-27`
 
 - Bug Fix
 
-## [1.0.5+11] - 2024-02-27
+## [1.0.5+11]
+
+`2024-02-27`
 
 - Add PowerGeoJSONClipper
 - Enhance PowerGSON
 
-## [1.0.4+10] - 2024-02-15
+## [1.0.4+10]
+
+`2024-02-15`
 
 - Add IsPointIsidePolygon
 
-## [1.0.3+9] - 2024-02-14
+## [1.0.3+9]
+
+`2024-02-14`
 
 - Bugs fix
 - Enhanced FutureBuilder
 - Whitelisted StatusCodes for network
 
-## [1.0.2+8] - 2024-02-13
+## [1.0.2+8]
+
+`2024-02-13`
 
 - Up To Date Dependencies
 
-## [1.0.1+7] - 2024-02-13
+## [1.0.1+7]
+
+`2024-02-13`
 
 - Removing POINT_IN_POLYGON
 
-## [1.0.0+6] - 2024-02-06
+## [1.0.0+6]
+
+`2024-02-06`
 
 - Adding PowerJSON
 
-## [0.0.4] - 2023-09-20
+## [0.0.4]
+
+`2023-09-20`
 
 - fixing errors
 
-## [0.0.3] - 2023-09-19
+## [0.0.3]
+
+`2023-09-19`
 
 - fixing errors
 
-## [0.0.2] - 2023-09-19
+## [0.0.2]
+
+`2023-09-19`
 
 ### Added
 
@@ -68,7 +175,9 @@
 - Removed redundant or unused code snippets.
 - Cleaned up codebase for better consistency.
 
-## [0.0.1] - 2023-09-01
+## [0.0.1]
+
+`2023-09-01`
 
 ### Added
 
@@ -107,6 +216,8 @@
 
 - Features or code that have been removed from the package.
 
-## [0.0.1] - 2023-08-24
+## [0.0.1]
+
+`2023-08-24`
 
 - First Release.

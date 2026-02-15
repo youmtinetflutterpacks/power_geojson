@@ -15,16 +15,16 @@ class Picture {
   }
 
   factory Picture.fromMap(Map<String, dynamic> data) => Picture(
-        large: data['large'] as String?,
-        medium: data['medium'] as String?,
-        thumbnail: data['thumbnail'] as String?,
-      );
+    large: data['large'] as String?,
+    medium: data['medium'] as String?,
+    thumbnail: data['thumbnail'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'large': large,
-        'medium': medium,
-        'thumbnail': thumbnail,
-      };
+    'large': large,
+    'medium': medium,
+    'thumbnail': thumbnail,
+  };
 
   /// `dart:convert`
   ///
@@ -38,11 +38,7 @@ class Picture {
   /// Converts [Picture] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Picture copyWith({
-    String? large,
-    String? medium,
-    String? thumbnail,
-  }) {
+  Picture copyWith({String? large, String? medium, String? thumbnail}) {
     return Picture(
       large: large ?? this.large,
       medium: medium ?? this.medium,

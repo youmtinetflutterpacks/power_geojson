@@ -12,16 +12,11 @@ class Dob {
   String toString() => 'Dob(date: $date, age: $age)';
 
   factory Dob.fromMap(Map<String, dynamic> data) => Dob(
-        date: data['date'] == null
-            ? null
-            : DateTime.parse(data['date'] as String),
-        age: data['age'] as int?,
-      );
+    date: data['date'] == null ? null : DateTime.parse(data['date'] as String),
+    age: data['age'] as int?,
+  );
 
-  Map<String, dynamic> toMap() => {
-        'date': date?.toIso8601String(),
-        'age': age,
-      };
+  Map<String, dynamic> toMap() => {'date': date?.toIso8601String(), 'age': age};
 
   /// `dart:convert`
   ///
@@ -35,14 +30,8 @@ class Dob {
   /// Converts [Dob] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Dob copyWith({
-    DateTime? date,
-    int? age,
-  }) {
-    return Dob(
-      date: date ?? this.date,
-      age: age ?? this.age,
-    );
+  Dob copyWith({DateTime? date, int? age}) {
+    return Dob(date: date ?? this.date, age: age ?? this.age);
   }
 
   @override

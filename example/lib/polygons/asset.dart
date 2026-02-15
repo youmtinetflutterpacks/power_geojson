@@ -3,18 +3,16 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 class AssetGeoJSONPolygon extends StatelessWidget {
-  const AssetGeoJSONPolygon({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const AssetGeoJSONPolygon({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.asset(
-      "assets/geojsons/assets_polygons.geojson",
+      "assets/polygons.geojson",
       /* bufferOptions: BufferOptions(
         buffer: 300,
         buffersOnly: false,
@@ -26,7 +24,6 @@ class AssetGeoJSONPolygon extends StatelessWidget {
         ),
       ), */
       polygonProperties: const PolygonProperties(
-        isDotted: true,
         label: 'Asset',
         fillColor: Color(0xFFA29A0A),
         rotateLabel: true,
@@ -34,14 +31,12 @@ class AssetGeoJSONPolygon extends StatelessWidget {
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: Colors.black,
-          shadows: [
-            Shadow(blurRadius: 10, color: Colors.white),
-          ],
+          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
           decoration: TextDecoration.underline,
         ),
         labeled: true,
         layerProperties: {
-          LayerPolygonIndexes.label: 'FID',
+          LayerPolygonIndexes.label: 'Name',
           LayerPolygonIndexes.borderStokeWidth: 'FID',
         },
       ),
@@ -50,59 +45,24 @@ class AssetGeoJSONPolygon extends StatelessWidget {
   }
 }
 
-class AssetGeoJSONMultiPolygon extends StatelessWidget {
-  const AssetGeoJSONMultiPolygon({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
-
-  final MapController? _mapController;
-
-  @override
-  Widget build(BuildContext context) {
-    return PowerGeoJSONPolygons.asset(
-      "assets/geojsons/assets_polygonsmultiples.geojson",
-      polygonProperties: const PolygonProperties(
-        isDotted: false,
-        label: 'Asset Multipolygons',
-        fillColor: Color(0xFFA29A0A),
-        rotateLabel: true,
-        labelStyle: TextStyle(
-          fontSize: 6,
-          decoration: TextDecoration.underline,
-        ),
-        labeled: true,
-        layerProperties: {LayerPolygonIndexes.fillColor: 'color'},
-      ),
-      mapController: _mapController,
-    );
-  }
-}
-
 class AssetGeoJSONZones extends StatelessWidget {
-  const AssetGeoJSONZones({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const AssetGeoJSONZones({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.asset(
-      "assets/geojsons/zonestypes.geojson",
+      "assets/morocco.geojson",
       polygonProperties: const PolygonProperties(
-        isDotted: false,
-        fillColor: Color(0xFFA29A0A),
+        fillColor: Color(0x66A29A0A),
         rotateLabel: true,
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: Colors.black,
-          shadows: [
-            Shadow(blurRadius: 10, color: Colors.white),
-          ],
+          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
           decoration: TextDecoration.underline,
         ),
         labeled: true,

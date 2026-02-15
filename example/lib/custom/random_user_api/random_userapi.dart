@@ -15,18 +15,18 @@ class RandomUserApi {
   String toString() => 'RandomUserApi(results: $results, info: $info)';
 
   factory RandomUserApi.fromMap(Map<String, dynamic> data) => RandomUserApi(
-        results: (data['results'] as List<dynamic>?)
-            ?.map((e) => Result.fromMap(e as Map<String, dynamic>))
-            .toList(),
-        info: data['info'] == null
-            ? null
-            : Info.fromMap(data['info'] as Map<String, dynamic>),
-      );
+    results: (data['results'] as List<dynamic>?)
+        ?.map((e) => Result.fromMap(e as Map<String, dynamic>))
+        .toList(),
+    info: data['info'] == null
+        ? null
+        : Info.fromMap(data['info'] as Map<String, dynamic>),
+  );
 
   Map<String, dynamic> toMap() => {
-        'results': results?.map((e) => e.toMap()).toList(),
-        'info': info?.toMap(),
-      };
+    'results': results?.map((e) => e.toMap()).toList(),
+    'info': info?.toMap(),
+  };
 
   /// `dart:convert`
   ///
@@ -40,10 +40,7 @@ class RandomUserApi {
   /// Converts [RandomUserApi] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  RandomUserApi copyWith({
-    List<Result>? results,
-    Info? info,
-  }) {
+  RandomUserApi copyWith({List<Result>? results, Info? info}) {
     return RandomUserApi(
       results: results ?? this.results,
       info: info ?? this.info,
