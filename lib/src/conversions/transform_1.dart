@@ -56,12 +56,12 @@ class PowerEsriJSON {
     return output;
   }
 
-// \.(points|x|y|paths|rings)
+  // \.(points|x|y|paths|rings)
   Map<String, Object?> _point2D(geometry) {
     //this one is easy
     return {
       "type": "Point",
-      "coordinates": [geometry['x'], geometry['y']]
+      "coordinates": [geometry['x'], geometry['y']],
     };
   }
 
@@ -119,7 +119,7 @@ class PowerEsriJSON {
     }
     return {
       "type": type,
-      "coordinates": (coords.length == 1) ? coords[0] : coords
+      "coordinates": (coords.length == 1) ? coords[0] : coords,
     };
   }
 

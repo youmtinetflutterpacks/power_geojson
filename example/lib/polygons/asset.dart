@@ -3,11 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 class AssetGeoJSONPolygon extends StatelessWidget {
-  const AssetGeoJSONPolygon({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const AssetGeoJSONPolygon({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 
@@ -33,9 +31,7 @@ class AssetGeoJSONPolygon extends StatelessWidget {
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: Colors.black,
-          shadows: [
-            Shadow(blurRadius: 10, color: Colors.white),
-          ],
+          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
           decoration: TextDecoration.underline,
         ),
         labeled: true,
@@ -50,11 +46,9 @@ class AssetGeoJSONPolygon extends StatelessWidget {
 }
 
 class AssetGeoJSONZones extends StatelessWidget {
-  const AssetGeoJSONZones({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const AssetGeoJSONZones({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 
@@ -68,9 +62,7 @@ class AssetGeoJSONZones extends StatelessWidget {
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: Colors.black,
-          shadows: [
-            Shadow(blurRadius: 10, color: Colors.white),
-          ],
+          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
           decoration: TextDecoration.underline,
         ),
         labeled: true,

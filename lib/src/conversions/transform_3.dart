@@ -15,7 +15,7 @@ class PowerEsriJsonTransform {
     return data;
   }
 
-// still not sure on how to translate some of these types
+  // still not sure on how to translate some of these types
   String _parseGeometryType(String type) {
     if (type == "esriGeometryPoint") {
       return "Point";
@@ -31,7 +31,9 @@ class PowerEsriJsonTransform {
   }
 
   Map<String, Object?> _featureToGeo(
-      Map<String, dynamic> featureIn, String geomType) {
+    Map<String, dynamic> featureIn,
+    String geomType,
+  ) {
     Map<String, dynamic> geometry = <String, Object?>{};
     geometry['type'] = geomType;
 
@@ -72,15 +74,17 @@ class PowerEsriJsonTransform {
 
     List<Map<String, Object?>> features = <Map<String, Object?>>[];
     List<Map<String, Object?>> o2 = o['features'] as List<Map<String, Object?>>;
-    for (dynamic i = 0,
-            feature = <String, Object?>{
-      'string': '',
-      'int': 0,
-      'object': <String, Object?>{},
-      'null': null,
-    };
-        i < o2.length;
-        i++) {
+    for (
+      dynamic i = 0,
+          feature = <String, Object?>{
+            'string': '',
+            'int': 0,
+            'object': <String, Object?>{},
+            'null': null,
+          };
+      i < o2.length;
+      i++
+    ) {
       // prepare the main parts of the GeoJSON
       feature = o2[i];
       Map<String, Object?> feat = _featureToGeo(feature, geomType);

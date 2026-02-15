@@ -19,10 +19,5 @@ Future<void> main() async {
     await WakelockPlus.enable();
     // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
-  runApp(
-    GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AppHome(),
-    ),
-  );
+  runApp(GetMaterialApp(debugShowCheckedModeBanner: false, home: AppHome()));
 }

@@ -11,15 +11,10 @@ class Street {
   @override
   String toString() => 'Street(number: $number, name: $name)';
 
-  factory Street.fromMap(Map<String, dynamic> data) => Street(
-        number: data['number'] as int?,
-        name: data['name'] as String?,
-      );
+  factory Street.fromMap(Map<String, dynamic> data) =>
+      Street(number: data['number'] as int?, name: data['name'] as String?);
 
-  Map<String, dynamic> toMap() => {
-        'number': number,
-        'name': name,
-      };
+  Map<String, dynamic> toMap() => {'number': number, 'name': name};
 
   /// `dart:convert`
   ///
@@ -33,14 +28,8 @@ class Street {
   /// Converts [Street] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Street copyWith({
-    int? number,
-    String? name,
-  }) {
-    return Street(
-      number: number ?? this.number,
-      name: name ?? this.name,
-    );
+  Street copyWith({int? number, String? name}) {
+    return Street(number: number ?? this.number, name: name ?? this.name);
   }
 
   @override

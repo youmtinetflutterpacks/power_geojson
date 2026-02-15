@@ -16,18 +16,18 @@ class Info {
   }
 
   factory Info.fromMap(Map<String, dynamic> data) => Info(
-        seed: data['seed'] as String?,
-        results: data['results'] as int?,
-        page: data['page'] as int?,
-        version: data['version'] as String?,
-      );
+    seed: data['seed'] as String?,
+    results: data['results'] as int?,
+    page: data['page'] as int?,
+    version: data['version'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'seed': seed,
-        'results': results,
-        'page': page,
-        'version': version,
-      };
+    'seed': seed,
+    'results': results,
+    'page': page,
+    'version': version,
+  };
 
   /// `dart:convert`
   ///
@@ -41,12 +41,7 @@ class Info {
   /// Converts [Info] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Info copyWith({
-    String? seed,
-    int? results,
-    int? page,
-    String? version,
-  }) {
+  Info copyWith({String? seed, int? results, int? page, String? version}) {
     return Info(
       seed: seed ?? this.seed,
       results: results ?? this.results,

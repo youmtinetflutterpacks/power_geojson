@@ -47,13 +47,8 @@ import 'package:power_geojson/power_geojson.dart';
 Future<Widget> _filePolylines<T extends Object>(
   String file, {
   required PolylineProperties<T> polylineProperties,
-  required Future<String> Function(
-    String filePath,
-  ) fileLoadBuilder,
-  Polyline<T> Function(
-    List<LatLng> points,
-    Map<String, Object?>? map,
-  )? builder,
+  required Future<String> Function(String filePath) fileLoadBuilder,
+  Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)? builder,
   MapController? mapController,
   Key? key,
   required Widget Function(int? statusCode)? fallback,
@@ -110,10 +105,7 @@ Future<Widget> _filePolylines<T extends Object>(
 Future<Widget> _memoryPolylines<T extends Object>(
   Uint8List list, {
   required PolylineProperties<T> polylineProperties,
-  Polyline<T> Function(
-    List<LatLng> points,
-    Map<String, Object?>? map,
-  )? builder,
+  Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)? builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -165,10 +157,7 @@ Future<Widget> _memoryPolylines<T extends Object>(
 Future<Widget> _assetPolylines<T extends Object>(
   String path, {
   required PolylineProperties<T> polylineProperties,
-  Polyline<T> Function(
-    List<LatLng> points,
-    Map<String, Object?>? map,
-  )? builder,
+  Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)? builder,
   MapController? mapController,
   Key? key,
 }) async {
@@ -224,10 +213,7 @@ Future<Widget> _networkPolylines<T extends Object>(
   Map<String, String>? headers,
   Key? key,
   required PolylineProperties<T> polylineProperties,
-  Polyline<T> Function(
-    List<LatLng> points,
-    Map<String, Object?>? map,
-  )? builder,
+  Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)? builder,
   MapController? mapController,
   required Widget Function(int? statusCode)? fallback,
 }) async {
@@ -276,33 +262,30 @@ Widget _string<T extends Object>(
   String string, {
   Key? key,
   required PolylineProperties<T> polylineProperties,
-  Polyline<T> Function(
-    List<LatLng> points,
-    Map<String, Object?>? map,
-  )? builder,
+  Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)? builder,
   MapController? mapController,
 }) {
   final PowerGeoJSONFeatureCollection geojson =
       PowerGeoJSONFeatureCollection.fromJson(checkEsri(string));
 
-  List<Polyline<T>> polylines = geojson.geoJSONLineStrings.map(
-    (PowerGeoLineString e) {
-      return builder != null
-          ? builder(e.geometry.coordinates.toLatLng(), e.properties)
-          : e.geometry.coordinates.toPolyline<T>(
-              polylineProperties:
-                  PolylineProperties.fromMap(e.properties, polylineProperties),
-            );
-    },
-  ).toList();
+  List<Polyline<T>> polylines = geojson.geoJSONLineStrings.map((
+    PowerGeoLineString e,
+  ) {
+    return builder != null
+        ? builder(e.geometry.coordinates.toLatLng(), e.properties)
+        : e.geometry.coordinates.toPolyline<T>(
+            polylineProperties: PolylineProperties.fromMap(
+              e.properties,
+              polylineProperties,
+            ),
+          );
+  }).toList();
 
-  List<List<double>?> bbox =
-      geojson.geoJSONPoints.map((PowerGeoPoint e) => e.bbox).toList();
+  List<List<double>?> bbox = geojson.geoJSONPoints
+      .map((PowerGeoPoint e) => e.bbox)
+      .toList();
   zoomTo(bbox, mapController);
-  return PolylineLayer<T>(
-    polylines: polylines,
-    key: key,
-  );
+  return PolylineLayer<T>(polylines: polylines, key: key);
 }
 
 class PowerGeoJSONPolylines {
@@ -338,10 +321,8 @@ class PowerGeoJSONPolylines {
     Key? key,
     PolylineProperties<T>? polylineProperties,
     Widget Function(int? statusCode)? fallback,
-    Polyline<T> Function(
-      List<LatLng> points,
-      Map<String, Object?>? map,
-    )? builder,
+    Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)?
+    builder,
     MapController? mapController,
   }) {
     Uri uriString = url.toUri();
@@ -389,10 +370,8 @@ class PowerGeoJSONPolylines {
   static Widget asset<T extends Object>(
     String url, {
     PolylineProperties<T>? polylineProperties,
-    Polyline<T> Function(
-      List<LatLng> points,
-      Map<String, Object?>? map,
-    )? builder,
+    Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)?
+    builder,
     MapController? mapController,
     Key? key,
   }) {
@@ -413,10 +392,8 @@ class PowerGeoJSONPolylines {
   static Widget file<T extends Object>(
     String file, {
     PolylineProperties<T>? polylineProperties,
-    Polyline<T> Function(
-      List<LatLng> points,
-      Map<String, Object?>? map,
-    )? builder,
+    Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)?
+    builder,
     MapController? mapController,
     Future<String> Function(String)? fileLoadBuilder,
     Widget Function(int? statusCode)? fallback,
@@ -467,10 +444,8 @@ class PowerGeoJSONPolylines {
   static Widget memory<T extends Object>(
     Uint8List bytes, {
     PolylineProperties<T>? polylineProperties,
-    Polyline<T> Function(
-      List<LatLng> points,
-      Map<String, Object?>? map,
-    )? builder,
+    Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)?
+    builder,
     MapController? mapController,
     Key? key,
   }) {
@@ -514,10 +489,8 @@ class PowerGeoJSONPolylines {
   static Widget string<T extends Object>(
     String data, {
     PolylineProperties<T>? polylineProperties,
-    Polyline<T> Function(
-      List<LatLng> points,
-      Map<String, Object?>? map,
-    )? builder,
+    Polyline<T> Function(List<LatLng> points, Map<String, Object?>? map)?
+    builder,
     MapController? mapController,
     Key? key,
   }) {

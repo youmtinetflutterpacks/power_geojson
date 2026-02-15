@@ -12,16 +12,11 @@ class Registered {
   String toString() => 'Registered(date: $date, age: $age)';
 
   factory Registered.fromMap(Map<String, dynamic> data) => Registered(
-        date: data['date'] == null
-            ? null
-            : DateTime.parse(data['date'] as String),
-        age: data['age'] as int?,
-      );
+    date: data['date'] == null ? null : DateTime.parse(data['date'] as String),
+    age: data['age'] as int?,
+  );
 
-  Map<String, dynamic> toMap() => {
-        'date': date?.toIso8601String(),
-        'age': age,
-      };
+  Map<String, dynamic> toMap() => {'date': date?.toIso8601String(), 'age': age};
 
   /// `dart:convert`
   ///
@@ -35,14 +30,8 @@ class Registered {
   /// Converts [Registered] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Registered copyWith({
-    DateTime? date,
-    int? age,
-  }) {
-    return Registered(
-      date: date ?? this.date,
-      age: age ?? this.age,
-    );
+  Registered copyWith({DateTime? date, int? age}) {
+    return Registered(date: date ?? this.date, age: age ?? this.age);
   }
 
   @override

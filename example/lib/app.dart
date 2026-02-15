@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:get/get.dart';
 import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:power_geojson/power_geojson.dart';
@@ -31,9 +32,7 @@ class _AppHomeState extends State<AppHome> {
 }
 
 class PowerGeojsonSampleApp extends StatefulWidget {
-  PowerGeojsonSampleApp({
-    super.key,
-  });
+  PowerGeojsonSampleApp({super.key});
 
   @override
   State<PowerGeojsonSampleApp> createState() => _PowerGeojsonSampleAppState();
@@ -53,13 +52,12 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _map(),
-    );
+    return Scaffold(body: _map());
   }
 
   Widget _map() {
-    int interactiveFlags = InteractiveFlag.doubleTapZoom | //
+    int interactiveFlags =
+        InteractiveFlag.doubleTapZoom | //
         InteractiveFlag.drag |
         InteractiveFlag.scrollWheelZoom |
         InteractiveFlag.pinchZoom |
@@ -85,8 +83,9 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
             ),
             children: [
               TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  maxZoom: 19),
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                maxZoom: 19,
+              ),
               AssetGeoJSONZones(),
               //////////////// Polygons
               AssetGeoJSONPolygon(),

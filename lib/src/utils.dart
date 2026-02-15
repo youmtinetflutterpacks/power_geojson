@@ -36,25 +36,26 @@ export 'dart:developer';
 ///
 /// This function modifies the map view to display all the specified features.
 void zoomTo(List<List<double>?> features, MapController? mapController) {
-  List<double>? atLeast =
-      features.firstWhereOrNull((List<double>? fe) => fe != null);
+  List<double>? atLeast = features.firstWhereOrNull(
+    (List<double>? fe) => fe != null,
+  );
   if (atLeast == null) return;
   if (mapController == null) return;
   LatLngBounds firstBounds = LatLngBounds.fromPoints(<LatLng>[
     LatLng(atLeast[1], atLeast[0]),
     LatLng(atLeast[3], atLeast[2]),
   ]);
-  LatLngBounds latLngBounds = features.fold<LatLngBounds>(
-    firstBounds,
-    (LatLngBounds previousValue, List<double>? bbox) {
-      if (bbox == null) return previousValue;
-      LatLngBounds elementBounds = LatLngBounds.fromPoints(<LatLng>[
-        LatLng(bbox[1], bbox[0]),
-        LatLng(bbox[3], bbox[2]),
-      ]);
-      previousValue.extendBounds(elementBounds);
-      return previousValue;
-    },
-  );
+  LatLngBounds latLngBounds = features.fold<LatLngBounds>(firstBounds, (
+    LatLngBounds previousValue,
+    List<double>? bbox,
+  ) {
+    if (bbox == null) return previousValue;
+    LatLngBounds elementBounds = LatLngBounds.fromPoints(<LatLng>[
+      LatLng(bbox[1], bbox[0]),
+      LatLng(bbox[3], bbox[2]),
+    ]);
+    previousValue.extendBounds(elementBounds);
+    return previousValue;
+  });
   mapController.fitCamera(CameraFit.bounds(bounds: latLngBounds));
 }

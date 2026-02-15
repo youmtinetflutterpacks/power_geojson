@@ -10,7 +10,7 @@
 .svn/
 # **/.github/workflows/
 migrate_working_dir/
-
+android1
 # IntelliJ related
 *.iml
 *.ipr

@@ -8,22 +8,46 @@ Future<Directory> getDocumentsDir() async =>
     await pathprovider.getApplicationDocumentsDirectory();
 
 Future<List<Directory>?> getExternalDir() async {
-  var externalStorageDirectories =
-      await pathprovider.getExternalStorageDirectories();
+  var externalStorageDirectories = await pathprovider
+      .getExternalStorageDirectories();
   return externalStorageDirectories;
 }
 
 const String url = 'https://ymrabti.github.io/undisclosed-tools/assets/';
 Future<void> createFiles() async {
-  final String assetsPoints /**********/ = await rootBundle
-      .loadString('assets/file/points.geojson' /**************/);
-  final String assetsLines /***********/ = await rootBundle
-      .loadString('assets/file/lines.geojson' /***************/);
-  final String assetsPolygons /********/ = await rootBundle
-      .loadString('assets/file/polygons.geojson' /************/);
-  await createFile('files_points', /**********/ assetsPoints);
-  await createFile('files_lines', /***********/ assetsLines);
-  await createFile('files_polygons', /********/ assetsPolygons);
+  final String assetsPoints
+  /**********/
+  = await rootBundle.loadString(
+    'assets/file/points.geojson',
+    /**************/
+  );
+  final String assetsLines
+  /***********/
+  = await rootBundle.loadString(
+    'assets/file/lines.geojson',
+    /***************/
+  );
+  final String assetsPolygons
+  /********/
+  = await rootBundle.loadString(
+    'assets/file/polygons.geojson',
+    /************/
+  );
+  await createFile(
+    'files_points',
+    /**********/
+    assetsPoints,
+  );
+  await createFile(
+    'files_lines',
+    /***********/
+    assetsLines,
+  );
+  await createFile(
+    'files_polygons',
+    /********/
+    assetsPolygons,
+  );
 }
 
 Future<void> createFile(String filename, String data) async {

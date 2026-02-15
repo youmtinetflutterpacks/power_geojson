@@ -4,10 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class CircleOfMap extends StatelessWidget {
-  const CircleOfMap({
-    Key? key,
-    required this.latLng,
-  }) : super(key: key);
+  const CircleOfMap({Key? key, required this.latLng}) : super(key: key);
 
   final LatLng latLng;
 
@@ -41,17 +38,13 @@ class PinCentered extends StatelessWidget {
       alignment: AlignmentDirectional.center,
       children: [
         SizedBox(width: parent, height: parent),
+
         // Positioned(left: 0, top: (parentH - gapH) / 2, child: Container(height: gapH, width: parentW, color: Colors.white)),
         // Positioned(left: (parentW - gapW) / 2, top: 0, child: Container(height: parentH, width: gapW, color: Colors.white)),
-
         Positioned(
           left: (parent - iconSize) / 2,
           top: parent / 2 - iconSize,
-          child: Icon(
-            CupertinoIcons.pin_fill,
-            size: iconSize,
-            color: color,
-          ),
+          child: Icon(CupertinoIcons.pin_fill, size: iconSize, color: color),
         ),
         Container(
           width: 4,

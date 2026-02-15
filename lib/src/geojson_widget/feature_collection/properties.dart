@@ -26,8 +26,8 @@ class FeatureCollectionProperties<T extends Object> {
     required PolylineProperties<T>? polylineProperts,
     required PolygonProperties<T>? polygonProperts,
   }) {
-    this.polylineProperties = polylineProperts ?? PolylineProperties<T>();
-    this.polygonProperties = polygonProperts ?? PolygonProperties<T>();
+    polylineProperties = polylineProperts ?? PolylineProperties<T>();
+    polygonProperties = polygonProperts ?? PolygonProperties<T>();
   }
 
   /// Creates a new FeatureCollectionProperties instance with updated properties.
@@ -98,8 +98,13 @@ abstract class PowerGeoFeature {
     String? title = feature.title;
     dynamic id = feature.id;
     if (geometry == null) return <PowerGeoFeature>[];
-    return parseGeometry(geometry,
-        properties: properties, bbox: bbox, title: title, id: id);
+    return parseGeometry(
+      geometry,
+      properties: properties,
+      bbox: bbox,
+      title: title,
+      id: id,
+    );
   }
 
   /// Parses a GeoJSON geometry and returns a list of PowerGeoFeature instances.
@@ -135,13 +140,15 @@ abstract class PowerGeoFeature {
         GeoJSONMultiPoint geom = geometry as GeoJSONMultiPoint;
         List<List<double>> coordinates = geom.coordinates;
         return coordinates
-            .map((List<double> e) => PowerGeoPoint(
-                  geometry: GeoJSONPoint(e),
-                  properties: properties,
-                  bbox: bbox,
-                  title: title,
-                  id: id,
-                ))
+            .map(
+              (List<double> e) => PowerGeoPoint(
+                geometry: GeoJSONPoint(e),
+                properties: properties,
+                bbox: bbox,
+                title: title,
+                id: id,
+              ),
+            )
             .toList();
       case GeoJSONType.lineString:
         GeoJSONLineString geom = geometry as GeoJSONLineString;
@@ -159,13 +166,15 @@ abstract class PowerGeoFeature {
         GeoJSONMultiLineString geom = geometry as GeoJSONMultiLineString;
         List<List<List<double>>> coordinates = geom.coordinates;
         return coordinates
-            .map((List<List<double>> e) => PowerGeoLineString(
-                  geometry: GeoJSONLineString(e),
-                  properties: properties,
-                  bbox: bbox,
-                  title: title,
-                  id: id,
-                ))
+            .map(
+              (List<List<double>> e) => PowerGeoLineString(
+                geometry: GeoJSONLineString(e),
+                properties: properties,
+                bbox: bbox,
+                title: title,
+                id: id,
+              ),
+            )
             .toList();
       case GeoJSONType.polygon:
         GeoJSONPolygon geom = geometry as GeoJSONPolygon;
@@ -183,13 +192,15 @@ abstract class PowerGeoFeature {
         GeoJSONMultiPolygon geom = geometry as GeoJSONMultiPolygon;
         List<List<List<List<double>>>> coordinates = geom.coordinates;
         return coordinates
-            .map((List<List<List<double>>> e) => PowerGeoPolygon(
-                  geometry: GeoJSONPolygon(e),
-                  properties: properties,
-                  bbox: bbox,
-                  title: title,
-                  id: id,
-                ))
+            .map(
+              (List<List<List<double>>> e) => PowerGeoPolygon(
+                geometry: GeoJSONPolygon(e),
+                properties: properties,
+                bbox: bbox,
+                title: title,
+                id: id,
+              ),
+            )
             .toList();
       case GeoJSONType.feature:
         GeoJSONFeature geom = geometry as GeoJSONFeature;
@@ -206,19 +217,19 @@ abstract class PowerGeoFeature {
         GeoJSONFeatureCollection geom = geometry as GeoJSONFeatureCollection;
         List<GeoJSONFeature?> features = geom.features;
         Iterable<GeoJSONFeature> notNull = features.nonNulls;
-        Iterable<List<PowerGeoFeature>?> featuresParse = notNull.map(
-          (GeoJSONFeature e) {
-            GeoJSONGeometry? geometry3 = e.geometry;
-            if (geometry3 == null) return null;
-            return parseGeometry(
-              geometry3,
-              properties: properties,
-              bbox: bbox,
-              title: title,
-              id: id,
-            );
-          },
-        );
+        Iterable<List<PowerGeoFeature>?> featuresParse = notNull.map((
+          GeoJSONFeature e,
+        ) {
+          GeoJSONGeometry? geometry3 = e.geometry;
+          if (geometry3 == null) return null;
+          return parseGeometry(
+            geometry3,
+            properties: properties,
+            bbox: bbox,
+            title: title,
+            id: id,
+          );
+        });
         Iterable<List<PowerGeoFeature>> whereNotNull = featuresParse.nonNulls;
         return whereNotNull.expand((List<PowerGeoFeature> e) => e).toList();
       case GeoJSONType.geometryCollection:
@@ -242,12 +253,7 @@ abstract class PowerGeoFeature {
   /// - [bbox]: The bounding box of the feature.
   /// - [title]: The title of the feature.
   /// - [id]: The unique identifier of the feature.
-  PowerGeoFeature({
-    this.properties,
-    this.bbox,
-    this.title,
-    required this.id,
-  });
+  PowerGeoFeature({this.properties, this.bbox, this.title, required this.id});
 
   @override
   String toString() {
@@ -351,12 +357,15 @@ class PowerGeoJSONFeatureCollection {
   /// Returns a map representation of the PowerGeoJSONFeatureCollection.
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'geoJSONPoints':
-          geoJSONPoints.map((PowerGeoPoint x) => x.toMap()).toList(),
-      'geoJSONLineStrings':
-          geoJSONLineStrings.map((PowerGeoLineString x) => x.toMap()).toList(),
-      'geoJSONPolygons':
-          geoJSONPolygons.map((PowerGeoPolygon x) => x.toMap()).toList(),
+      'geoJSONPoints': geoJSONPoints
+          .map((PowerGeoPoint x) => x.toMap())
+          .toList(),
+      'geoJSONLineStrings': geoJSONLineStrings
+          .map((PowerGeoLineString x) => x.toMap())
+          .toList(),
+      'geoJSONPolygons': geoJSONPolygons
+          .map((PowerGeoPolygon x) => x.toMap())
+          .toList(),
     };
   }
 
@@ -369,19 +378,19 @@ class PowerGeoJSONFeatureCollection {
     Object? type = json['type'];
     PowerGeoJSONFeatureCollection featureCollectionDefault =
         PowerGeoJSONFeatureCollection(
-      geoJSONPoints: <PowerGeoPoint>[],
-      geoJSONLineStrings: <PowerGeoLineString>[],
-      geoJSONPolygons: <PowerGeoPolygon>[],
-    );
+          geoJSONPoints: <PowerGeoPoint>[],
+          geoJSONLineStrings: <PowerGeoLineString>[],
+          geoJSONPolygons: <PowerGeoPolygon>[],
+        );
     switch (type) {
       case 'Point':
         GeoJSONPoint point = GeoJSONPoint.fromMap(json);
         PowerGeoJSONFeatureCollection featureCollectionPoint =
             PowerGeoJSONFeatureCollection(
-          geoJSONPoints: <PowerGeoPoint>[PowerGeoPoint(geometry: point)],
-          geoJSONLineStrings: <PowerGeoLineString>[],
-          geoJSONPolygons: <PowerGeoPolygon>[],
-        );
+              geoJSONPoints: <PowerGeoPoint>[PowerGeoPoint(geometry: point)],
+              geoJSONLineStrings: <PowerGeoLineString>[],
+              geoJSONPolygons: <PowerGeoPolygon>[],
+            );
         return featureCollectionPoint;
 
       // ... (other cases for different GeoJSON types)
@@ -400,10 +409,12 @@ class PowerGeoJSONFeatureCollection {
             .toList();
         return PowerGeoJSONFeatureCollection(
           geoJSONPoints: listGeoFeatures.whereType<PowerGeoPoint>().toList(),
-          geoJSONLineStrings:
-              listGeoFeatures.whereType<PowerGeoLineString>().toList(),
-          geoJSONPolygons:
-              listGeoFeatures.whereType<PowerGeoPolygon>().toList(),
+          geoJSONLineStrings: listGeoFeatures
+              .whereType<PowerGeoLineString>()
+              .toList(),
+          geoJSONPolygons: listGeoFeatures
+              .whereType<PowerGeoPolygon>()
+              .toList(),
         );
       default:
         return featureCollectionDefault;
@@ -422,7 +433,8 @@ class PowerGeoJSONFeatureCollection {
   /// Returns a PowerGeoJSONFeatureCollection instance.
   factory PowerGeoJSONFeatureCollection.fromJson(String source) =>
       PowerGeoJSONFeatureCollection.fromMap(
-          json.decode(source) as Map<String, dynamic>);
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   @override
   bool operator ==(covariant PowerGeoJSONFeatureCollection other) {
@@ -465,9 +477,7 @@ class PowerGeoPoint extends PowerGeoFeature {
   ///
   /// Returns a map representation of the PowerGeoPoint.
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'geometry': geometry.toMap(),
-    };
+    return <String, dynamic>{'geometry': geometry.toMap()};
   }
 
   /// Converts the PowerGeoPoint instance to a JSON string.
@@ -513,9 +523,7 @@ class PowerGeoLineString extends PowerGeoFeature {
   ///
   /// Returns a map representation of the PowerGeoLineString.
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'geometry': geometry.toMap(),
-    };
+    return <String, dynamic>{'geometry': geometry.toMap()};
   }
 
   /// Converts the PowerGeoLineString instance to a JSON string.
@@ -561,9 +569,7 @@ class PowerGeoPolygon extends PowerGeoFeature {
   ///
   /// Returns a map representation of the PowerGeoPolygon.
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'geometry': geometry.toMap(),
-    };
+    return <String, dynamic>{'geometry': geometry.toMap()};
   }
 
   /// Converts the PowerGeoPolygon instance to a JSON string.

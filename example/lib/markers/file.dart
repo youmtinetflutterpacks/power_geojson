@@ -3,11 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:power_geojson/power_geojson.dart';
 
 class FileGeoJSONMarkers extends StatelessWidget {
-  const FileGeoJSONMarkers({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const FileGeoJSONMarkers({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 

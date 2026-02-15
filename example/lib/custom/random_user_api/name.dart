@@ -13,16 +13,16 @@ class Name {
   String toString() => 'Name(title: $title, first: $first, last: $last)';
 
   factory Name.fromMap(Map<String, dynamic> data) => Name(
-        title: data['title'] as String?,
-        first: data['first'] as String?,
-        last: data['last'] as String?,
-      );
+    title: data['title'] as String?,
+    first: data['first'] as String?,
+    last: data['last'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'title': title,
-        'first': first,
-        'last': last,
-      };
+    'title': title,
+    'first': first,
+    'last': last,
+  };
 
   /// `dart:convert`
   ///
@@ -36,11 +36,7 @@ class Name {
   /// Converts [Name] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Name copyWith({
-    String? title,
-    String? first,
-    String? last,
-  }) {
+  Name copyWith({String? title, String? first, String? last}) {
     return Name(
       title: title ?? this.title,
       first: first ?? this.first,

@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:power_geojson/power_geojson.dart';
 
-enum LayerPolylineIndexes {
-  color,
-  strokeWidth,
-  borderColor,
-}
+enum LayerPolylineIndexes { color, strokeWidth, borderColor }
 
 class PolylineProperties<T extends Object> {
   static const Color defFillColor = Color(0x9C2195F3);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:power_geojson/power_geojson.dart';
 import 'package:power_geojson_example/lib.dart';
 
@@ -48,10 +49,8 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
       padding: EdgeInsets.all(50),
       // zoomToBoundsOnClick: false,
       spiderfyCluster: true,
-      builder: (context, markers) => Badge.count(
-        count: markers.length,
-        child: _markerBuilder(),
-      ),
+      builder: (context, markers) =>
+          Badge.count(count: markers.length, child: _markerBuilder()),
     );
   }
 
@@ -64,15 +63,13 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
             prop,
             style: const TextStyle(
               color: Colors.white,
-              shadows: [
-                Shadow(color: Colors.black, blurRadius: 5),
-              ],
+              shadows: [Shadow(color: Colors.black, blurRadius: 5)],
             ),
           ),
       ],
     );
   }
-/* 
+  /* 
   Transform _markerBuilder() {
     return Transform.rotate(
       angle: pi,

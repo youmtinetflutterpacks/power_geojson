@@ -36,9 +36,11 @@ extension ListListLatLngX on List<List<List<double>>> {
     List<LatLng> points = first.toLatLng();
 
     for (int i = 0, j = points.length - 1; i < points.length; j = i++) {
-      bool latCheck = (points[i].latitude > position.latitude) !=
+      bool latCheck =
+          (points[i].latitude > position.latitude) !=
           (points[j].latitude > position.latitude);
-      double intersectLongitude = (points[j].longitude - points[i].longitude) *
+      double intersectLongitude =
+          (points[j].longitude - points[i].longitude) *
               (position.latitude - points[i].latitude) /
               (points[j].latitude - points[i].latitude) +
           points[i].longitude;
@@ -51,9 +53,11 @@ extension ListListLatLngX on List<List<List<double>>> {
 
   bool isPointInsidePolygon(LatLng position) {
     bool outHoles = length > 1
-        ? sublist(1).map((List<List<double>> e) {
-            return !<List<List<double>>>[e]._isPointInsidePolygon(position);
-          }).every((bool e) => e)
+        ? sublist(1)
+              .map((List<List<double>> e) {
+                return !<List<List<double>>>[e]._isPointInsidePolygon(position);
+              })
+              .every((bool e) => e)
         : true;
     return _isPointInsidePolygon(position) && outHoles;
   }
@@ -89,7 +93,8 @@ extension ListListLatLngX on List<List<List<double>>> {
           position.latitude <= max(vertex1.latitude, vertex2.latitude) &&
           position.longitude <= max(vertex1.longitude, vertex2.longitude) &&
           vertex1.latitude != vertex2.latitude) {
-        double xinters = (position.latitude - vertex1.latitude) *
+        double xinters =
+            (position.latitude - vertex1.latitude) *
                 (vertex2.longitude - vertex1.longitude) /
                 (vertex2.latitude - vertex1.latitude) +
             vertex1.longitude;
@@ -114,8 +119,9 @@ extension PolygonsXX on List<List<List<double>>> {
   Polygon<T> toPolygon<T extends Object>({PolygonProperties<T>? polygonProps}) {
     PolygonProperties<T> polygonProperties =
         polygonProps ?? PolygonProperties<T>();
-    List<List<LatLng>> holes =
-        sublist(1).map((List<List<double>> f) => f.toLatLng()).toList();
+    List<List<LatLng>> holes = sublist(
+      1,
+    ).map((List<List<double>> f) => f.toLatLng()).toList();
     Polygon<T> polygon = Polygon<T>(
       points: first.toLatLng(),
       holePointsList: holes,
@@ -126,7 +132,7 @@ extension PolygonsXX on List<List<List<double>>> {
       disableHolesBorder: polygonProperties.disableHolesBorder,
       label: polygonProperties.label,
       pattern: polygonProperties.pattern,
-      labelPlacement: polygonProperties.labelPlacement,
+      labelPlacementCalculator: polygonProperties.labelPlacementCalculator,
       labelStyle: polygonProperties.labelStyle,
       rotateLabel: polygonProperties.rotateLabel,
       strokeCap: polygonProperties.strokeCap,

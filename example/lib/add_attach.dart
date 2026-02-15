@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Image Picker Demo',
-      home: MyHomePage(),
-    );
+    return const MaterialApp(title: 'Image Picker Demo', home: MyHomePage());
   }
 }
 
@@ -114,16 +111,22 @@ class _MyHomePageState extends State<MyHomePage> {
               child: kIsWeb
                   ? Image.network(_mediaFileList![index].path)
                   : (mime == null || mime.startsWith('image/')
-                      ? Image.file(
-                          File(_mediaFileList![index].path),
-                          errorBuilder: (BuildContext context, Object error,
-                              StackTrace? stackTrace) {
-                            return const Center(
-                              child: Text('This image type is not supported'),
-                            );
-                          },
-                        )
-                      : SizedBox()),
+                        ? Image.file(
+                            File(_mediaFileList![index].path),
+                            errorBuilder:
+                                (
+                                  BuildContext context,
+                                  Object error,
+                                  StackTrace? stackTrace,
+                                ) {
+                                  return const Center(
+                                    child: Text(
+                                      'This image type is not supported',
+                                    ),
+                                  );
+                                },
+                          )
+                        : SizedBox()),
             );
           },
           itemCount: _mediaFileList!.length,
@@ -160,15 +163,13 @@ class _MyHomePageState extends State<MyHomePage> {
         isVideo = true;
       } else {
         isVideo = false;
-        setState(
-          () {
-            if (response.files == null) {
-              _setImageFileListFromFile(response.file);
-            } else {
-              _mediaFileList = response.files;
-            }
-          },
-        );
+        setState(() {
+          if (response.files == null) {
+            _setImageFileListFromFile(response.file);
+          } else {
+            _mediaFileList = response.files;
+          }
+        });
       }
     } else {
       _retrieveDataError = response.exception!.code;
@@ -218,10 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: FloatingActionButton(
               onPressed: () {
                 isVideo = false;
-                _onImageButtonPressed(
-                  ImageSource.gallery,
-                  context: context,
-                );
+                _onImageButtonPressed(ImageSource.gallery, context: context);
               },
               heroTag: 'image0',
               tooltip: 'Pick Image from gallery',

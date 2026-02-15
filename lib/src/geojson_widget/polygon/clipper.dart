@@ -44,7 +44,9 @@ class PowerGeoJSONClipper<T extends Object> extends CustomClipper<Path> {
       d += 'Z';
     }
     path.close();
-    log('<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size.width.ceil()} ${size.height.ceil()}" width="50%"><path  fill-rule="evenodd" fill="brown" d="$d" /></svg>');
+    log(
+      '<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size.width.ceil()} ${size.height.ceil()}" width="50%"><path  fill-rule="evenodd" fill="brown" d="$d" /></svg>',
+    );
     return path;
   }
 

@@ -27,24 +27,24 @@ class Login {
   }
 
   factory Login.fromMap(Map<String, dynamic> data) => Login(
-        uuid: data['uuid'] as String?,
-        username: data['username'] as String?,
-        password: data['password'] as String?,
-        salt: data['salt'] as String?,
-        md5: data['md5'] as String?,
-        sha1: data['sha1'] as String?,
-        sha256: data['sha256'] as String?,
-      );
+    uuid: data['uuid'] as String?,
+    username: data['username'] as String?,
+    password: data['password'] as String?,
+    salt: data['salt'] as String?,
+    md5: data['md5'] as String?,
+    sha1: data['sha1'] as String?,
+    sha256: data['sha256'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'uuid': uuid,
-        'username': username,
-        'password': password,
-        'salt': salt,
-        'md5': md5,
-        'sha1': sha1,
-        'sha256': sha256,
-      };
+    'uuid': uuid,
+    'username': username,
+    'password': password,
+    'salt': salt,
+    'md5': md5,
+    'sha1': sha1,
+    'sha256': sha256,
+  };
 
   /// `dart:convert`
   ///

@@ -28,7 +28,9 @@ class PowerEsriJsonTransformer {
   }
 
   Map<String, Object?> _extract(
-      Map<String, Object?> feature, String esriGeomType) {
+    Map<String, Object?> feature,
+    String esriGeomType,
+  ) {
     String geomType = _getGeomType(esriGeomType);
 
     return <String, Object?>{
@@ -36,7 +38,9 @@ class PowerEsriJsonTransformer {
       "geometry": <String, Object?>{
         "type": geomType,
         "coordinates": _getCoordinates(
-            feature["geometry"] as Map<String, Object?>, geomType),
+          feature["geometry"] as Map<String, Object?>,
+          geomType,
+        ),
       },
       "properties": feature["attributes"],
     };

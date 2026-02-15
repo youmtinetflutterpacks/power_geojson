@@ -5,11 +5,9 @@ import 'package:power_geojson/power_geojson.dart';
 import 'package:power_geojson_example/lib.dart';
 
 class NetworkGeoJSONPolygon extends StatelessWidget {
-  const NetworkGeoJSONPolygon({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const NetworkGeoJSONPolygon({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 
@@ -28,9 +26,7 @@ class NetworkGeoJSONPolygon extends StatelessWidget {
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
           color: Color(0xFF830202),
-          shadows: [
-            Shadow(blurRadius: 10, color: Colors.white),
-          ],
+          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
         ),
         labeled: true,
       ),

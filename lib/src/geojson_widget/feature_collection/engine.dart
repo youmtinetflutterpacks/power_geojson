@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 
@@ -50,10 +51,9 @@ Future<Widget> _fileFeatureCollections<T extends Object>(
   required Widget Function(
     FeatureCollectionProperties<T> featureCollectionProperties,
     Map<String, dynamic>? map,
-  ) builder,
-  required Future<String> Function(
-    String filePath,
-  ) fileLoadBuilder,
+  )
+  builder,
+  required Future<String> Function(String filePath) fileLoadBuilder,
   MapController? mapController,
   bool polygonCulling = false,
   Key? key,
@@ -91,9 +91,10 @@ Future<Widget> _memoryFeatureCollections<T extends Object>(
   Uint8List list, {
   required FeatureCollectionProperties<T> featureCollectionLayerProperties,
   required Widget Function(
-          FeatureCollectionProperties<T> featureCollectionProperties,
-          Map<String, dynamic>? map)
-      builder,
+    FeatureCollectionProperties<T> featureCollectionProperties,
+    Map<String, dynamic>? map,
+  )
+  builder,
   MapController? mapController,
   bool polygonCulling = false,
   Key? key,
@@ -133,9 +134,10 @@ Future<Widget> _assetFeatureCollections<T extends Object>(
   bool polygonCulling = false,
   MapController? mapController,
   required Widget Function(
-          FeatureCollectionProperties<T> featureCollectionProperties,
-          Map<String, dynamic>? map)
-      builder,
+    FeatureCollectionProperties<T> featureCollectionProperties,
+    Map<String, dynamic>? map,
+  )
+  builder,
   Key? key,
   required PowerMarkerClusterOptions? powerClusterOptions,
 }) async {
@@ -177,12 +179,16 @@ Future<Widget> _networkFeatureCollections<T extends Object>(
   Map<String, String>? headers,
   bool polygonCulling = false,
   required Widget Function(
-          FeatureCollectionProperties<T> featureCollectionProperties,
-          Map<String, dynamic>? map)
-      builder,
+    FeatureCollectionProperties<T> featureCollectionProperties,
+    Map<String, dynamic>? map,
+  )
+  builder,
   required Future<String> Function(
-          Client? client, Uri uri, Map<String, String>? map)
-      networkLoadBuilder,
+    Client? client,
+    Uri uri,
+    Map<String, String>? map,
+  )
+  networkLoadBuilder,
   MapController? mapController,
   required PowerMarkerClusterOptions? powerClusterOptions,
 }) async {
@@ -217,9 +223,10 @@ Widget _string<T extends Object>(
   String json, {
   Key? key,
   required Widget Function(
-          FeatureCollectionProperties<T> featureCollectionProperties,
-          Map<String, Object?>? map)
-      builder,
+    FeatureCollectionProperties<T> featureCollectionProperties,
+    Map<String, Object?>? map,
+  )
+  builder,
   required FeatureCollectionProperties<T> featureCollectionPropertie,
   bool polygonCulling = false,
   MapController? mapController,
@@ -232,10 +239,7 @@ Widget _string<T extends Object>(
         (PowerGeoPoint e) => e.geometry.coordinates.toPowerMarker(
           markerProperties: featureCollectionPropertie.markerProperties,
           properties: e.properties,
-          child: builder(
-            featureCollectionPropertie,
-            e.properties,
-          ),
+          child: builder(featureCollectionPropertie, e.properties),
         ),
       )
       .toList();
@@ -254,7 +258,7 @@ Widget _string<T extends Object>(
           rotate: featureCollectionPropertie.markerProperties.rotate ?? false,
           alignment:
               featureCollectionPropertie.markerProperties.rotateAlignment ??
-                  Alignment.center,
+              Alignment.center,
           markers: markers,
         ),
       PolylineLayer<T>(
@@ -305,12 +309,13 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     required Widget Function(
       FeatureCollectionProperties<T> featureCollectionProperties,
       Map<String, dynamic>? map,
-    ) builder,
+    )
+    builder,
     required FeatureCollectionProperties<T> featureCollectionProperties,
     bool polygonCulling = false,
     MapController? mapController,
     Future<String> Function(Client? client, Uri uri, Map<String, String>? map)?
-        networkLoadBuilder,
+    networkLoadBuilder,
     Key? key,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
@@ -347,9 +352,10 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     bool polygonCulling = false,
     MapController? mapController,
     required Widget Function(
-            FeatureCollectionProperties<T> featureCollectionProperties,
-            Map<String, dynamic>? map)
-        builder,
+      FeatureCollectionProperties<T> featureCollectionProperties,
+      Map<String, dynamic>? map,
+    )
+    builder,
     Key? key,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
@@ -387,7 +393,8 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     required Widget Function(
       FeatureCollectionProperties<T> featureCollectionProperties,
       Map<String, dynamic>? map,
-    ) builder,
+    )
+    builder,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
     if (AppPlatform.isWeb) {
@@ -426,7 +433,8 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     required Widget Function(
       FeatureCollectionProperties<T> featureCollectionProperties,
       Map<String, dynamic>? map,
-    ) builder,
+    )
+    builder,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
     return _memoryFeatureCollections(
@@ -460,9 +468,10 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     Key? key,
     required PowerMarkerClusterOptions? powerClusterOptions,
     required Widget Function(
-            FeatureCollectionProperties<T> featureCollectionProperties,
-            Map<String, dynamic>? properties)
-        builder,
+      FeatureCollectionProperties<T> featureCollectionProperties,
+      Map<String, dynamic>? properties,
+    )
+    builder,
   }) {
     return _string(
       data,

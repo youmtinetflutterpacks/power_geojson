@@ -6,11 +6,9 @@ import 'package:power_geojson/power_geojson.dart';
 import 'package:power_geojson_example/lib.dart';
 
 class NetworkGeoJSONMarker extends StatelessWidget {
-  const NetworkGeoJSONMarker({
-    Key? key,
-    MapController? mapController,
-  })  : _mapController = mapController,
-        super(key: key);
+  const NetworkGeoJSONMarker({Key? key, MapController? mapController})
+    : _mapController = mapController,
+      super(key: key);
 
   final MapController? _mapController;
 

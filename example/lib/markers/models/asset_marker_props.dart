@@ -4,10 +4,7 @@ class AssetMarkerProperties {
   final int oid;
 
   final String name;
-  AssetMarkerProperties({
-    required this.oid,
-    required this.name,
-  });
+  AssetMarkerProperties({required this.oid, required this.name});
 
   Map<String, Object?> toJson() {
     return {
@@ -23,8 +20,10 @@ class AssetMarkerProperties {
     );
   }
 
-  factory AssetMarkerProperties.fromMap(Map<String, Object?> json,
-      {String? id}) {
+  factory AssetMarkerProperties.fromMap(
+    Map<String, Object?> json, {
+    String? id,
+  }) {
     return AssetMarkerProperties(
       oid: json[AssetMarkerPropertiesEnum.OBJECTID.name] as int,
       name: json[AssetMarkerPropertiesEnum.Name.name] as String,
@@ -50,45 +49,36 @@ class AssetMarkerProperties {
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      oid,
-      name,
-    );
+    return Object.hash(runtimeType, oid, name);
   }
 }
 
-enum AssetMarkerPropertiesEnum {
-  OBJECTID,
-  Name,
-  none,
-}
+enum AssetMarkerPropertiesEnum { OBJECTID, Name, none }
 
 extension AssetMarkerPropertiesSort on List<AssetMarkerProperties> {
   List<AssetMarkerProperties> sorty(String caseField, {bool desc = false}) {
-    return this
-      ..sort((a, b) {
-        int fact = (desc ? -1 : 1);
+    return this..sort((a, b) {
+      int fact = (desc ? -1 : 1);
 
-        if (caseField == AssetMarkerPropertiesEnum.OBJECTID.name) {
-          // unsortable
+      if (caseField == AssetMarkerPropertiesEnum.OBJECTID.name) {
+        // unsortable
 
-          int akey = a.oid;
-          int bkey = b.oid;
+        int akey = a.oid;
+        int bkey = b.oid;
 
-          return fact * (bkey - akey);
-        }
+        return fact * (bkey - akey);
+      }
 
-        if (caseField == AssetMarkerPropertiesEnum.Name.name) {
-          // unsortable
+      if (caseField == AssetMarkerPropertiesEnum.Name.name) {
+        // unsortable
 
-          String akey = a.name;
-          String bkey = b.name;
+        String akey = a.name;
+        String bkey = b.name;
 
-          return fact * (bkey.compareTo(akey));
-        }
+        return fact * (bkey.compareTo(akey));
+      }
 
-        return 0;
-      });
+      return 0;
+    });
   }
 }

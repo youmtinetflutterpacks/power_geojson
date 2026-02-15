@@ -35,15 +35,15 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
     1024,
     512,
     256,
-    128
+    128,
   ];
   proj4.Point point = proj4.Point(x: -2.328758, y: 34.928685);
   String initText = 'Map centered to';
   double? maxZoom;
 
-  final epsg26191Bounds = Bounds<double>(
-    const Point<double>(-276362.47, -296555.37),
-    const Point<double>(895990.96, 604816.69),
+  final epsg26191Bounds = Rect.fromPoints(
+    const Offset(-276362.47, -296555.37),
+    const Offset(895990.96, 604816.69),
   );
 
   @override
@@ -57,7 +57,8 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
     epsg900913 = proj4.Projection.get('EPSG:900913')!;
     epsg102113 = proj4.Projection.get('EPSG:102113')!;
     google = proj4.Projection.get('GOOGLE')!;
-    epsg26191 = proj4.Projection.get('EPSG:26191') ??
+    epsg26191 =
+        proj4.Projection.get('EPSG:26191') ??
         proj4.Projection.add(
           'EPSG:26191',
           'PROJCS["Nord_Maroc",GEOGCS["GCS_Merchich",DATUM["D_Merchich",SPHEROID["Clarke_1880_IGN",6378249.2,293.466021293627]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",300000.0],PARAMETER["Central_Meridian",-5.4],PARAMETER["Standard_Parallel_1",33.3],PARAMETER["Scale_Factor",0.999625769],PARAMETER["Latitude_Of_Origin",33.3],UNIT["Meter",1.0]]',
@@ -105,9 +106,7 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
               padding: const EdgeInsets.only(top: 2, bottom: 2),
               child: Text('${transforma(epsg26191, 'EPSG:26191')}.'),
             ),
-            Flexible(
-              child: fMap(),
-            ),
+            Flexible(child: fMap()),
           ],
         ),
       ),
@@ -147,9 +146,9 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
                 color: Colors.black,
               ),
               alignment: Alignment.bottomCenter,
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -163,10 +162,7 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
 }
 
 class WMSTileLayer extends StatelessWidget {
-  const WMSTileLayer({
-    Key? key,
-    required this.epsg26191CRS,
-  }) : super(key: key);
+  const WMSTileLayer({Key? key, required this.epsg26191CRS}) : super(key: key);
 
   final Proj4Crs epsg26191CRS;
 

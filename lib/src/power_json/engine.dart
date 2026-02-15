@@ -107,8 +107,4 @@ class PowerJSON {
   ///
 }
 
-enum _PrivateContainer {
-  root,
-  propertyMap,
-  propertyArray,
-}
+enum _PrivateContainer { root, propertyMap, propertyArray }

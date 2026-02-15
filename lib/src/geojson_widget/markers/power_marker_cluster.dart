@@ -1,7 +1,6 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:power_geojson/power_geojson.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 class PowerMarker extends Marker {
   final Map<String, Object?>? properties;
@@ -61,14 +60,14 @@ class PowerPopupOptions {
     this.buildPopupOnHover = false,
     this.timeToShowPopupOnHover = 300,
   }) : markerTapBehavior =
-            markerTapBehavior ?? MarkerTapBehavior.togglePopupAndHideRest();
+           markerTapBehavior ?? MarkerTapBehavior.togglePopupAndHideRest();
 }
 
 // In a separate file so it can be exported individually in extension_api.dart
-typedef PowerPopupBuilder = Widget Function(
-    BuildContext context, PowerMarker powerMarker);
-typedef PowerClusterWidgetBuilder = Widget Function(
-    BuildContext context, List<PowerMarker> markers);
+typedef PowerPopupBuilder =
+    Widget Function(BuildContext context, PowerMarker powerMarker);
+typedef PowerClusterWidgetBuilder =
+    Widget Function(BuildContext context, List<PowerMarker> markers);
 
 class PowerMarkerClusterOptions {
   //
@@ -116,8 +115,7 @@ class PowerMarkerClusterOptions {
   final int circleSpiralSwitchover;
 
   /// Make it possible to provide custom function to calculate spiderfy shape positions
-  final List<Point<double>> Function(int, Point<double>)?
-      spiderfyShapePositions;
+  final List<Offset> Function(int, Offset)? spiderfyShapePositions;
 
   /// If true show polygon then tap on cluster
   final bool showPolygon;
@@ -195,8 +193,9 @@ class PowerMarkerClusterOptions {
   });
 
   MarkerClusterLayerOptions toClusterOptions(
-      PowerMarkerClusterOptions powerClusterOptions,
-      List<PowerMarker> markers) {
+    PowerMarkerClusterOptions powerClusterOptions,
+    List<PowerMarker> markers,
+  ) {
     return MarkerClusterLayerOptions(
       builder: (BuildContext context, List<Marker> markers) =>
           builder(context, markers.whereType<PowerMarker>().toList()),
@@ -243,17 +242,19 @@ class PowerMarkerClusterOptions {
   }
 
   PopupMarkerLayerOptions toPopupOptions(
-      PowerMarkerClusterOptions powerClusterOptions,
-      List<PowerMarker> markers) {
+    PowerMarkerClusterOptions powerClusterOptions,
+    List<PowerMarker> markers,
+  ) {
     return PopupMarkerLayerOptions(
       markers: markers,
       markerTapBehavior: popupOptions?.markerTapBehavior,
       popupController: popupOptions?.popupController,
       selectedMarkerBuilder: (BuildContext context, Marker marker) {
         return SizedBox(
-            width: 45,
-            height: 45,
-            child: _markerBuilder /**/ (powerClusterOptions, marker));
+          width: 45,
+          height: 45,
+          child: _markerBuilder /**/ (powerClusterOptions, marker),
+        );
       },
       popupDisplayOptions: PopupDisplayOptions(
         builder: (BuildContext context, Marker marker) =>
@@ -268,18 +269,18 @@ class PowerMarkerClusterOptions {
   }
 
   Widget _markerBuilder(
-      PowerMarkerClusterOptions powerClusterOptions, Marker marker) {
+    PowerMarkerClusterOptions powerClusterOptions,
+    Marker marker,
+  ) {
     PowerPopupOptions? popupOptions = powerClusterOptions.popupOptions;
     if ((marker is PowerMarker && popupOptions != null)) {
-      return Builder(builder: (BuildContext context) {
-        return popupOptions.popupBuilder(context, marker);
-      });
-    } else {
-      return Container(
-        width: 50,
-        height: 50,
-        color: Colors.amber,
+      return Builder(
+        builder: (BuildContext context) {
+          return popupOptions.popupBuilder(context, marker);
+        },
       );
+    } else {
+      return Container(width: 50, height: 50, color: Colors.amber);
     }
   }
 }

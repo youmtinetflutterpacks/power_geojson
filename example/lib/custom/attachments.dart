@@ -29,13 +29,9 @@ import "package:power_geojson/power_geojson.dart";
 
 class AttachmentsInfos {
   final List<AttachmentInfos> attachmentInfos;
-  AttachmentsInfos({
-    required this.attachmentInfos,
-  });
+  AttachmentsInfos({required this.attachmentInfos});
 
-  AttachmentsInfos copyWith({
-    List<AttachmentInfos>? attachmentInfos,
-  }) {
+  AttachmentsInfos copyWith({List<AttachmentInfos>? attachmentInfos}) {
     return AttachmentsInfos(
       attachmentInfos: attachmentInfos ?? this.attachmentInfos,
     );
@@ -53,15 +49,17 @@ class AttachmentsInfos {
     return AttachmentsInfos(
       attachmentInfos: (json[AttachmentsInfosEnum.attachmentInfos.name] as List)
           .map<AttachmentInfos>(
-              (data) => AttachmentInfos.fromJson(data as Map<String, Object?>))
+            (data) => AttachmentInfos.fromJson(data as Map<String, Object?>),
+          )
           .toList(),
     );
   }
 
   factory AttachmentsInfos.fromMap(Map<String, Object?> json, {String? id}) {
     return AttachmentsInfos(
-      attachmentInfos: json[AttachmentsInfosEnum.attachmentInfos.name]
-          as List<AttachmentInfos>,
+      attachmentInfos:
+          json[AttachmentsInfosEnum.attachmentInfos.name]
+              as List<AttachmentInfos>,
     );
   }
 
@@ -83,17 +81,11 @@ class AttachmentsInfos {
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      attachmentInfos,
-    );
+    return Object.hash(runtimeType, attachmentInfos);
   }
 }
 
-enum AttachmentsInfosEnum {
-  attachmentInfos,
-  none,
-}
+enum AttachmentsInfosEnum { attachmentInfos, none }
 
 class AttachmentInfos {
   final int id;

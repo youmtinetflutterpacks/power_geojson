@@ -8,22 +8,14 @@ import "package:power_geojson/power_geojson.dart";
 
 class AttachmentSingle {
   final String attachment;
-  AttachmentSingle({
-    required this.attachment,
-  });
+  AttachmentSingle({required this.attachment});
 
-  AttachmentSingle copyWith({
-    String? attachment,
-  }) {
-    return AttachmentSingle(
-      attachment: attachment ?? this.attachment,
-    );
+  AttachmentSingle copyWith({String? attachment}) {
+    return AttachmentSingle(attachment: attachment ?? this.attachment);
   }
 
   Map<String, Object?> toJson() {
-    return {
-      AttachmentSingleEnum.Attachment.name: attachment,
-    };
+    return {AttachmentSingleEnum.Attachment.name: attachment};
   }
 
   factory AttachmentSingle.fromJson(Map<String, Object?> json) {
@@ -56,34 +48,27 @@ class AttachmentSingle {
 
   @override
   int get hashCode {
-    return Object.hash(
-      runtimeType,
-      attachment,
-    );
+    return Object.hash(runtimeType, attachment);
   }
 }
 
-enum AttachmentSingleEnum {
-  Attachment,
-  none,
-}
+enum AttachmentSingleEnum { Attachment, none }
 
 extension AttachmentSingleSort on List<AttachmentSingle> {
   List<AttachmentSingle> sorty(String caseField, {bool desc = false}) {
-    return this
-      ..sort((a, b) {
-        int fact = (desc ? -1 : 1);
+    return this..sort((a, b) {
+      int fact = (desc ? -1 : 1);
 
-        if (caseField == AttachmentSingleEnum.Attachment.name) {
-          // unsortable
+      if (caseField == AttachmentSingleEnum.Attachment.name) {
+        // unsortable
 
-          String akey = a.attachment;
-          String bkey = b.attachment;
+        String akey = a.attachment;
+        String bkey = b.attachment;
 
-          return fact * (bkey.compareTo(akey));
-        }
+        return fact * (bkey.compareTo(akey));
+      }
 
-        return 0;
-      });
+      return 0;
+    });
   }
 }

@@ -14,14 +14,14 @@ class Coordinates {
   }
 
   factory Coordinates.fromMap(Map<String, dynamic> data) => Coordinates(
-        latitude: data['latitude'] as String?,
-        longitude: data['longitude'] as String?,
-      );
+    latitude: data['latitude'] as String?,
+    longitude: data['longitude'] as String?,
+  );
 
   Map<String, dynamic> toMap() => {
-        'latitude': latitude,
-        'longitude': longitude,
-      };
+    'latitude': latitude,
+    'longitude': longitude,
+  };
 
   /// `dart:convert`
   ///
@@ -35,10 +35,7 @@ class Coordinates {
   /// Converts [Coordinates] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Coordinates copyWith({
-    String? latitude,
-    String? longitude,
-  }) {
+  Coordinates copyWith({String? latitude, String? longitude}) {
     return Coordinates(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,

@@ -31,30 +31,30 @@ class Location {
   }
 
   factory Location.fromMap(Map<String, dynamic> data) => Location(
-        street: data['street'] == null
-            ? null
-            : Street.fromMap(data['street'] as Map<String, dynamic>),
-        city: data['city'] as String?,
-        state: data['state'] as String?,
-        country: data['country'] as String?,
-        postcode: data['postcode'] as int?,
-        coordinates: data['coordinates'] == null
-            ? null
-            : Coordinates.fromMap(data['coordinates'] as Map<String, dynamic>),
-        timezone: data['timezone'] == null
-            ? null
-            : Timezone.fromMap(data['timezone'] as Map<String, dynamic>),
-      );
+    street: data['street'] == null
+        ? null
+        : Street.fromMap(data['street'] as Map<String, dynamic>),
+    city: data['city'] as String?,
+    state: data['state'] as String?,
+    country: data['country'] as String?,
+    postcode: data['postcode'] as int?,
+    coordinates: data['coordinates'] == null
+        ? null
+        : Coordinates.fromMap(data['coordinates'] as Map<String, dynamic>),
+    timezone: data['timezone'] == null
+        ? null
+        : Timezone.fromMap(data['timezone'] as Map<String, dynamic>),
+  );
 
   Map<String, dynamic> toMap() => {
-        'street': street?.toMap(),
-        'city': city,
-        'state': state,
-        'country': country,
-        'postcode': postcode,
-        'coordinates': coordinates?.toMap(),
-        'timezone': timezone?.toMap(),
-      };
+    'street': street?.toMap(),
+    'city': city,
+    'state': state,
+    'country': country,
+    'postcode': postcode,
+    'coordinates': coordinates?.toMap(),
+    'timezone': timezone?.toMap(),
+  };
 
   /// `dart:convert`
   ///
