@@ -1,5 +1,15 @@
 # Change Log
 
+## [3.38.9]
+
+- Flutter Map 8.2.2 compatibility and dependency refresh
+- Unified GeoJSON loaders (asset, file, network, memory, string) with Esri JSON auto-detect
+- Marker clustering and HTTP fallback widgets exposed via `PowerMarkerClusterOptions`
+- Docs refreshed for markers, polylines, polygons, and PowerJSON utilities
+- Update plugin version to 3.38.9 to mirror the Flutter version.
+- Bug fixes and performance improvements in GeoJSON parsing and rendering
+`2026-02-15`
+
 ## [1.2.5+5]
 
 - Minor Bug fixes
