@@ -1,9 +1,14 @@
 # Change Log
 
+## [3.41.2]
+- Update plugin version to 3.41.2 to mirror the Flutter version.
+
+`2026-02-22`
+
 ## [3.41.1]
 - Update plugin version to 3.41.1 to mirror the Flutter version.
 
-`2026-06-01`
+`2026-02-21`
 
 ## [3.38.9]
 
