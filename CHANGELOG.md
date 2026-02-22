@@ -2,6 +2,7 @@
 
 ## [3.41.1]
 - Update plugin version to 3.41.1 to mirror the Flutter version.
+
 `2026-06-01`
 
 ## [3.38.9]
@@ -12,34 +13,41 @@
 - Docs refreshed for markers, polylines, polygons, and PowerJSON utilities
 - Update plugin version to 3.38.9 to mirror the Flutter version.
 - Bug fixes and performance improvements in GeoJSON parsing and rendering
+
 `2026-02-15`
 
 ## [1.2.5+5]
 
 - Minor Bug fixes
+
 `2025-06-09`
 
 ## [1.2.5+4]
 
 - Bug fixes (PowerJSON) for DateTime && Enums
+
 `2025-06-09`
 
 ## [1.2.5+3]
 
 - Bug fixes (PowerJSON) for DateTime && Enums
+
 `2025-06-09`
 
 ## [1.2.5+1]
 
+
 `2025-05-14`
 
 ## [1.2.5]
+
 
 `2025-02-27`
 
 - Bug fixes (PowerJSON)
 
 ## [1.2.4-pre.1+7]
+
 
 `2025-02-18`
 
@@ -48,12 +56,14 @@
 
 ## [1.2.3-pre.1+6]
 
+
 `2025-01-09`
 
 - @MandaGate
 - Bug fixes
 
 ## [1.2.3-pre.1+5]
+
 
 `2025-01-09`
 
@@ -62,17 +72,20 @@
 
 ## [1.1.3+24]
 
+
 `2025-01-09`
 
 - @MandaGate
 
 ## [1.1.2+23]
 
+
 `2025-01-09`
 
 - Wasm Support
 
 ## [1.0.9+15]
+
 
 `2025-01-07`
 
