@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
 class PerojectionFlutterMap extends StatefulWidget {
   const PerojectionFlutterMap({Key? key}) : super(key: key);
@@ -13,39 +11,5 @@ class _PerojectionFlutterMapState extends State<PerojectionFlutterMap> {
   @override
   Widget build(BuildContext context) {
     return Container();
-  }
-}
-
-class CrsCustom extends Crs {
-  const CrsCustom({required super.code, required super.infinite});
-
-  @override
-  (double, double) latLngToXY(LatLng latlng, double scale) {
-    throw UnimplementedError();
-  }
-
-  @override
-  (double, double) transform(double x, double y, double scale) {
-    throw UnimplementedError();
-  }
-
-  @override
-  (double, double) untransform(double x, double y, double scale) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Projection get projection => throw UnimplementedError();
-
-  @override
-  LatLng offsetToLatLng(Offset point, double zoom) {
-    // TODO: implement offsetToLatLng
-    throw UnimplementedError();
-  }
-
-  @override
-  Rect? getProjectedBounds(double zoom) {
-    // TODO: implement getProjectedBounds
-    throw UnimplementedError();
   }
 }

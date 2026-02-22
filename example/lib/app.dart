@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:get/get.dart';
 import 'package:enhanced_future_builder/enhanced_future_builder.dart';
+import 'package:http/http.dart';
 import 'package:power_geojson/power_geojson.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:power_geojson_example/lib.dart';
@@ -84,6 +85,15 @@ class _PowerGeojsonSampleAppState extends State<PowerGeojsonSampleApp> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                retinaMode: true,
+                userAgentPackageName: 'com.ymrabtipacks.power_geojson_example',
+                tileProvider: NetworkTileProvider(
+                  headers: {
+                    'User-Agent': 'com.ymrabtipacks.power_geojson_example',
+                  },
+                  httpClient: Client(),
+                  silenceExceptions: true,
+                ),
                 maxZoom: 19,
               ),
               AssetGeoJSONZones(),

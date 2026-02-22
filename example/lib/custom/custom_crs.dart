@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:console_tools/console_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 
@@ -130,12 +131,17 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
         TileLayer(
           tileDisplay: const TileDisplay.fadeIn(),
           errorImage: const AssetImage('assets/images/flutter_logo.png'),
+          tileProvider: NetworkTileProvider(
+            headers: {'User-Agent': 'com.ymrabtipacks.power_geojson_example'},
+            httpClient: Client(),
+            silenceExceptions: true,
+          ),
           errorTileCallback: (tile, error, trace) {
             Console.log(tile.imageInfo);
           },
           urlTemplate:
               'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-          userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+          userAgentPackageName: 'com.ymrabtipacks.power_geojson_example',
         ),
         MarkerLayer(
           markers: [

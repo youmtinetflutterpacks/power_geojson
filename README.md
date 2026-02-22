@@ -1,6 +1,9 @@
 <div align="center">
 
 # Flutter power_geojson
+<div align="center">
+    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/main/src/generated_visuals/power_geojson.png" alt="power_geojson logo" width="240" height="240" style="border-radius: 50%;" />
+</div>
 
 [![pub package](https://img.shields.io/pub/v/power_geojson.svg)](https://pub.dev/packages/power_geojson)
 [![pub likes](https://img.shields.io/pub/likes/power_geojson.svg)](https://pub.dev/packages/power_geojson/score)
@@ -26,7 +29,9 @@ Render GeoJSON (and Esri JSON) FeatureCollections on top of `flutter_map` with o
 - Built-in marker clustering via `PowerMarkerClusterOptions` and HTTP fallbacks.
 - Property-based styling through `MarkerProperties`, `PolygonProperties`, and `PolylineProperties`.
 - PowerJSON helper for safe JSON string building (DateTime, Enum, TimeOfDay).
-
+<div align="center">
+    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/main/src/generated_visuals/readme_banner.png" alt="power_geojson banner" width="240" height="240" style="border-radius: 50%;" />
+</div>
 ## Installation
 
 Add the dependency to your `pubspec.yaml`:
