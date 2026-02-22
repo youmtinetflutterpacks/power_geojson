@@ -1,8 +1,7 @@
 <div align="center">
 
-# Flutter power_geojson
 <div align="center">
-    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/develop/src/generated_visuals/readme_header.png" alt="power_geojson logo" width="240" height="240" />
+    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/develop/src/generated_visuals/readme_header.png" alt="power_geojson logo"/>
 </div>
 
 [![pub package](https://img.shields.io/pub/v/power_geojson.svg)](https://pub.dev/packages/power_geojson)
