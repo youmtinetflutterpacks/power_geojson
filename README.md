@@ -1,8 +1,22 @@
+<div align="center">
+
 # Flutter power_geojson
 
 [![pub package](https://img.shields.io/pub/v/power_geojson.svg)](https://pub.dev/packages/power_geojson)
-[![GitHub stars](https://img.shields.io/github/stars/youmtinet-flutter-packs/power_geojson.svg?style=flat&logo=github&colorB=deeppink&label=Stars)](https://github.com/youmtinet-flutter-packs/power_geojson)
+[![pub likes](https://img.shields.io/pub/likes/power_geojson.svg)](https://pub.dev/packages/power_geojson/score)
+[![pub points](https://img.shields.io/pub/points/power_geojson.svg?color=blue)](https://pub.dev/packages/power_geojson/score)
+[![platform](https://img.shields.io/badge/platform-flutter-blue)](https://flutter.dev)
 
+[![GitHub stars](https://img.shields.io/github/stars/ymrabti/power_geojson.svg?style=flat&logo=github&colorB=&label=Stars)](https://github.com/ymrabti/power_geojson/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/ymrabti/power_geojson.svg?style=flat&logo=github&colorB=&label=Issues)](https://github.com/ymrabti/power_geojson/issues)
+[![GitHub license](https://img.shields.io/github/license/ymrabti/power_geojson.svg?style=flat&logo=github&colorB=&label=License)](https://github.com/ymrabti/power_geojson/blob/main/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ymrabti/power_geojson.svg?style=flat&logo=github&colorB=&label=Last%20Commit)](https://github.com/ymrabti/power_geojson/commits/main)
+
+
+[![Build status](https://github.com/ymrabti/power_geojson/workflows/Publish%20to%20pub.dev/badge.svg?style=flat&logo=github&colorB=&label=Build)](https://github.com/youmtinetflutterpacks/power_geojson)
+
+
+</div>
 Render GeoJSON (and Esri JSON) FeatureCollections on top of `flutter_map` with one-liners for markers, polygons, and polylines. Includes clustering, fallbacks, property-driven styling, and a tiny JSON helper for DateTime/Enum-safe serialization.
 
 ## Highlights
@@ -116,7 +130,23 @@ Contributions are welcome!
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE).
 
-## Checkout my other packages
+## 🔗 More Packages
 
 - [PopupMenu2](https://pub.dev/packages/popup_menu_2)
-- [ConsoleLogger](https://pub.dev/packages/console_tools)
+- [Flutter Azimuth](https://pub.dev/packages/power_geojson)
+- [Map Contextual Menu](https://pub.dev/packages/longpress_popup)
+- [Simple Logger](https://pub.dev/packages/console_tools)
+
+---
+
+## 👨‍💻 Developer Card
+
+<div align="center">
+    <img src="https://avatars.githubusercontent.com/u/47449165?v=4" alt="Younes M'rabti avatar" width="120" height="120" style="border-radius: 50%;" />
+
+### Younes M'rabti
+
+📧 Email: [admin@youmti.net](mailto:admin@youmti.net)  
+🌐 Website: [youmti.net](https://www.youmti.net/)  
+💼 LinkedIn: [younesmrabti1996](https://www.linkedin.com/in/younesmrabti1996/)
+</div>

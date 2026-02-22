@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.41.1]
+- Update plugin version to 3.41.1 to mirror the Flutter version.
+`2026-06-01`
+
 ## [3.38.9]
 
 - Flutter Map 8.2.2 compatibility and dependency refresh
