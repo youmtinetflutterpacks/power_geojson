@@ -133,7 +133,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE).
 ## 🔗 More Packages
 
 - [PopupMenu2](https://pub.dev/packages/popup_menu_2)
-- [Flutter Azimuth](https://pub.dev/packages/power_geojson)
+- [Flutter Azimuth](https://pub.dev/packages/flutter_azimuth)
 - [Map Contextual Menu](https://pub.dev/packages/longpress_popup)
 - [Simple Logger](https://pub.dev/packages/console_tools)
 
