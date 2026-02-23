@@ -14,11 +14,10 @@ class AssetGeoJSONLines extends StatelessWidget {
       polylineProperties: const PolylineProperties(
         isDotted: StrokePattern.dotted(),
         borderStrokeWidth: 0,
-        borderColor: Colors.red,
+        borderColor: Color(0xFF1E00FD),
         useStrokeWidthInMeter: true,
         strokeWidth: 20,
-        color: Colors.transparent,
-        gradientColors: Colors.primaries,
+        color: Color(0xFFFF9800), // brand orange
       ),
     );
   }

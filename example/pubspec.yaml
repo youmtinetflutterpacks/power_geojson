@@ -19,6 +19,7 @@ dependencies:
     flutter_map: ^8.2.2
     flutter_svg: ^2.2.3
     get: ^4.7.3
+    google_fonts: ^6.2.1
     http: ^1.6.0
     latlong2: ^0.9.1
     proj4dart: ^2.1.0

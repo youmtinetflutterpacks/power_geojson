@@ -1,5 +1,6 @@
 export 'app.dart';
 export 'components.dart';
+export 'theme.dart';
 export 'custom/custom.dart';
 export 'main.dart';
 export 'markers/markers.dart';

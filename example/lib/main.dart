@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -19,5 +18,13 @@ Future<void> main() async {
     await WakelockPlus.enable();
     // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
-  runApp(GetMaterialApp(debugShowCheckedModeBanner: false, home: AppHome()));
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(),
+      darkTheme: appTheme(),
+      themeMode: ThemeMode.dark,
+      home: AppHome(),
+    ),
+  );
 }

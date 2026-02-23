@@ -13,26 +13,17 @@ class AssetGeoJSONPolygon extends StatelessWidget {
   Widget build(BuildContext context) {
     return PowerGeoJSONPolygons.asset(
       "assets/polygons.geojson",
-      /* bufferOptions: BufferOptions(
-        buffer: 300,
-        buffersOnly: false,
-        polygonBufferProperties: PolygonProperties(
-          fillColor: const Color(0xFF6D05A8).withOpacity(0.5),
-          borderStokeWidth: 4,
-          isDotted: true,
-          borderColor: Colors.green,
-        ),
-      ), */
       polygonProperties: const PolygonProperties(
         label: 'Asset',
-        fillColor: Color(0xFFA29A0A),
+        fillColor: Color(0x662195F3), // translucent blue @ 40%
+        borderColor: Color(0xFF1E00FD), // deep blue border
+        borderStokeWidth: 2,
         rotateLabel: true,
-        isFilled: false,
+        isFilled: true,
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
-          color: Colors.black,
-          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
-          decoration: TextDecoration.underline,
+          color: Colors.white,
+          shadows: [Shadow(blurRadius: 8, color: Colors.black)],
         ),
         labeled: true,
         layerProperties: {
@@ -57,13 +48,14 @@ class AssetGeoJSONZones extends StatelessWidget {
     return PowerGeoJSONPolygons.asset(
       "assets/morocco.geojson",
       polygonProperties: const PolygonProperties(
-        fillColor: Color(0x66A29A0A),
+        fillColor: Color(0x662195F3), // translucent blue @ 40%
+        borderColor: Color(0xFF1E00FD), // deep blue border
+        borderStokeWidth: 2,
         rotateLabel: true,
         labelStyle: TextStyle(
           fontStyle: FontStyle.italic,
-          color: Colors.black,
-          shadows: [Shadow(blurRadius: 10, color: Colors.white)],
-          decoration: TextDecoration.underline,
+          color: Colors.white,
+          shadows: [Shadow(blurRadius: 8, color: Colors.black)],
         ),
         labeled: true,
         layerProperties: {

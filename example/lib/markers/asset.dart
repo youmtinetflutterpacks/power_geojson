@@ -35,12 +35,14 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
         popupBuilder: (context, PowerMarker powerMarker) {
           Map<String, Object?>? properties = powerMarker.properties;
           return Card(
+            color: const Color(0xFF161B22),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
                 properties == null
                     ? ''
                     : AssetMarkerProperties.fromJson(properties).name,
+                style: const TextStyle(color: Color(0xFFE6EDF3)),
               ),
             ),
           );
@@ -85,7 +87,7 @@ class AssetGeoJSONMarkerPoints extends StatelessWidget {
   Widget _markerBuilder() {
     return Transform.rotate(
       angle: 0,
-      child: PinCentered(color: Color(0xFF72077C)),
+      child: PinCentered(color: Color(0xFFF44336)),
     );
   }
 }
