@@ -6,4 +6,5 @@ export 'main.dart';
 export 'markers/markers.dart';
 export 'polygons/polygons.dart';
 export 'polylines/polylines.dart';
+export 'resources/resources.dart';
 export 'utils.dart';

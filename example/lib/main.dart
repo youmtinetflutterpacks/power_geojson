@@ -18,13 +18,14 @@ Future<void> main() async {
     await WakelockPlus.enable();
     // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
-  runApp(
-    GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: appTheme(),
-      darkTheme: appTheme(),
-      themeMode: ThemeMode.dark,
-      home: AppHome(),
-    ),
-  );
+
+  // Register persistent service first, then reactive controller
+  await Get.putAsync<ResourceService>(() async {
+    final svc = ResourceService();
+    await svc.onInit();
+    return svc;
+  });
+  Get.put(MapStateController());
+
+  runApp(GetMaterialApp(debugShowCheckedModeBanner: false, theme: appTheme(), darkTheme: appTheme(), themeMode: ThemeMode.dark, home: AppHome()));
 }
