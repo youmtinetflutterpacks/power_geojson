@@ -1,5 +1,5 @@
+import 'package:enhanced_future_builder/enhanced_future_builder.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
@@ -302,7 +302,7 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
   /// - [key]: An optional [Key] for identifying the returned [Widget].
   ///
   /// Returns a [Widget] displaying the fetched GeoJSON feature collections.
-  static Future<Widget> network<T extends Object>(
+  static Widget network<T extends Object>(
     String url, {
     Client? client,
     Map<String, String>? headers,
@@ -320,17 +320,22 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
     Uri uri = url.toUri();
-    return _networkFeatureCollections(
-      uri,
-      powerClusterOptions: powerClusterOptions,
-      headers: headers,
-      client: client,
-      featureCollectionProperties: featureCollectionProperties,
-      networkLoadBuilder: networkLoadBuilder ?? _defaultNetworkLoader,
-      builder: builder,
-      polygonCulling: polygonCulling,
-      mapController: mapController,
-      key: key,
+    return EnhancedFutureBuilder<Widget>(
+      future: _networkFeatureCollections(
+        uri,
+        powerClusterOptions: powerClusterOptions,
+        headers: headers,
+        client: client,
+        featureCollectionProperties: featureCollectionProperties,
+        networkLoadBuilder: networkLoadBuilder ?? _defaultNetworkLoader,
+        builder: builder,
+        polygonCulling: polygonCulling,
+        mapController: mapController,
+        key: key,
+      ),
+      rememberFutureResult: true,
+      whenDone: (Widget child) => child,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -346,7 +351,7 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
   /// - [key]: An optional [Key] for identifying the returned [Widget].
   ///
   /// Returns a [Widget] displaying the GeoJSON feature collections from the asset file.
-  static Future<Widget> asset<T extends Object>(
+  static Widget asset<T extends Object>(
     String url, {
     required FeatureCollectionProperties<T> featureCollectionProperties,
     bool polygonCulling = false,
@@ -359,14 +364,19 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     Key? key,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
-    return _assetFeatureCollections(
-      url,
-      powerClusterOptions: powerClusterOptions,
-      featureCollectionProperties: featureCollectionProperties,
-      mapController: mapController,
-      polygonCulling: polygonCulling,
-      builder: builder,
-      key: key,
+    return EnhancedFutureBuilder<Widget>(
+      future: _assetFeatureCollections(
+        url,
+        powerClusterOptions: powerClusterOptions,
+        featureCollectionProperties: featureCollectionProperties,
+        mapController: mapController,
+        polygonCulling: polygonCulling,
+        builder: builder,
+        key: key,
+      ),
+      rememberFutureResult: true,
+      whenDone: (Widget child) => child,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -383,7 +393,7 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
   /// - [key]: An optional [Key] for identifying the returned [Widget].
   ///
   /// Returns a [Widget] displaying the GeoJSON feature collections from the local file.
-  static Future<Widget> file<T extends Object>(
+  static Widget file<T extends Object>(
     String path, {
     required FeatureCollectionProperties<T> featureCollectionProperties,
     bool polygonCulling = false,
@@ -400,15 +410,22 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     if (AppPlatform.isWeb) {
       throw UnsupportedError('Unsupported platform: Web');
     }
-    return _fileFeatureCollections(
-      path,
-      fileLoadBuilder: fileLoadBuilder ?? defaultFileLoadBuilder,
-      powerClusterOptions: powerClusterOptions,
-      featureCollectionLayerProperties: featureCollectionProperties,
-      mapController: mapController,
-      builder: builder,
-      polygonCulling: polygonCulling,
-      key: key,
+
+    return EnhancedFutureBuilder<Widget>(
+      future: _fileFeatureCollections(
+        path,
+        fileLoadBuilder: fileLoadBuilder ?? defaultFileLoadBuilder,
+        powerClusterOptions: powerClusterOptions,
+        featureCollectionLayerProperties: featureCollectionProperties,
+        mapController: mapController,
+        builder: builder,
+        polygonCulling: polygonCulling,
+        key: key,
+      ),
+
+      rememberFutureResult: true,
+      whenDone: (Widget child) => child,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -424,7 +441,7 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
   ///   and returns a [Widget] to render the features.
   ///
   /// Returns a [Widget] displaying the GeoJSON feature collections from memory.
-  static Future<Widget> memory<T extends Object>(
+  static Widget memory<T extends Object>(
     Uint8List bytes, {
     required FeatureCollectionProperties<T> featureCollectionLayerProperties,
     MapController? mapController,
@@ -437,14 +454,19 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     builder,
     PowerMarkerClusterOptions? powerClusterOptions,
   }) {
-    return _memoryFeatureCollections(
-      bytes,
-      powerClusterOptions: powerClusterOptions,
-      featureCollectionLayerProperties: featureCollectionLayerProperties,
-      mapController: mapController,
-      polygonCulling: polygonCulling,
-      builder: builder,
-      key: key,
+    return EnhancedFutureBuilder<Widget>(
+      future: _memoryFeatureCollections(
+        bytes,
+        powerClusterOptions: powerClusterOptions,
+        featureCollectionLayerProperties: featureCollectionLayerProperties,
+        mapController: mapController,
+        polygonCulling: polygonCulling,
+        builder: builder,
+        key: key,
+      ),
+      rememberFutureResult: true,
+      whenDone: (Widget child) => child,
+      whenNotDone: const Center(child: CupertinoActivityIndicator()),
     );
   }
 
@@ -466,7 +488,7 @@ class PowerGeoJSONFeatureCollections<T extends Object> {
     bool polygonCulling = false,
     MapController? mapController,
     Key? key,
-    required PowerMarkerClusterOptions? powerClusterOptions,
+    PowerMarkerClusterOptions? powerClusterOptions,
     required Widget Function(
       FeatureCollectionProperties<T> featureCollectionProperties,
       Map<String, dynamic>? properties,

@@ -1,4 +1,12 @@
 # Change Log
+## [3.41.3]
+- Update plugin version to 3.41.3 to mirror the Flutter version.
+- Update demo dependencies to match the latest versions for better compatibility and performance.
+- Make the demo a full Flutter application with a main function and a complete widget tree to showcase the package features effectively.
+- Update documentation comments in the demo code for clarity and to provide better guidance on how to use the package features.
+- Update the plugin visuals in the README to reflect the latest design and branding of the package.
+
+`2026-02-23`
 
 ## [3.41.2]
 - Update plugin version to 3.41.2 to mirror the Flutter version.

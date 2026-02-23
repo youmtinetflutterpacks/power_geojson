@@ -30,7 +30,12 @@ class ResourceService extends GetxService {
   /// Returns all persisted resources, in insertion order.
   List<GeoJsonResource> loadAll() {
     final raw = _prefs.getStringList(_prefKey) ?? [];
-    return raw.map((s) => GeoJsonResource.fromJson(jsonDecode(s) as Map<String, dynamic>)).toList();
+    return raw
+        .map(
+          (s) =>
+              GeoJsonResource.fromJson(jsonDecode(s) as Map<String, dynamic>),
+        )
+        .toList();
   }
 
   /// Adds [resource] to the persisted list and returns the saved instance.

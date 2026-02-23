@@ -27,5 +27,13 @@ Future<void> main() async {
   });
   Get.put(MapStateController());
 
-  runApp(GetMaterialApp(debugShowCheckedModeBanner: false, theme: appTheme(), darkTheme: appTheme(), themeMode: ThemeMode.dark, home: AppHome()));
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(),
+      darkTheme: appTheme(),
+      themeMode: ThemeMode.dark,
+      home: AppHome(),
+    ),
+  );
 }
