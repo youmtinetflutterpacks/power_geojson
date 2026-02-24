@@ -1,4 +1,12 @@
 # Change Log
+## [3.41.3+1]
+- Hotfix release to address critical issues and improve stability.
+- Update plugin version to 3.41.3+1 to mirror the Flutter version and include necessary patches.
+- Add webdemo link and Release APK link in the README for better accessibility and user engagement.
+
+`2026-02-24`
+
+
 ## [3.41.3]
 - Update plugin version to 3.41.3 to mirror the Flutter version.
 - Update demo dependencies to match the latest versions for better compatibility and performance.
