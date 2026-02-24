@@ -1,4 +1,8 @@
 # Change Log
+## [3.41.3+2]
+- Update demo APK filename to reflect the package name and version more clearly, improving clarity for users downloading the demo app.
+
+
 ## [3.41.3+1]
 - Hotfix release to address critical issues and improve stability.
 - Update plugin version to 3.41.3+1 to mirror the Flutter version and include necessary patches.

@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -27,10 +26,23 @@ android {
         versionName = flutter.versionName
     }
 
+    applicationVariants.all {
+        val variant = this
+        val variantName = variant.name
+        
+        // Rename APK outputs
+        outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val arch = output.filters.find { 
+                it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI.name 
+            }?.identifier ?: "universal"
+            val newName = "power_geojson_demo-$variantName-$arch.apk"
+            output.outputFileName = newName
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
