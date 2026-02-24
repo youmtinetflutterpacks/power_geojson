@@ -16,6 +16,9 @@
 
 
 [![Build status](https://github.com/ymrabti/power_geojson/workflows/Publish%20to%20pub.dev/badge.svg?style=flat&logo=github&colorB=&label=Build)](https://github.com/youmtinetflutterpacks/power_geojson)
+
+🌐 [Watch the demo web release](https://power-geojson-demo.youmti.net/) &nbsp;|&nbsp; 📦 [Download the latest APK](https://github.com/ymrabti/power_geojson/releases/latest/download/app-release.apk)
+
 </div>
 Render GeoJSON (and Esri JSON) FeatureCollections on top of `flutter_map` with one-liners for markers, polygons, and polylines. Includes clustering, fallbacks, property-driven styling, and a tiny JSON helper for DateTime/Enum-safe serialization.
 
