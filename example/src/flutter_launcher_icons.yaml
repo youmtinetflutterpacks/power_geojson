@@ -4,7 +4,7 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/power_geojson.png
   remove_alpha_ios: true
-  adaptive_icon_background: "#ff307367"
+  adaptive_icon_background: "#ff020623"
   adaptive_icon_foreground: assets/power_geojson.png
   web:
     generate: true
