@@ -1,4 +1,10 @@
 # Change Log
+## [3.41.3+3]
+- Update readme with new documentation and demo links, improving accessibility for users seeking information and examples about the package.
+- Update plugin version to 3.41.3+3 to mirror the Flutter version and include the latest updates and improvements.
+
+`2026-02-24`
+
 ## [3.41.3+2]
 - Update demo APK filename to reflect the package name and version more clearly, improving clarity for users downloading the demo app.
 
