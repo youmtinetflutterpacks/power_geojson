@@ -31,9 +31,11 @@ jobs:
 
             - name: Get dependencies
               run: flutter pub get
+              working-directory: example
 
             - name: Build APKs split per ABI
               run: flutter build apk --release
+              working-directory: example
 
             - name: Get tag name
               id: tag
@@ -42,7 +44,7 @@ jobs:
             - name: Create GitHub Release (Optional)
               uses: softprops/action-gh-release@v1
               with:
-                  files: build/app/outputs/flutter-apk/*.apk
+                  files: example/build/app/outputs/flutter-apk/*.apk
                   generate_release_notes: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
