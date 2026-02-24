@@ -1,8 +1,30 @@
 # Change Log
+## [3.41.3+1]
+- Hotfix release to address critical issues and improve stability.
+- Update plugin version to 3.41.3+1 to mirror the Flutter version and include necessary patches.
+- Add webdemo link and Release APK link in the README for better accessibility and user engagement.
+
+`2026-02-24`
+
+
+## [3.41.3]
+- Update plugin version to 3.41.3 to mirror the Flutter version.
+- Update demo dependencies to match the latest versions for better compatibility and performance.
+- Make the demo a full Flutter application with a main function and a complete widget tree to showcase the package features effectively.
+- Update documentation comments in the demo code for clarity and to provide better guidance on how to use the package features.
+- Update the plugin visuals in the README to reflect the latest design and branding of the package.
+
+`2026-02-23`
+
+## [3.41.2]
+- Update plugin version to 3.41.2 to mirror the Flutter version.
+
+`2026-02-22`
 
 ## [3.41.1]
 - Update plugin version to 3.41.1 to mirror the Flutter version.
-`2026-06-01`
+
+`2026-02-21`
 
 ## [3.38.9]
 
@@ -12,34 +34,41 @@
 - Docs refreshed for markers, polylines, polygons, and PowerJSON utilities
 - Update plugin version to 3.38.9 to mirror the Flutter version.
 - Bug fixes and performance improvements in GeoJSON parsing and rendering
+
 `2026-02-15`
 
 ## [1.2.5+5]
 
 - Minor Bug fixes
+
 `2025-06-09`
 
 ## [1.2.5+4]
 
 - Bug fixes (PowerJSON) for DateTime && Enums
+
 `2025-06-09`
 
 ## [1.2.5+3]
 
 - Bug fixes (PowerJSON) for DateTime && Enums
+
 `2025-06-09`
 
 ## [1.2.5+1]
 
+
 `2025-05-14`
 
 ## [1.2.5]
+
 
 `2025-02-27`
 
 - Bug fixes (PowerJSON)
 
 ## [1.2.4-pre.1+7]
+
 
 `2025-02-18`
 
@@ -48,12 +77,14 @@
 
 ## [1.2.3-pre.1+6]
 
+
 `2025-01-09`
 
 - @MandaGate
 - Bug fixes
 
 ## [1.2.3-pre.1+5]
+
 
 `2025-01-09`
 
@@ -62,17 +93,20 @@
 
 ## [1.1.3+24]
 
+
 `2025-01-09`
 
 - @MandaGate
 
 ## [1.1.2+23]
 
+
 `2025-01-09`
 
 - Wasm Support
 
 ## [1.0.9+15]
+
 
 `2025-01-07`
 

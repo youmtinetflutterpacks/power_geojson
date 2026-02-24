@@ -1,6 +1,8 @@
 <div align="center">
 
-# Flutter power_geojson
+<div align="center">
+    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/develop/src/generated_visuals/readme_header.png" alt="power_geojson logo"/>
+</div>
 
 [![pub package](https://img.shields.io/pub/v/power_geojson.svg)](https://pub.dev/packages/power_geojson)
 [![pub likes](https://img.shields.io/pub/likes/power_geojson.svg)](https://pub.dev/packages/power_geojson/score)
@@ -15,6 +17,7 @@
 
 [![Build status](https://github.com/ymrabti/power_geojson/workflows/Publish%20to%20pub.dev/badge.svg?style=flat&logo=github&colorB=&label=Build)](https://github.com/youmtinetflutterpacks/power_geojson)
 
+🌐 [Watch the demo web release](https://power-geojson-demo.youmti.net/) &nbsp;|&nbsp; 📦 [Download the latest APK](https://github.com/ymrabti/power_geojson/releases/latest/download/app-release.apk)
 
 </div>
 Render GeoJSON (and Esri JSON) FeatureCollections on top of `flutter_map` with one-liners for markers, polygons, and polylines. Includes clustering, fallbacks, property-driven styling, and a tiny JSON helper for DateTime/Enum-safe serialization.
@@ -26,14 +29,16 @@ Render GeoJSON (and Esri JSON) FeatureCollections on top of `flutter_map` with o
 - Built-in marker clustering via `PowerMarkerClusterOptions` and HTTP fallbacks.
 - Property-based styling through `MarkerProperties`, `PolygonProperties`, and `PolylineProperties`.
 - PowerJSON helper for safe JSON string building (DateTime, Enum, TimeOfDay).
-
+<div align="center">
+    <img src="https://raw.githubusercontent.com/youmtinetflutterpacks/power_geojson/refs/heads/develop/src/generated_visuals/readme_banner.png" alt="power_geojson banner" />
+</div>
 ## Installation
 
 Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    power_geojson: ^3.38.9
+    power_geojson: ^3.41.2
 ```
 
 ## Quick start
@@ -133,7 +138,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE).
 ## 🔗 More Packages
 
 - [PopupMenu2](https://pub.dev/packages/popup_menu_2)
-- [Flutter Azimuth](https://pub.dev/packages/power_geojson)
+- [Flutter Azimuth](https://pub.dev/packages/flutter_azimuth)
 - [Map Contextual Menu](https://pub.dev/packages/longpress_popup)
 - [Simple Logger](https://pub.dev/packages/console_tools)
 

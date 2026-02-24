@@ -1,7 +1,7 @@
 name: power_geojson
 description: A Powerful tool for Geojson with flutter_map, styled from properties, supports esri json, soon supports multiple projection and coordinate systems
-version: 3.41.1
-homepage: https://github.com/youmtinetflutterpacks/power_geojson
+version: 3.41.3+1
+homepage: https://power-geojson-demo.youmti.net/
 repository: https://github.com/youmtinetflutterpacks/power_geojson
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
     flutter:
         sdk: flutter
     collection: ^1.19.1
-    console_tools: ^1.0.1
+    console_tools: ^2.0.3
     enhanced_future_builder: ^2.0.0
     flutter_map: ^8.2.2
     geodesy: ^0.10.2

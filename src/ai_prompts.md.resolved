@@ -1,0 +1,164 @@
+# Power GeoJSON — AI Prompts for Logo & Screenshot
+
+---
+
+## 🎨 Brand Identity Reference
+
+| Element | Value |
+|---------|-------|
+| **Plugin Name** | `power_geojson` |
+| **Identity** | GeoJSON/Esri JSON rendering on Flutter maps |
+| **Existing Icon** | Globe wrapped in `{ }` JSON curly braces |
+| **Flutter Brand Blue** | `#027DFD` |
+| **Default Fill** | `#2195F3` (translucent blue) |
+| **Default Border** | `#1E00FD` (deep blue) |
+| **Accent Colors** | Orange `#FF9800`, Red `#F44336`, Indigo `#3F51B5` |
+| **Vibe** | Minimal, developer-centric, geo/spatial, open-source |
+
+---
+
+## Prompt 1 — Logo (Combined Flutter + Plugin Identity)
+
+> **Use with:** Midjourney, DALL-E 3, or Ideogram
+
+```
+A minimal, flat-design logo for a Flutter plugin called "Power GeoJSON".
+
+Combine two visual identities:
+1. The Flutter hummingbird — represented as a sleek, geometric outline or silhouette in sky blue (#027DFD).
+2. GeoJSON / spatial data — represented by a subtle globe wireframe, map pin, or coordinate grid lines, using deep blue (#1E00FD) and translucent blue (#2195F3).
+
+The two elements should merge into a single cohesive logomark — for example, the Flutter bird shape formed FROM map grid lines, or the bird perched on a stylized globe outline, or the bird's wings doubling as polygon/polyline paths on a map.
+
+Style:
+- Flat, vector, no gradients — think developer tool icon
+- Dark background (#0D1117, GitHub dark) with the icon colored in blue (#027DFD) and a subtle orange (#FF9800) accent for one small detail (e.g. a map pin tip, a data point dot)
+- Monoline or duotone only
+- Clean negative space, no text in the icon
+- Square aspect ratio, suitable as a pub.dev package icon or GitHub repo avatar
+- Feels like a modern open-source dev tool logo (similar to Supabase, Vercel, Turbo)
+
+Output: single icon on a transparent or dark (#0D1117) background, 1024×1024px, PNG.
+```
+
+### Variant B — Light Background
+
+```
+Same as above, but on a clean white (#FFFFFF) background. The icon should use #1E00FD (deep blue) as the primary stroke color, with #027DFD (Flutter blue) as a secondary fill, and a single small orange (#FF9800) accent. Minimal, flat, no shadows.
+```
+
+### Variant C — Monochrome / One-Color
+
+```
+A single-color monochrome version of the Power GeoJSON logo — a geometric merge of a Flutter bird silhouette and GeoJSON map coordinates or a globe wireframe. 
+Single color: white on transparent, or #027DFD on white. 
+Ultra-minimal, works at 16×16 favicon size. No text, no gradients.
+```
+
+---
+
+## Prompt 2 — Modern Example UI Screenshot
+
+> **Use with:** DALL-E 3, Midjourney, or Ideogram (or v0.dev for code)
+
+```
+A high-fidelity UI screenshot of a modern Flutter mobile app that demonstrates a geospatial data plugin. Dark theme (#0D1117 background).
+
+The screen shows:
+- A full-bleed interactive map (OpenStreetMap or dark-themed mapbox style tiles) taking up ~65% of the screen
+- On the map: translucent blue (#2195F3 at 40% opacity) polygons with deep blue (#1E00FD) borders, orange (#FF9800) polylines tracing routes, and small red (#F44336) circular map markers clustered together
+- A floating bottom sheet / card (glassmorphism, frosted glass, rounded corners 16px) with:
+  - A small header row: the plugin logo icon + "Power GeoJSON" in a monospace/dev font (JetBrains Mono or Fira Code), white text
+  - Below that: a compact list of 2–3 GeoJSON feature items, each with a colored dot indicator (blue for polygon, orange for line, red for point) and a truncated feature name in Inter or SF Pro font, muted gray (#8B949E)
+  - A subtle "Load GeoJSON →" button in Flutter blue (#027DFD), pill-shaped
+
+- Top of screen: a minimal app bar (transparent/blur) with a hamburger menu icon and "Example" title in Inter Medium, white
+- Status bar: standard dark mode iOS/Android status bar
+
+Typography:
+- Headings: Inter Semi-Bold or SF Pro, white (#E6EDF3)
+- Body/labels: Inter Regular, muted gray (#8B949E)
+- Code/badges: JetBrains Mono or Fira Code, 12px, in a subtle dark chip (#161B22)
+
+Color palette (strictly):
+- Background: #0D1117
+- Surface/cards: #161B22 with glassmorphism blur
+- Primary: #027DFD (Flutter blue)
+- Polygon fill: #2195F3 at 40%
+- Polygon border: #1E00FD
+- Polyline: #FF9800
+- Markers: #F44336
+- Text primary: #E6EDF3
+- Text secondary: #8B949E
+- Accent glow: subtle #027DFD glow on the button
+
+Aesthetic: ultra-modern, developer-focused, dark mode, minimal UI chrome, premium feel — like a Raycast or Linear app crossed with a mapping tool. No placeholder text, everything looks real and functional.
+
+Output: iPhone 15 Pro frame, 1290×2796px or similar portrait mobile resolution.
+```
+
+### Variant B — Light Theme
+
+```
+Same layout as above but light theme:
+- Background: #FFFFFF
+- Surface/cards: #F6F8FA with subtle shadow (no glassmorphism)
+- Text primary: #1F2328
+- Text secondary: #656D76
+- Map tiles: standard bright OpenStreetMap
+- Same polygon/polyline/marker colors
+- Button: #027DFD on white, subtle shadow
+- Font: Inter for UI, JetBrains Mono for code
+- Clean, airy, like the GitHub or Linear light mode
+```
+
+---
+
+## Prompt 3 — README Banner / Hero Image
+
+```
+A wide banner image (1280×640px) for a GitHub README. Dark background (#0D1117).
+
+Left side: the Power GeoJSON logomark (Flutter bird merged with geo wireframe, blue tones).
+Right side: a stylized code snippet showing Dart/Flutter code in a minimal code editor frame — syntax-highlighted with blue keywords, orange strings, white identifiers — the code reads something like:
+  PowerGeoJSONPolygons.asset(
+    'assets/map.geojson',
+    polygonProperties: PolygonProperties(
+      color: Colors.blue,
+    ),
+  );
+
+Between the logo and code: subtle map grid lines or coordinate dots fading into the background, connecting the two halves.
+
+Bottom: the text "power_geojson" in JetBrains Mono, 24px, white (#E6EDF3), with a small "for Flutter" tagline in muted gray (#8B949E) below it.
+
+Style: minimal, dev-tool aesthetic, dark mode, no busy patterns. Think Vercel or Supabase README banners.
+```
+
+---
+
+## 📋 Font & Color Quick Reference
+
+### Fonts
+| Usage | Font | Weight |
+|-------|------|--------|
+| UI headings | **Inter** | Semi-Bold (600) |
+| UI body | **Inter** | Regular (400) |
+| Code / badges | **JetBrains Mono** or **Fira Code** | Regular (400) |
+| Logo text (if any) | **JetBrains Mono** | Medium (500) |
+
+### Color Palette
+| Name | Hex | Usage |
+|------|-----|-------|
+| **Background** | `#0D1117` | App/page background (dark) |
+| **Surface** | `#161B22` | Cards, bottom sheets |
+| **Flutter Blue** | `#027DFD` | Primary brand, buttons, accents |
+| **Geo Blue Fill** | `#2195F3` | Polygon fills (40% opacity) |
+| **Geo Blue Border** | `#1E00FD` | Polygon/polyline borders |
+| **Polyline Orange** | `#FF9800` | Polylines, route accents |
+| **Marker Red** | `#F44336` | Map pins, alert accents |
+| **Indigo** | `#3F51B5` | Circle overlays, secondary |
+| **Text Primary** | `#E6EDF3` | Headings, labels (dark mode) |
+| **Text Secondary** | `#8B949E` | Descriptions, muted text |
+| **White** | `#FFFFFF` | Light mode background |
+| **Light Surface** | `#F6F8FA` | Light mode cards |

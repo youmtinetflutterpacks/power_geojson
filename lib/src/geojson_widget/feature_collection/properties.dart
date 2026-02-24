@@ -23,8 +23,8 @@ class FeatureCollectionProperties<T extends Object> {
   /// the GeoJSON feature collection.
   FeatureCollectionProperties({
     this.markerProperties = const MarkerProperties(),
-    required PolylineProperties<T>? polylineProperts,
-    required PolygonProperties<T>? polygonProperts,
+    PolylineProperties<T>? polylineProperts,
+    PolygonProperties<T>? polygonProperts,
   }) {
     polylineProperties = polylineProperts ?? PolylineProperties<T>();
     polygonProperties = polygonProperts ?? PolygonProperties<T>();
