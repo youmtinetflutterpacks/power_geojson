@@ -14,7 +14,12 @@ import 'resource_service.dart';
 // ─── Entry point ──────────────────────────────────────────────────────────────
 
 Future<void> showLoadGeoJSONModal(BuildContext context) {
-  return showModalBottomSheet<void>(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (_) => const _LoadGeoJSONSheet());
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => const _LoadGeoJSONSheet(),
+  );
 }
 
 // ─── Bottom Sheet ─────────────────────────────────────────────────────────────
@@ -39,7 +44,9 @@ class _LoadGeoJSONSheetState extends State<_LoadGeoJSONSheet> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
         child: Container(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.88,
+          ),
           decoration: BoxDecoration(
             color: kSurface.withValues(alpha: 0.85),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -53,7 +60,10 @@ class _LoadGeoJSONSheetState extends State<_LoadGeoJSONSheet> {
               Container(
                 width: 36,
                 height: 4,
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -65,11 +75,24 @@ class _LoadGeoJSONSheetState extends State<_LoadGeoJSONSheet> {
                     Container(
                       width: 32,
                       height: 32,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: kPrimary.withValues(alpha: 0.15)),
-                      child: const Icon(Icons.layers_outlined, size: 18, color: kPrimary),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kPrimary.withValues(alpha: 0.15),
+                      ),
+                      child: const Icon(
+                        Icons.layers_outlined,
+                        size: 18,
+                        color: kPrimary,
+                      ),
                     ),
                     const SizedBox(width: 12),
-                    Text('GeoJSON Resources', style: monoStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    Text(
+                      'GeoJSON Resources',
+                      style: monoStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const Spacer(),
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
@@ -98,12 +121,19 @@ class _LoadGeoJSONSheetState extends State<_LoadGeoJSONSheet> {
                               child: Text(
                                 'No custom resources yet.\nTap "+ Add Resource" to load GeoJSON.',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(fontSize: 13, color: kTextSecondary),
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: kTextSecondary,
+                                ),
                               ),
                             ),
                           );
                         }
-                        return Column(children: resources.map((r) => _ResourceRow(resource: r)).toList());
+                        return Column(
+                          children: resources
+                              .map((r) => _ResourceRow(resource: r))
+                              .toList(),
+                        );
                       }),
 
                       const SizedBox(height: 8),
@@ -118,14 +148,20 @@ class _LoadGeoJSONSheetState extends State<_LoadGeoJSONSheet> {
                             label: const Text('Add Resource'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: kPrimary,
-                              side: BorderSide(color: kPrimary.withValues(alpha: 0.5)),
+                              side: BorderSide(
+                                color: kPrimary.withValues(alpha: 0.5),
+                              ),
                               shape: const StadiumBorder(),
                             ),
                           ),
                         ),
 
                       // Inline add form
-                      if (_showForm) _AddResourceForm(onAdded: () => setState(() => _showForm = false), onCancel: () => setState(() => _showForm = false)),
+                      if (_showForm)
+                        _AddResourceForm(
+                          onAdded: () => setState(() => _showForm = false),
+                          onCancel: () => setState(() => _showForm = false),
+                        ),
                     ],
                   ),
                 ),
@@ -163,10 +199,17 @@ class _ResourceRow extends StatelessWidget {
               children: [
                 Text(
                   resource.label.isEmpty ? '(unlabelled)' : resource.label,
-                  style: GoogleFonts.inter(fontSize: 13, color: kTextPrimary, fontWeight: FontWeight.w500),
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: kTextPrimary,
+                    fontWeight: FontWeight.w500,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text('${resource.sourceType.name} · ${resource.geomType.name}', style: GoogleFonts.inter(fontSize: 11, color: kTextSecondary)),
+                Text(
+                  '${resource.sourceType.name} · ${resource.geomType.name}',
+                  style: GoogleFonts.inter(fontSize: 11, color: kTextSecondary),
+                ),
               ],
             ),
           ),
@@ -175,7 +218,11 @@ class _ResourceRow extends StatelessWidget {
               onTap: () => MapStateController.to.removeResource(resource.id),
               child: Padding(
                 padding: const EdgeInsets.all(6),
-                child: Icon(Icons.delete_outline, size: 18, color: Colors.redAccent.withValues(alpha: 0.8)),
+                child: Icon(
+                  Icons.delete_outline,
+                  size: 18,
+                  color: Colors.redAccent.withValues(alpha: 0.8),
+                ),
               ),
             ),
         ],
@@ -249,7 +296,12 @@ class _AddResourceFormState extends State<_AddResourceForm> {
 
     if (sizeBytes > maxBytes) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('File exceeds the 25 MB limit.'), backgroundColor: Colors.redAccent));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('File exceeds the 25 MB limit.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
       }
       return;
     }
@@ -269,29 +321,54 @@ class _AddResourceFormState extends State<_AddResourceForm> {
     setState(() => _loading = true);
 
     try {
-      final label = _labelCtrl.text.trim().isEmpty ? _defaultLabel() : _labelCtrl.text.trim();
+      final label = _labelCtrl.text.trim().isEmpty
+          ? _defaultLabel()
+          : _labelCtrl.text.trim();
 
       late GeoJsonResource resource;
 
       switch (_sourceType) {
         case GeoJsonSourceType.network:
-          resource = GeoJsonResource(label: label, sourceType: GeoJsonSourceType.network, geomType: _geomType, url: _urlCtrl.text.trim());
+          resource = GeoJsonResource(
+            label: label,
+            sourceType: GeoJsonSourceType.network,
+            geomType: _geomType,
+            url: _urlCtrl.text.trim(),
+          );
 
         case GeoJsonSourceType.file:
           // Cache the file content to app documents dir
-          final tmpResource = GeoJsonResource(label: label, sourceType: GeoJsonSourceType.file, geomType: _geomType, data: _pickedFileContent);
-          await ResourceService.to.cacheFileContent(tmpResource.id, _pickedFileContent!);
+          final tmpResource = GeoJsonResource(
+            label: label,
+            sourceType: GeoJsonSourceType.file,
+            geomType: _geomType,
+            data: _pickedFileContent,
+          );
+          await ResourceService.to.cacheFileContent(
+            tmpResource.id,
+            _pickedFileContent!,
+          );
           resource = tmpResource;
 
         case GeoJsonSourceType.string:
-          resource = GeoJsonResource(label: label, sourceType: GeoJsonSourceType.string, geomType: _geomType, data: _stringCtrl.text.trim());
+          resource = GeoJsonResource(
+            label: label,
+            sourceType: GeoJsonSourceType.string,
+            geomType: _geomType,
+            data: _stringCtrl.text.trim(),
+          );
       }
 
       await MapStateController.to.addResource(resource);
       widget.onAdded();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.redAccent));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -363,11 +440,16 @@ class _AddResourceFormState extends State<_AddResourceForm> {
                 child: OutlinedButton.icon(
                   onPressed: _pickFile,
                   icon: const Icon(Icons.folder_open_outlined, size: 18),
-                  label: Text(_pickedFileName ?? 'Browse GeoJSON file…', overflow: TextOverflow.ellipsis),
+                  label: Text(
+                    _pickedFileName ?? 'Browse GeoJSON file…',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: kPrimary,
                     side: BorderSide(color: kPrimary.withValues(alpha: 0.4)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -376,7 +458,13 @@ class _AddResourceFormState extends State<_AddResourceForm> {
               if (_pickedFileContent == null && _loading)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
-                  child: Text('Please select a file.', style: GoogleFonts.inter(fontSize: 11, color: Colors.redAccent)),
+                  child: Text(
+                    'Please select a file.',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: Colors.redAccent,
+                    ),
+                  ),
                 ),
             ] else ...[
               _SectionLabel('Raw GeoJSON'),
@@ -406,7 +494,10 @@ class _AddResourceFormState extends State<_AddResourceForm> {
             // ── Geometry type ──────────────────────────────────────────────
             _SectionLabel('Geometry Type'),
             const SizedBox(height: 8),
-            _GeomDropdown(value: _geomType, onChanged: (t) => setState(() => _geomType = t)),
+            _GeomDropdown(
+              value: _geomType,
+              onChanged: (t) => setState(() => _geomType = t),
+            ),
             const SizedBox(height: 20),
 
             // ── Action buttons ─────────────────────────────────────────────
@@ -415,7 +506,10 @@ class _AddResourceFormState extends State<_AddResourceForm> {
                 Expanded(
                   child: TextButton(
                     onPressed: widget.onCancel,
-                    child: Text('Cancel', style: GoogleFonts.inter(color: kTextSecondary)),
+                    child: Text(
+                      'Cancel',
+                      style: GoogleFonts.inter(color: kTextSecondary),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -423,7 +517,16 @@ class _AddResourceFormState extends State<_AddResourceForm> {
                   flex: 2,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _submit,
-                    child: _loading ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Add to Map'),
+                    child: _loading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Add to Map'),
                   ),
                 ),
               ],
@@ -445,13 +548,24 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: kTextSecondary, letterSpacing: 0.6),
+      style: GoogleFonts.inter(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        color: kTextSecondary,
+        letterSpacing: 0.6,
+      ),
     );
   }
 }
 
 class _GlassField extends StatelessWidget {
-  const _GlassField({required this.controller, required this.hint, this.validator, this.maxLines = 1, this.minLines});
+  const _GlassField({
+    required this.controller,
+    required this.hint,
+    this.validator,
+    this.maxLines = 1,
+    this.minLines,
+  });
 
   final TextEditingController controller;
   final String hint;
@@ -472,7 +586,10 @@ class _GlassField extends StatelessWidget {
         hintStyle: GoogleFonts.inter(fontSize: 12, color: kTextSecondary),
         filled: true,
         fillColor: kBackground.withValues(alpha: 0.6),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
@@ -523,14 +640,24 @@ class _TypeSegment extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 6),
                   padding: const EdgeInsets.symmetric(vertical: 9),
                   decoration: BoxDecoration(
-                    color: isSelected ? kPrimary : kBackground.withValues(alpha: 0.5),
+                    color: isSelected
+                        ? kPrimary
+                        : kBackground.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: isSelected ? kPrimary : Colors.white.withValues(alpha: 0.1)),
+                    border: Border.all(
+                      color: isSelected
+                          ? kPrimary
+                          : Colors.white.withValues(alpha: 0.1),
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       t.name[0].toUpperCase() + t.name.substring(1),
-                      style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : kTextSecondary),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected ? Colors.white : kTextSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -547,7 +674,12 @@ class _GeomDropdown extends StatelessWidget {
   final GeoJsonGeomType value;
   final ValueChanged<GeoJsonGeomType> onChanged;
 
-  static const _labels = {GeoJsonGeomType.auto: 'Auto (detect)', GeoJsonGeomType.polygon: 'Polygon', GeoJsonGeomType.polyline: 'Polyline', GeoJsonGeomType.point: 'Point'};
+  static const _labels = {
+    GeoJsonGeomType.auto: 'Auto (detect)',
+    GeoJsonGeomType.polygon: 'Polygon',
+    GeoJsonGeomType.polyline: 'Polyline',
+    GeoJsonGeomType.point: 'Point',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -564,7 +696,9 @@ class _GeomDropdown extends StatelessWidget {
           dropdownColor: kSurface,
           isExpanded: true,
           style: GoogleFonts.inter(fontSize: 13, color: kTextPrimary),
-          items: GeoJsonGeomType.values.map((t) => DropdownMenuItem(value: t, child: Text(_labels[t]!))).toList(),
+          items: GeoJsonGeomType.values
+              .map((t) => DropdownMenuItem(value: t, child: Text(_labels[t]!)))
+              .toList(),
           onChanged: (t) {
             if (t != null) onChanged(t);
           },
