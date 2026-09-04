@@ -38,7 +38,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    power_geojson: ^3.41.2
+    power_geojson: ^3.47.1+1
 ```
 
 ## Quick start

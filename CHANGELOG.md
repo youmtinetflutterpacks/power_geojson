@@ -1,4 +1,11 @@
 # Change Log
+## [3.47.1+1]
+- Update dependencies and improve documentation.
+- Update plugin version to 3.47.1+1 to mirror the Flutter version and include the latest updates and improvements.
+- Bug fixes and performance improvements.
+`2026-09-04`
+
+
 ## [3.41.3+3]
 - Update readme with new documentation and demo links, improving accessibility for users seeking information and examples about the package.
 - Update plugin version to 3.41.3+3 to mirror the Flutter version and include the latest updates and improvements.
